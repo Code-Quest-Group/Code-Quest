@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProblemPageComponent } from '../problem-page';
+import { HeaderComponent } from '../../core/header';
 
 @Component({
   selector: 'app-main-page',
   standalone: true,
-  imports: [CommonModule, ProblemPageComponent],
+  imports: [CommonModule, ProblemPageComponent, HeaderComponent],
   templateUrl: './main-page.component.html',
   styleUrls: ['./main-page.component.scss']
 })

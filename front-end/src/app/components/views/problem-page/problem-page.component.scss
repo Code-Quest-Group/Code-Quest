@@ -1,0 +1,26 @@
+$--default-gray: #E4E4E4;
+
+main {
+    background-color: inherit;
+    width: 100%;
+    height: 89%;
+    margin: 0;
+    padding: 0;
+
+    .main-container {
+        margin: 0.6rem;
+        padding-top: 0.4rem;
+        height: 100%;
+        display: flex;
+    }
+
+    .problem-description, .coding-workspace {
+        width: 49%;
+        background-color: $--default-gray;
+        border-radius: 5px;
+    }
+
+    .coding-workspace {
+        margin-left: 2%;
+    }
+}
