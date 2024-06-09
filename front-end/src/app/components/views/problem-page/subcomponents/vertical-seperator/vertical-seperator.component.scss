@@ -1,0 +1,10 @@
+// TODO: REMOVE AFTER FIXING GLOBAL STYLES
+$--default-blue: #0D8EEB;
+
+div {
+    margin-top: 0;
+    margin-bottom: 0;
+    width: 2px;
+    background-color: $--default-blue;
+    height: 100%;
+}
