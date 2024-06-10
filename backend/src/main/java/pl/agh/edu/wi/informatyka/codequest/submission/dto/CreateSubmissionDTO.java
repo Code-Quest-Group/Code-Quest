@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import pl.agh.edu.wi.informatyka.codequest.sourcecode.Language;
 
 @Tag(name = "DTO for posting submission")
 @Data
@@ -24,9 +25,4 @@ public class CreateSubmissionDTO {
 
     @Schema(description = "Standard input")
     private String stdin;
-
-    public enum Language {
-        PYTHON,
-        CPP
-    }
 }
