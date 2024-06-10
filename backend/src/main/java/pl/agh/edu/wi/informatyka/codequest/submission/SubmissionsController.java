@@ -7,8 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
 import org.springframework.web.bind.annotation.*;
 import pl.agh.edu.wi.informatyka.codequest.submission.dto.CreateSubmissionDTO;
 import pl.agh.edu.wi.informatyka.codequest.submission.dto.SubmissionResultDTO;
@@ -20,10 +19,9 @@ public class SubmissionsController {
     private static final String EXAMPLE_REQUEST_JSON =
             """
              {
-                 "sourceCode": "#include <stdio.h>\\nint main(void) {\\nchar name[10];\\nscanf(\\"%%s\\", name);\\nprintf(\\"hello %%s\\n\\", name);\\nreturn 0;}",
+                 "sourceCode": "class Problem:\\n    def solve(self, a, b):\\n        return a + b\\n\\n",
                  "problemId": "1",
                  "language": "PYTHON",
-                 "stdin": "world"
              }
              """;
 
@@ -34,18 +32,19 @@ public class SubmissionsController {
     }
 
     @Operation(summary = "Get submission by ID")
-    @GetMapping("/{id}")
+    @GetMapping("/{submissionId}")
     @ApiResponse(
             responseCode = "200",
             description = "Submission run and finished successfully ",
             content = @Content(schema = @Schema(implementation = SubmissionResultDTO.class)))
     @ApiResponse(responseCode = "401", description = "Submission invalid")
-    public Object getSubmission(@PathVariable @Parameter(example = "576d8010-c8a1-4e08-9bc6-400da4f22c99") String id) {
-        return "Get submission with ID: " + id;
+    public String getSubmission(
+            @PathVariable @Parameter(example = "576d8010-c8a1-4e08-9bc6-400da4f22c99") String submissionId) {
+        return submissionsService.getSubmission(submissionId);
     }
 
     @Operation(summary = "Submit new submission")
-    @PostMapping("/")
+    @PostMapping(value = "/", consumes = "application/json", produces = "application/json")
     @ApiResponse(
             responseCode = "201",
             description = "Created",
@@ -53,17 +52,15 @@ public class SubmissionsController {
                     @Content(
                             mediaType = "application/json",
                             schema = @Schema(example = "{\"token\": \"576d8010-c8a1-4e08-9bc6-400da4f22c99\"}")))
-    public Map<String, String> submitSubmission(
+    public String submitSubmission(
             @Valid
                     @io.swagger.v3.oas.annotations.parameters.RequestBody(
                             content = @Content(schema = @Schema(example = EXAMPLE_REQUEST_JSON)))
                     @RequestBody
-                    CreateSubmissionDTO requestBody) {
+                    CreateSubmissionDTO requestBody)
+            throws IOException {
         String token = submissionsService.submitSubmission(requestBody);
-
-        Map<String, String> response = new HashMap<>();
-        response.put("token", token);
-
-        return response;
+        System.out.println("token: " + token);
+        return token;
     }
 }

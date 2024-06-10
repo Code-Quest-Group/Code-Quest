@@ -1,29 +1,20 @@
 # Code Quest
 
-## CodeSubmissionService
+## Swagger Ui
 
+Go to http://localhost:8080/api to view API documentation.
+
+## Problems
+### Add two numbers
+Problem implementation must be send in format:
+
+```python
+class Problem:
+
+    def solve(self, a, b):
+        ...
 ```
-#include <stdio.h>
-
-int main(void) {
-  char name[10];
-  scanf("%s", name);
-  printf("hello, %s\n", name);
-  return 0;
-}
-```
-
-```shell
-curl -X POST "http://localhost:8080/submissions" \
-    -H "Content-Type: application/json" \
-    -d '{
-        "source_code": "#include <stdio.h>\n\nint main(void) {\n  char name[10];\n  scanf(\"%s\", name);\n  printf(\"hello, %s\\n\", name);\n  return 0;\n}",    "language_id": "50",
-        "language_id": "50",
-        "stdin": "world"
-    }'
-```
-Example curl request for running C code with 'world' provided to the stdin.
-
+This code template is available in `/src/main/resources/template.py` alongside the parsing function `/src/main/resources/parse.py`
 
 ## Developer Instructions
 ### How to run judge0
@@ -34,6 +25,10 @@ Example curl request for running C code with 'world' provided to the stdin.
 
     Alternatively use `Start Judge0` IntelliJ run configuration.
 4. Verify the server is running on http://localhost:2358/docs.
+
+### How to start the Server
+Run:
+`./gradlew bootRun`
 
 ### Used IntelliJ Plugins
 * SonarLint

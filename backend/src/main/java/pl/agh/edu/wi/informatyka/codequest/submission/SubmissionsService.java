@@ -1,7 +1,19 @@
 package pl.agh.edu.wi.informatyka.codequest.submission;
 
+import static pl.agh.edu.wi.informatyka.codequest.sourcecode.Language.PYTHON;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import pl.agh.edu.wi.informatyka.codequest.Problem;
+import pl.agh.edu.wi.informatyka.codequest.sourcecode.PythonSourceCodePreprocessor;
 import pl.agh.edu.wi.informatyka.codequest.submission.dto.CreateSubmissionDTO;
 
 @Service
@@ -14,18 +26,42 @@ public class SubmissionsService {
         System.out.println("service url: " + judgingServiceUrl);
     }
 
-    public String submitSubmission(CreateSubmissionDTO createSubmissionDTO) {
-        //        HttpHeaders headers = new HttpHeaders();
-        //        headers.setContentType(MediaType.APPLICATION_JSON);
-        //
-        //        HttpEntity<String> request = new HttpEntity<>(sourceCode, headers);
-        //
-        //        RestTemplate restTemplate = new RestTemplate();
-        //        String response = restTemplate.postForObject(judgingServiceUrl +
-        // "/submissions?wait=true", request,
-        // String.class);
-        //        System.out.println("RESPONSE: " + response);
-        //        return response;
-        return "576d8010-c8a1-4e08-9bc6-400da4f22c99";
+    public String submitSubmission(CreateSubmissionDTO createSubmissionDTO) throws IOException {
+        HttpEntity<String> request = assembleJudgeRequest(createSubmissionDTO);
+
+        RestTemplate restTemplate = new RestTemplate();
+        String response = restTemplate.postForObject(judgingServiceUrl + "/submissions", request, String.class);
+        System.out.println("RESPONSE: " + response);
+        return response;
+    }
+
+    private HttpEntity<String> assembleJudgeRequest(CreateSubmissionDTO createSubmissionDTO) throws IOException {
+        PythonSourceCodePreprocessor codePreprocessor = new PythonSourceCodePreprocessor();
+
+        String code = codePreprocessor.assembleSourceCode(createSubmissionDTO.getSourceCode());
+
+        Map<String, String> map = new HashMap<>();
+
+        System.out.println("assembled source code: " + code);
+
+        Problem currentProblem = Problem.addTwoNumbers;
+
+        map.put("source_code", code);
+        map.put("language_id", PYTHON.getLanguageId());
+        map.put("stdin", currentProblem.getTestCases());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        String body = new ObjectMapper().writeValueAsString(map);
+
+        return new HttpEntity<>(body, headers);
+    }
+
+    public String getSubmission(String submissionId) {
+        String response =
+                new RestTemplate().getForObject(judgingServiceUrl + "/submissions/" + submissionId, String.class);
+        System.out.println(response);
+        return response;
     }
 }
