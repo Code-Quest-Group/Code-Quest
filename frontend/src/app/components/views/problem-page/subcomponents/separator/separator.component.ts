@@ -2,12 +2,13 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'vertical-seperator',
+  selector: 'app-separator',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './vertical-seperator.component.html',
-  styleUrls: ['./vertical-seperator.component.scss']
+  templateUrl: './separator.component.html',
+  styleUrls: ['./separator.component.scss']
 })
-export class VerticalSeperatorComponent {
+export class SeparatorComponent {
   @Input() marginLeftRight: string = '0.6rem';
+  @Input() isVertical: boolean = true;
 }

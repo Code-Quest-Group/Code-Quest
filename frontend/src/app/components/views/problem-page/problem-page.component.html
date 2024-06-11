@@ -3,11 +3,11 @@
         <div class="problem-description"> 
             <div class="section-header">
                 <h4 class="hoverable-header">Description 📖</h4>
-                <vertical-seperator marginLeftRight="0"></vertical-seperator>
+                <app-separator marginLeftRight="0"></app-separator>
                 <h4 class="hoverable-header">Hints 🤔</h4>
-                <vertical-seperator marginLeftRight="0"></vertical-seperator>
+                <app-separator marginLeftRight="0"></app-separator>
                 <h4 class="hoverable-header">Pseudocode 💡</h4>
-                <vertical-seperator marginLeftRight="0"></vertical-seperator>
+                <app-separator marginLeftRight="0"></app-separator>
                 <h4 class="hoverable-header">User's Solutions 🎯</h4>
             </div>
             <div class="section-container">
@@ -50,13 +50,24 @@
                 </div>
             </div>
         </div>
-        <vertical-seperator></vertical-seperator>
+        <app-separator></app-separator>
         <div class="coding-workspace"> 
             <div class="section-header"> 
                 <h4> Coding Workspace 📝 </h4> 
             </div> 
             <div class="section-container">
-                test
+                <div class="workspace-options">
+                    <span class="language-selection">
+                        <p class="language-label"> Language </p>
+                        <select class="language-dropdown">
+                            <option value="python" selected>Python</option>
+                            <option value="cpp">C++</option>
+                        </select>
+                        <button class="fullscreen-button"> Fullscreen Mode ⛶ </button>
+                    </span>
+                </div>
+                <app-separator [isVertical]="false"></app-separator>
+                
             </div>
         </div>
     </div>

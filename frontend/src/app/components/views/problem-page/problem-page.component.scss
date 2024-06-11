@@ -36,7 +36,7 @@ main {
         width: 54%
     }
 
-    h1, h2, h3, h4 {
+    h1, h2, h3, h4, p, button {
         color: $--default-font-color;
         font-family: $--default-font-style;
         font-weight: 500;
@@ -54,11 +54,37 @@ main {
             margin: 0.5rem;
             font-size: 1.2rem;
         }
+        .hoverable-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 25%;
+            min-width: fit-content;
+            margin: 0;
 
-        .hoverable-header:hover {
-            text-shadow: 0px 0px 1px $--default-font-color, 0 0 1px $--default-font-color;
-            cursor: pointer;
+            &:hover {
+                background-color: darken($--default-gray, 10%);
+                text-shadow:
+                0px 0 1px $--default-font-color,
+                0px 0 1px $--default-font-color,
+                0px 0 1px $--default-font-color,
+                0px 0 1px $--default-font-color;
+                -webkit-transition: all .2s;
+                -moz-transition: all .2s;
+                -o-transition: all .2s;
+                transition: all .2s;
+                cursor: pointer;
+            }
+
+            &:first-child {
+                border-top-left-radius: 5px;
+            }
+
+            &:last-child {
+                border-top-right-radius: 5px;
+            }
         }
+        
     }
 
     .section-container {
@@ -116,7 +142,7 @@ main {
             &:before {
                 content: '';
                 position: absolute;
-                left: -50%;
+                left: -2rem;
                 top: 50%;
                 transform: translateY(-50%);
                 width: 0; 
@@ -152,6 +178,7 @@ main {
     }
 
     .problem-buttons {
+        padding-top: 2rem;
         margin-top: auto;
         margin-bottom: 1rem;
         height: 4rem;
@@ -182,6 +209,56 @@ main {
             &:hover {
                 background-color: darken($--default-red, 10%);
             }
+        }
+    }
+
+    .workspace-options, .language-selection {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        height: 2.5rem;
+    }
+
+    .fullscreen-button {
+        margin-left: auto;
+        background-color: $--light-gray;
+        border: none;
+        transition: background-color 0.3s ease;
+        padding: 0 0.75rem;
+        margin-right: 0;
+        font-size: 1.1rem;
+        height: 100%;
+        
+        &:hover {
+            cursor: pointer;
+            background-color: darken($--light-gray, 10%);
+        }
+    }
+
+    .language-selection {
+        padding-left: 1rem;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+
+        .language-label {
+            font-size: 1.1rem;
+        }
+    }
+
+    .code-input {
+        background-color: $--default-white;
+        font-size: 0.8rem;
+        border: none;
+        width: 100%;
+        resize: none;
+        outline: none; 
+        text-align: left; 
+        user-select: text;
+
+        &::selection  {
+            border: none;
+            outline: none;
         }
     }
 }

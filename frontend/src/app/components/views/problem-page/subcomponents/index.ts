@@ -1,1 +1,1 @@
-export { VerticalSeperatorComponent } from "./vertical-seperator/vertical-seperator.component";
+export { SeparatorComponent } from "./separator/separator.component";

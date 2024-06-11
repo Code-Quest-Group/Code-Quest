@@ -4,11 +4,11 @@ import { ProblemPageComponent } from '../problem-page';
 import { HeaderComponent } from '../../core/header';
 
 @Component({
-  selector: 'app-main-page',
-  standalone: true,
-  imports: [CommonModule, ProblemPageComponent, HeaderComponent],
-  templateUrl: './main-page.component.html',
-  styleUrls: ['./main-page.component.scss']
+    selector: 'app-main-page',
+    standalone: true,
+    templateUrl: './main-page.component.html',
+    styleUrls: ['./main-page.component.scss'],
+    imports: [CommonModule, ProblemPageComponent, HeaderComponent ]
 })
 export class MainPageComponent {
   title = 'Welcome to the Main Page';
