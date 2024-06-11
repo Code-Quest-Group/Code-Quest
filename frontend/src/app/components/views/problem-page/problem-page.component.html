@@ -67,6 +67,14 @@
                     </span>
                 </div>
                 <app-separator [isVertical]="false"></app-separator>
+                <textarea class="temp-coding-workspace" spellcheck="false" id="code-editor">def solution(arr):
+    return arr</textarea>
+                <app-separator [isVertical]="false"></app-separator>
+                <section class="results-section" id="results-section"></section>
+                <app-separator [isVertical]="false"></app-separator>
+                <div class="result-buttons"> 
+                    <button id="submit-button" (click)="fillResults()">RUN</button>
+                </div>
                 
             </div>
         </div>

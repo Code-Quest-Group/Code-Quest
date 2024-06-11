@@ -1,1 +1,1 @@
-export { ProblemPageComponent } from "./problem-pagec.component";
+export { ProblemPageComponent } from "./problem-page.component";
