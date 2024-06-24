@@ -21,6 +21,9 @@ public class SubmissionsService {
 
     private final String judgingServiceUrl;
 
+    @Value("${language.parsers.resources.path}")
+    private String resourcesPath;
+
     public SubmissionsService(@Value("${judge0.service.url}") String judgingServiceUrl) {
         this.judgingServiceUrl = judgingServiceUrl;
         System.out.println("service url: " + judgingServiceUrl);
@@ -36,18 +39,20 @@ public class SubmissionsService {
     }
 
     private HttpEntity<String> assembleJudgeRequest(CreateSubmissionDTO createSubmissionDTO) throws IOException {
-        PythonSourceCodePreprocessor codePreprocessor = new PythonSourceCodePreprocessor();
+        PythonSourceCodePreprocessor codePreprocessor = new PythonSourceCodePreprocessor(resourcesPath);
 
         String code = codePreprocessor.assembleSourceCode(createSubmissionDTO.getSourceCode());
 
         Map<String, String> map = new HashMap<>();
-
+        System.out.println("===========================================");
         System.out.println("assembled source code: " + code);
+        System.out.println("===========================================");
 
         Problem currentProblem = Problem.addTwoNumbers;
 
         map.put("source_code", code);
         map.put("language_id", PYTHON.getLanguageId());
+        map.put("command_line_arguments", "\"int int\"");
         map.put("stdin", currentProblem.getTestCases());
 
         HttpHeaders headers = new HttpHeaders();

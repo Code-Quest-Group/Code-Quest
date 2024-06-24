@@ -29,18 +29,6 @@ public class Problem {
             "Add two numbers",
             "This problem requires calculating the sum of two numbers",
             List.of(Language.PYTHON),
-            """
-                    1,6
-                    2,2
-                    3,7
-                    4,2
-                    5,3
-                    """,
-            """
-                    7
-                    4
-                    10
-                    6
-                    8
-                    """);
+            "1\n6\n2\n2\n3\n7\n4\n2\n5\n3\n",
+            "7\n4\n10\n6\n8\n");
 }
