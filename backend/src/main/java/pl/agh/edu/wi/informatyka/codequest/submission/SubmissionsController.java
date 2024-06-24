@@ -3,6 +3,7 @@ package pl.agh.edu.wi.informatyka.codequest.submission;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,10 +20,10 @@ public class SubmissionsController {
     private static final String EXAMPLE_REQUEST_JSON =
             """
              {
-                 "sourceCode": "class Problem:\\n    def solve(self, a, b):\\n        return a + b\\n\\n",
-                 "problemId": "1",
-                 "language": "PYTHON",
-             }
+                 \"sourceCode\": \"class Problem:\\n    def solve(self, a, b):\\n        return a + b\\n\\n\",
+                 \"problemId\": \"1\",
+                 \"language\": \"PYTHON\"
+             }\
              """;
 
     private final SubmissionsService submissionsService;
@@ -55,7 +56,7 @@ public class SubmissionsController {
     public String submitSubmission(
             @Valid
                     @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                            content = @Content(schema = @Schema(example = EXAMPLE_REQUEST_JSON)))
+                            content = @Content(mediaType = "application/json", examples = @ExampleObject(value = EXAMPLE_REQUEST_JSON)))
                     @RequestBody
                     CreateSubmissionDTO requestBody)
             throws IOException {
