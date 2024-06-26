@@ -20,7 +20,7 @@ public class ProblemsController {
     }
 
     @GetMapping("/{problemId}")
-    public Problem getProblems(@PathVariable @Parameter(example = "add-numbers") String problemId) {
+    public Problem getProblems(@PathVariable @Parameter(example = "add-two-numbers") String problemId) {
         return problemsService.getProblem(problemId);
     }
 

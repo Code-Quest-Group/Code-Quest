@@ -10,9 +10,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import org.springframework.web.bind.annotation.*;
-import pl.agh.edu.wi.informatyka.codequest.ExampleData;
 import pl.agh.edu.wi.informatyka.codequest.submission.dto.CreateSubmissionDTO;
-import pl.agh.edu.wi.informatyka.codequest.submission.dto.SubmissionResultDTO;
+import pl.agh.edu.wi.informatyka.codequest.submission.dto.Submission;
+import pl.agh.edu.wi.informatyka.codequest.util.DataExamples;
 
 @RestController
 @RequestMapping("/submissions")
@@ -29,9 +29,9 @@ public class SubmissionsController {
     @ApiResponse(
             responseCode = "200",
             description = "Submission run and finished successfully ",
-            content = @Content(schema = @Schema(implementation = SubmissionResultDTO.class)))
+            content = @Content(schema = @Schema(implementation = Submission.class)))
     @ApiResponse(responseCode = "401", description = "Submission invalid")
-    public String getSubmission(
+    public Submission getSubmission(
             @PathVariable @Parameter(example = "576d8010-c8a1-4e08-9bc6-400da4f22c99") String submissionId) {
         return submissionsService.getSubmission(submissionId);
     }
@@ -51,12 +51,28 @@ public class SubmissionsController {
                             content =
                                     @Content(
                                             mediaType = "application/json",
-                                            examples = @ExampleObject(value = ExampleData.PROBLEM_SUBMISSION_BODY)))
+                                            examples = {
+                                                @ExampleObject(
+                                                        name = "Valid Solution",
+                                                        value = DataExamples.AddTwo.VALID_SOLUTION),
+                                                @ExampleObject(
+                                                        name = "Invalid Solution",
+                                                        value = DataExamples.AddTwo.INVALID_SOLUTION),
+                                                @ExampleObject(
+                                                        name = "Infinite Loop (timeout)",
+                                                        value = DataExamples.AddTwo.INFINITE_LOOP),
+                                            }))
                     @RequestBody
                     CreateSubmissionDTO requestBody)
             throws IOException {
         String token = submissionsService.submitSubmission(requestBody);
-        System.out.println("token: " + token);
         return token;
+    }
+
+    @Operation(summary = "webhook received from Judge0 to signal a given job has finished")
+    @PutMapping(value = "/webhook")
+    public void submitWebhook(@Valid @RequestBody Submission submission) {
+        System.out.println("WEBHOOK RECEIVED");
+        this.submissionsService.handleSubmissionWebhook(submission);
     }
 }
