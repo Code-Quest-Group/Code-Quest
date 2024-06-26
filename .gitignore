@@ -76,5 +76,8 @@ fabric.properties
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
 
-# Ignore judge0 confi
+# Ignore judge0 config
 judge0.conf
+
+# Remove all IntelliJ files
+/.idea
