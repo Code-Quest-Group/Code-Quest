@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import org.springframework.web.bind.annotation.*;
+import pl.agh.edu.wi.informatyka.codequest.ExampleData;
 import pl.agh.edu.wi.informatyka.codequest.submission.dto.CreateSubmissionDTO;
 import pl.agh.edu.wi.informatyka.codequest.submission.dto.SubmissionResultDTO;
 
@@ -17,15 +18,6 @@ import pl.agh.edu.wi.informatyka.codequest.submission.dto.SubmissionResultDTO;
 @RequestMapping("/submissions")
 @Tag(name = "Submission")
 public class SubmissionsController {
-    private static final String EXAMPLE_REQUEST_JSON =
-            """
-             {
-                 \"sourceCode\": \"class Problem:\\n    def solve(self, a, b):\\n        return a + b\\n\\n\",
-                 \"problemId\": \"1\",
-                 \"language\": \"PYTHON\"
-             }\
-             """;
-
     private final SubmissionsService submissionsService;
 
     public SubmissionsController(SubmissionsService submissionsService) {
@@ -56,7 +48,10 @@ public class SubmissionsController {
     public String submitSubmission(
             @Valid
                     @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                            content = @Content(mediaType = "application/json", examples = @ExampleObject(value = EXAMPLE_REQUEST_JSON)))
+                            content =
+                                    @Content(
+                                            mediaType = "application/json",
+                                            examples = @ExampleObject(value = ExampleData.PROBLEM_SUBMISSION_BODY)))
                     @RequestBody
                     CreateSubmissionDTO requestBody)
             throws IOException {
