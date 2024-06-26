@@ -81,3 +81,6 @@ judge0.conf
 
 # Remove all IntelliJ files
 /.idea
+
+# logback logs
+/logs
