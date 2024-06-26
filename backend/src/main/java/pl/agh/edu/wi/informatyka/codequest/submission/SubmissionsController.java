@@ -32,6 +32,7 @@ public class SubmissionsController {
         this.submissionsService = submissionsService;
     }
 
+    @CrossOrigin(origins = "*")
     @Operation(summary = "Get submission by ID")
     @GetMapping("/{submissionId}")
     @ApiResponse(
@@ -44,6 +45,7 @@ public class SubmissionsController {
         return submissionsService.getSubmission(submissionId);
     }
 
+    @CrossOrigin(origins = "*")
     @Operation(summary = "Submit new submission")
     @PostMapping(value = "/", consumes = "application/json", produces = "application/json")
     @ApiResponse(
