@@ -12,9 +12,11 @@ import java.util.concurrent.ConcurrentMap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 import pl.agh.edu.wi.informatyka.codequest.Problem;
 import pl.agh.edu.wi.informatyka.codequest.problem.ProblemsService;
 import pl.agh.edu.wi.informatyka.codequest.sourcecode.PythonSourceCodePreprocessor;
@@ -64,7 +66,11 @@ public class SubmissionsService {
         //        System.out.println("assembled source code: " + code);
         //        System.out.println("===========================================");
 
-        Problem currentProblem = problemsService.getProblem("add-two-numbers");
+        Problem currentProblem = problemsService.getProblem(createSubmissionDTO.getProblemId());
+        if (currentProblem == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Problem with id '" + createSubmissionDTO.getProblemId() + "' not found");
+        }
 
         Map<String, String> map = new HashMap<>();
         map.put("source_code", code);
