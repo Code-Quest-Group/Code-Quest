@@ -72,7 +72,6 @@ public class SubmissionsController {
     @Operation(summary = "webhook received from Judge0 to signal a given job has finished")
     @PutMapping(value = "/webhook")
     public void submitWebhook(@Valid @RequestBody Submission submission) {
-        System.out.println("WEBHOOK RECEIVED");
         this.submissionsService.handleSubmissionWebhook(submission);
     }
 }

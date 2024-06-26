@@ -3,7 +3,9 @@ package pl.agh.edu.wi.informatyka.codequest.problem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import pl.agh.edu.wi.informatyka.codequest.Problem;
 import pl.agh.edu.wi.informatyka.codequest.sourcecode.Language;
 
@@ -38,6 +40,10 @@ public class ProblemsService {
     }
 
     public Problem getProblem(String problemId) {
-        return problems.get(problemId);
+        Problem problem = problems.get(problemId);
+        if (problem == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Problem " + problemId + " not found");
+        }
+        return problem;
     }
 }

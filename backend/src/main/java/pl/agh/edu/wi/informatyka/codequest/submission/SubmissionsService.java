@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -27,6 +29,8 @@ import pl.agh.edu.wi.informatyka.codequest.submission.dto.Submission;
 @Service
 public class SubmissionsService {
 
+    Logger logger = LoggerFactory.getLogger(SubmissionsService.class);
+
     ConcurrentMap<String, CreateSubmissionDTO> activeSubmissions = new ConcurrentHashMap<>();
     ConcurrentMap<String, Submission> finalizedSubmissions = new ConcurrentHashMap<>();
 
@@ -41,20 +45,26 @@ public class SubmissionsService {
             ProblemsService problemsService, @Value("${judge0.service.url}") String judgingServiceUrl) {
         this.problemsService = problemsService;
         this.judgingServiceUrl = judgingServiceUrl;
-        System.out.println("service url: " + judgingServiceUrl);
+        logger.info("Judge 0 service url: {}", judgingServiceUrl);
     }
 
     public String submitSubmission(CreateSubmissionDTO createSubmissionDTO) throws IOException {
         HttpEntity<String> request = assembleJudgeRequest(createSubmissionDTO);
 
         RestTemplate restTemplate = new RestTemplate();
-        String response = restTemplate.postForObject(judgingServiceUrl + "/submissions", request, String.class);
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode jsonResponse = mapper.readTree(response);
+        JsonNode jsonResponse = restTemplate.postForObject(judgingServiceUrl + "/submissions", request, JsonNode.class);
+        if (jsonResponse == null)
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "No token returned???");
+
         String token = jsonResponse.get("token").textValue();
 
         activeSubmissions.put(token, createSubmissionDTO);
-        return response;
+        logger.info(
+                "Submission {} created for {} in {}",
+                token,
+                createSubmissionDTO.getProblemId(),
+                createSubmissionDTO.getLanguage());
+        return jsonResponse.toString();
     }
 
     private HttpEntity<String> assembleJudgeRequest(CreateSubmissionDTO createSubmissionDTO) throws IOException {
@@ -88,17 +98,24 @@ public class SubmissionsService {
     }
 
     public Submission getSubmission(String submissionId) {
-        if (!finalizedSubmissions.containsKey(submissionId)) {
-            Submission response = new Submission();
-            response.setStatus(new Judge0SubmissionResultDTO.Status(2L, "Processing"));
-            return response;
+        Submission finalizedSubmission = finalizedSubmissions.get(submissionId);
+        if (finalizedSubmission != null) return finalizedSubmission;
+
+        if (!activeSubmissions.containsKey(submissionId)) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Submission not found");
         }
-        return finalizedSubmissions.get(submissionId);
+
+        Submission response = new Submission();
+        response.setStatus(new Judge0SubmissionResultDTO.Status(2L, "Processing"));
+        return response;
     }
 
     public void handleSubmissionWebhook(Judge0SubmissionResultDTO submissionResultDTO) {
+        logger.info("Submission {} finished processing.", submissionResultDTO.getToken());
         CreateSubmissionDTO createdSubmission = activeSubmissions.remove(submissionResultDTO.getToken());
         if (createdSubmission == null) {
+            logger.warn("Submission webhook {} returned before POST /submissions", submissionResultDTO.getToken());
             throw new RuntimeException("Webhook returned before POST /submissions");
         }
 
@@ -112,6 +129,5 @@ public class SubmissionsService {
         submission.setLanguage(createdSubmission.getLanguage());
         submission.setUserId("no user");
         finalizedSubmissions.put(submission.getToken(), submission);
-        System.out.println("submission: " + submission.getToken() + "IS DONE");
     }
 }
