@@ -53,14 +53,20 @@ public class SubmissionsController {
                                             mediaType = "application/json",
                                             examples = {
                                                 @ExampleObject(
-                                                        name = "Valid Solution",
+                                                        name = "[AddTwo] Valid Solution",
                                                         value = DataExamples.AddTwo.VALID_SOLUTION),
                                                 @ExampleObject(
-                                                        name = "Invalid Solution",
+                                                        name = "[AddTwo] Invalid Solution",
                                                         value = DataExamples.AddTwo.INVALID_SOLUTION),
                                                 @ExampleObject(
-                                                        name = "Infinite Loop (timeout)",
+                                                        name = "[AddTwo] Infinite Loop (timeout)",
                                                         value = DataExamples.AddTwo.INFINITE_LOOP),
+                                                @ExampleObject(
+                                                        name = "[NthFibonacci] Valid Solution",
+                                                        value = DataExamples.NthFibonacci.VALID_SOLUTION),
+                                                @ExampleObject(
+                                                        name = "[NthFibonacci] Invalid Solution",
+                                                        value = DataExamples.NthFibonacci.INVALID_SOLUTION),
                                             }))
                     @RequestBody
                     CreateSubmissionDTO requestBody)

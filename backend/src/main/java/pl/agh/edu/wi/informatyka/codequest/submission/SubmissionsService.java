@@ -85,7 +85,9 @@ public class SubmissionsService {
         Map<String, String> map = new HashMap<>();
         map.put("source_code", code);
         map.put("language_id", PYTHON.getLanguageId());
-        map.put("command_line_arguments", "\"int int\"");
+        map.put(
+                "command_line_arguments",
+                "\"" + currentProblem.getInputFormat() + "\""); // input format must be escaped
         map.put("stdin", currentProblem.getTestCases());
         map.put("callback_url", "http://host.docker.internal:8080/submissions/webhook");
 
@@ -102,8 +104,7 @@ public class SubmissionsService {
         if (finalizedSubmission != null) return finalizedSubmission;
 
         if (!activeSubmissions.containsKey(submissionId)) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Submission not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Submission not found");
         }
 
         Submission response = new Submission();
@@ -125,6 +126,13 @@ public class SubmissionsService {
                 .getForObject(judgingServiceUrl + "/submissions/" + submissionResultDTO.getToken(), Submission.class);
 
         assert submission != null;
+
+        if (submission.getStatus().getId() != 3) {
+            logger.warn(
+                    "Submission {} failed unexpectedly with message {}.",
+                    submission.getToken(),
+                    submission.getMessage());
+        }
         submission.setProblemId(createdSubmission.getProblemId());
         submission.setLanguage(createdSubmission.getLanguage());
         submission.setUserId("no user");

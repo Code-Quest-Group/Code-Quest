@@ -34,4 +34,23 @@ public class DataExamples {
                 }\
                 """;
     }
+
+    public static class NthFibonacci {
+        public static final String VALID_SOLUTION =
+                """
+                {
+                    \"sourceCode\": \"class Problem:\\n    \\n    def solve(self, n):\\n        if n < 2:\\n            return n\\n        \\n        return self.solve(n - 1) + self.solve(n - 2)\\n\\n\",
+                    \"problemId\": \"nth-fibonacci-number\",
+                    \"language\": \"PYTHON\"
+                }\
+                """;
+        public static final String INVALID_SOLUTION =
+                """
+                {
+                    \"sourceCode\": \"class Problem:\\n    def solve(self, n):\\n        return n\\n\\n\",
+                    \"problemId\": \"nth-fibonacci-number\",
+                    \"language\": \"PYTHON\"
+                }\
+                """;
+    }
 }
