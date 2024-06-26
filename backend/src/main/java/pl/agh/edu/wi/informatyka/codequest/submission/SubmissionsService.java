@@ -13,18 +13,27 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import pl.agh.edu.wi.informatyka.codequest.Problem;
+import pl.agh.edu.wi.informatyka.codequest.problem.ProblemsService;
 import pl.agh.edu.wi.informatyka.codequest.sourcecode.PythonSourceCodePreprocessor;
 import pl.agh.edu.wi.informatyka.codequest.submission.dto.CreateSubmissionDTO;
+import pl.agh.edu.wi.informatyka.codequest.submission.dto.SubmissionResultDTO;
 
 @Service
 public class SubmissionsService {
+
+    // those are the databases lmao
+    Map<String, SubmissionResultDTO> submissions = new HashMap<>();
+
+    private final ProblemsService problemsService;
 
     private final String judgingServiceUrl;
 
     @Value("${language.parsers.resources.path}")
     private String resourcesPath;
 
-    public SubmissionsService(@Value("${judge0.service.url}") String judgingServiceUrl) {
+    public SubmissionsService(
+            ProblemsService problemsService, @Value("${judge0.service.url}") String judgingServiceUrl) {
+        this.problemsService = problemsService;
         this.judgingServiceUrl = judgingServiceUrl;
         System.out.println("service url: " + judgingServiceUrl);
     }
@@ -43,13 +52,13 @@ public class SubmissionsService {
 
         String code = codePreprocessor.assembleSourceCode(createSubmissionDTO.getSourceCode());
 
+        //        System.out.println("===========================================");
+        //        System.out.println("assembled source code: " + code);
+        //        System.out.println("===========================================");
+
+        Problem currentProblem = problemsService.getProblem("add-numbers");
+
         Map<String, String> map = new HashMap<>();
-        System.out.println("===========================================");
-        System.out.println("assembled source code: " + code);
-        System.out.println("===========================================");
-
-        Problem currentProblem = Problem.addTwoNumbers;
-
         map.put("source_code", code);
         map.put("language_id", PYTHON.getLanguageId());
         map.put("command_line_arguments", "\"int int\"");

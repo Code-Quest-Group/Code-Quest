@@ -1,0 +1,43 @@
+package pl.agh.edu.wi.informatyka.codequest.problem;
+
+import org.springframework.stereotype.Service;
+import pl.agh.edu.wi.informatyka.codequest.Problem;
+import pl.agh.edu.wi.informatyka.codequest.sourcecode.Language;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class ProblemsService {
+
+    private final String codeTemplate = """
+            class Problem:
+
+                def solve(self, a: int, b: int):
+                    pass
+                        
+                        
+            """;
+
+    // this is a database lmao
+    Map<String, Problem> problems = Map.of(
+            "add-numbers",
+            new Problem(
+                    "add-numbers",
+                    "Add two numbers",
+                    "This problem requires calculating the sum of two numbers",
+                    List.of(Language.PYTHON),
+                    "int int",
+                    codeTemplate,
+                    "1\n6\n2\n2\n3\n7\n4\n2\n5\n3\n",
+                    "7\n4\n10\n6\n8\n"));
+
+    public List<Problem> getProblems() {
+        return new ArrayList<>(problems.values());
+    }
+
+    public Problem getProblem(String problemId) {
+        return problems.get(problemId);
+    }
+}
