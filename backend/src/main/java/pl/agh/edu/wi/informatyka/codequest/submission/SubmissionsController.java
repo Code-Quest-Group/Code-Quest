@@ -57,6 +57,9 @@ public class SubmissionsController {
                                                         name = "[AddTwo] Valid Solution",
                                                         value = DataExamples.AddTwo.VALID_SOLUTION),
                                                 @ExampleObject(
+                                                        name = "[AddTwo] Random fail solution",
+                                                        value = DataExamples.AddTwo.RANDOM_FAIL),
+                                                @ExampleObject(
                                                         name = "[AddTwo] Invalid Solution",
                                                         value = DataExamples.AddTwo.INVALID_SOLUTION),
                                                 @ExampleObject(

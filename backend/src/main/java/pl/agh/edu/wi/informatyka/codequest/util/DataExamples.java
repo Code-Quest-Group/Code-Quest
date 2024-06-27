@@ -17,6 +17,14 @@ public class DataExamples {
                     \"language\": \"PYTHON\"
                 }\
                 """;
+        public static final String RANDOM_FAIL =
+                """
+                {
+                    \"sourceCode\": \"import random\\n\\nclass Problem:\\n    def solve(self, a, b):\\n        return a + b + random.randint(1, 15)//10\\n\\n\",
+                    \"problemId\": \"add-two-numbers\",
+                    \"language\": \"PYTHON\"
+                }\
+                """;
         public static final String INVALID_SOLUTION =
                 """
                 {
