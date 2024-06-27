@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -129,14 +130,20 @@ public class SubmissionsService {
         }
         logger.debug("Submission {} raw results: {}", newSubmissionResultDTO.getToken(), newSubmissionResultDTO);
 
-        // thread safe map updating
-        Submission submission = submissions.computeIfPresent(
-                newSubmissionResultDTO.getToken(),
-                (token, submissionInMap) ->
-                        SubmissionMapper.updateEntityFromDto(submissionInMap, newSubmissionResultDTO));
+        submissions.computeIfPresent(newSubmissionResultDTO.getToken(), (token, submissionInMap) -> {
+            SubmissionMapper.updateEntityFromDto(submissionInMap, newSubmissionResultDTO);
+            judgeSubmissionResults(submissionInMap);
+            return submissionInMap;
+        });
 
+        // thread safe map updating
+
+    }
+
+    private void judgeSubmissionResults(Submission submission) {
         assert submission != null;
 
+        // check only submission that finished successfully to the end
         if (submission.getStatus() != SubmissionStatus.ACCEPTED) {
             logger.warn(
                     "Submission {} failed with status {} and message {}, stderr: {}.",
@@ -144,6 +151,46 @@ public class SubmissionsService {
                     submission.getStatus().name(),
                     submission.getErrorMessage(),
                     submission.getStderr());
+            return; //
         }
+
+        Problem problem = problemsService.getProblem(submission.getProblemId());
+
+        // TODO This will fail when user writes to stdout, fix: https://github.com/judge0/judge0/issues/290
+        String[] submissionOutput = submission.getStdout().split("\n");
+        String[] expectedOutput = problem.getExpectedResult().split("\n");
+        int correctTestcasesCount = 0;
+        int totalTestcasesCount = expectedOutput.length;
+        int len = Math.min(submissionOutput.length, expectedOutput.length);
+        String wrongAnswerMessage = null;
+
+        for (int i = 0; i < len; i++) {
+            if (submissionOutput[i].equals(expectedOutput[i])) {
+                correctTestcasesCount++;
+            } else if (wrongAnswerMessage == null) {
+                String nthTestCase = getNthTestCase(problem, i);
+                wrongAnswerMessage = "Testcase '%s', wrong answer '%s' expected '%s'"
+                        .formatted(nthTestCase, submissionOutput[i], expectedOutput[i]);
+                logger.debug(
+                        "Submission {} problem {}: {}",
+                        submission.getToken(),
+                        submission.getProblemId(),
+                        wrongAnswerMessage);
+            }
+        }
+
+        if (correctTestcasesCount < totalTestcasesCount) {
+            submission.setStatus(SubmissionStatus.WRONG_ANSWER);
+        }
+
+        submission.setErrorMessage(wrongAnswerMessage);
+        submission.setCorrectTestcases(correctTestcasesCount);
+        submission.setTotalTestcases(totalTestcasesCount);
+    }
+
+    private String getNthTestCase(Problem problem, int n) {
+        String[] input = problem.getTestCases().split("\n");
+        int inputsCount = problem.getInputFormat().split(" ").length;
+        return String.join(" ", Arrays.copyOfRange(input, inputsCount * n, inputsCount * (n + 1)));
     }
 }
