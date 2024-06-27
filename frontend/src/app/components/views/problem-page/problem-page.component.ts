@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { switchMap } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
-import { json } from 'stream/consumers';
 
 @Component({
   selector: 'app-problem-page',
@@ -19,6 +18,7 @@ export class ProblemPageComponent implements OnInit {
 
   code: string = '';
   problemName: string = '';
+  problemDescription: string = "";
   problems: any[] = [];
   currentProblem: any = {};
 
@@ -33,6 +33,7 @@ export class ProblemPageComponent implements OnInit {
     this.currentProblem = problem;
     this.code = problem.codeTemplate;
     this.problemName = problem.name;
+    this.problemDescription = problem.description;
   }
 
   fillResults() {
@@ -55,8 +56,13 @@ export class ProblemPageComponent implements OnInit {
         const resultsSection = document.getElementById('results-section');
         
         if (resultsSection) {
-          resultsSection.innerText = `Name: ${jsonResult.problem_id}, Time: ${jsonResult.time}, Description: ${jsonResult.status.description}`;
-        }
+          resultsSection.innerText = `
+          Name: ${jsonResult.problem_id} \n 
+          Time: ${jsonResult.time} \n
+          Test Cases Passed: ${jsonResult.correct_testcases} / ${jsonResult.total_testcases} \n 
+          Result: ${jsonResult.status} ${jsonResult.error_message ? `, Error: ${jsonResult.error_message}` : ''}
+          `;
+        }        
       });
   }
 
@@ -65,6 +71,7 @@ export class ProblemPageComponent implements OnInit {
       const intervalId = setInterval(() => {
         this.http.get(`http://localhost:8080/submissions/${submissionId}`, { responseType: 'text' }).subscribe(
           (response: string) => {
+            console.log(response)
             observer.next(response);
             observer.complete();
             clearInterval(intervalId);
