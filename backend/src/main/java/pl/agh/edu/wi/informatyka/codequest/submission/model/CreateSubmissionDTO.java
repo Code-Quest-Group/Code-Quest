@@ -15,7 +15,7 @@ public class CreateSubmissionDTO {
     @Schema(description = "Source code")
     private String sourceCode;
 
-    //    @NotBlank // no problems for now
+    @NotBlank
     @Schema(description = "Problem ID")
     private String problemId;
 

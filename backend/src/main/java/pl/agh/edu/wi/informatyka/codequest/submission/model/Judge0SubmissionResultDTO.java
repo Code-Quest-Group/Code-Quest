@@ -2,7 +2,7 @@ package pl.agh.edu.wi.informatyka.codequest.submission.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -24,26 +24,42 @@ public class Judge0SubmissionResultDTO {
     @JsonProperty("exit_signal")
     Integer exitSignal;
 
-    Status status;
+    @JsonProperty("status")
+    Judge0Status judge0Status;
 
     @JsonProperty("created_at")
-    LocalDateTime createdAt;
+    ZonedDateTime createdAt;
 
     @JsonProperty("finished_at")
-    LocalDateTime finishedAt;
+    ZonedDateTime finishedAt;
 
     String token;
-    Double time;
+    Float time;
 
     @JsonProperty("wall_time")
-    Double wallTime;
+    Float wallTime;
 
-    Double memory;
+    Float memory;
 
     @Data
     @AllArgsConstructor
-    public static class Status {
-        Long id;
+    public static class Judge0Status {
+        Integer id;
         String description;
+    }
+
+    @Override
+    public String toString() {
+        return "Judge0SubmissionResultDTO{" + "stderr='"
+                + stderr + '\'' + ", compileOutput='"
+                + compileOutput + '\'' + ", message='"
+                + message + '\'' + ", exitCode="
+                + exitCode + ", exitSignal="
+                + judge0Status + ", createdAt="
+                + createdAt + ", finishedAt="
+                + finishedAt + ", token='"
+                + token + '\'' + ", time="
+                + time + ", memory="
+                + memory + '}';
     }
 }
