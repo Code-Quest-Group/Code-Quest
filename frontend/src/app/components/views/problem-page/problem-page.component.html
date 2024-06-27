@@ -12,7 +12,7 @@
             </div>
             <div class="section-container">
                 <div class="description-title"> 
-                    <h3> 1. Sort List </h3>
+                    <h3>{{ problemName }}</h3>
                     <p class="rating"> 3.5/5 ⭐ </p>
                 </div>
                 <div class="description-tags">
@@ -73,6 +73,12 @@
                 <app-separator [isVertical]="false"></app-separator>
                 <div class="result-buttons"> 
                     <button id="submit-button" (click)="fillResults()">RUN</button>
+                </div>
+                  
+                <div class="problem-buttons">
+                <button *ngFor="let problem of problems" (click)="setProblem(problem)">
+                    {{ problem.name }}
+                </button>
                 </div>
                 
             </div>
