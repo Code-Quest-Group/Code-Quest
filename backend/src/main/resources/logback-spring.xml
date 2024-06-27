@@ -5,7 +5,7 @@
 
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) [%magenta(%10.-10t)] [%yellow(%-30.30(%C{15}))] %msg%n%throwable</Pattern>
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) [%magenta(%10.-10t)] [%yellow(%-30.30(%C{15}))] %msg%n%red(%throwable)</Pattern>
         </encoder>
     </appender>
 
