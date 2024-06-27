@@ -5,6 +5,7 @@ import static pl.agh.edu.wi.informatyka.codequest.sourcecode.Language.PYTHON;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,20 +20,18 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.util.UriComponentsBuilder;
 import pl.agh.edu.wi.informatyka.codequest.problem.Problem;
 import pl.agh.edu.wi.informatyka.codequest.problem.ProblemsService;
 import pl.agh.edu.wi.informatyka.codequest.sourcecode.PythonSourceCodePreprocessor;
-import pl.agh.edu.wi.informatyka.codequest.submission.model.CreateSubmissionDTO;
-import pl.agh.edu.wi.informatyka.codequest.submission.model.Judge0SubmissionResultDTO;
-import pl.agh.edu.wi.informatyka.codequest.submission.model.Submission;
+import pl.agh.edu.wi.informatyka.codequest.submission.model.*;
 
 @Service
 public class SubmissionsService {
 
     Logger logger = LoggerFactory.getLogger(SubmissionsService.class);
 
-    ConcurrentMap<String, CreateSubmissionDTO> activeSubmissions = new ConcurrentHashMap<>();
-    ConcurrentMap<String, Submission> finalizedSubmissions = new ConcurrentHashMap<>();
+    ConcurrentMap<String, Submission> submissions = new ConcurrentHashMap<>();
 
     private final ProblemsService problemsService;
 
@@ -57,13 +56,15 @@ public class SubmissionsService {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "No token returned???");
 
         String token = jsonResponse.get("token").textValue();
+        Submission submission = SubmissionMapper.createEntityFromDto(createSubmissionDTO);
+        submission.setToken(token);
 
-        activeSubmissions.put(token, createSubmissionDTO);
+        submissions.put(token, submission);
         logger.info(
                 "Submission {} created for {} in {}",
-                token,
-                createSubmissionDTO.getProblemId(),
-                createSubmissionDTO.getLanguage());
+                submission.getToken(),
+                submission.getProblemId(),
+                submission.getLanguage());
         return jsonResponse.toString();
     }
 
@@ -100,42 +101,49 @@ public class SubmissionsService {
     }
 
     public Submission getSubmission(String submissionId) {
-        Submission finalizedSubmission = finalizedSubmissions.get(submissionId);
-        if (finalizedSubmission != null) return finalizedSubmission;
-
-        if (!activeSubmissions.containsKey(submissionId)) {
+        Submission submission = submissions.get(submissionId);
+        if (submission == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Submission not found");
         }
 
-        Submission response = new Submission();
-        response.setStatus(new Judge0SubmissionResultDTO.Status(2L, "Processing"));
-        return response;
+        return submission;
     }
 
     public void handleSubmissionWebhook(Judge0SubmissionResultDTO submissionResultDTO) {
         logger.info("Submission {} finished processing.", submissionResultDTO.getToken());
-        CreateSubmissionDTO createdSubmission = activeSubmissions.remove(submissionResultDTO.getToken());
-        if (createdSubmission == null) {
-            logger.warn("Submission webhook {} returned before POST /submissions", submissionResultDTO.getToken());
-            throw new RuntimeException("Webhook returned before POST /submissions");
-        }
 
-        // this retrieves the same data again, because the Judge0 webhook returns only a subset of data and a Base64
+        URI uri = UriComponentsBuilder.fromHttpUrl(judgingServiceUrl)
+                .pathSegment("submissions", submissionResultDTO.getToken())
+                .queryParam("fields", "*")
+                .build()
+                .toUri();
+
+        // this retrieves data for the same token, because the Judge0 webhook returns only a subset of data and a Base64
         // encoded stdout
-        Submission submission = new RestTemplate()
-                .getForObject(judgingServiceUrl + "/submissions/" + submissionResultDTO.getToken(), Submission.class);
+        final Judge0SubmissionResultDTO newSubmissionResultDTO =
+                new RestTemplate().getForObject(uri, Judge0SubmissionResultDTO.class);
+
+        if (newSubmissionResultDTO == null) {
+            logger.error("Submission {} not found in judge0.", submissionResultDTO.getToken());
+            return;
+        }
+        logger.debug("Submission {} raw results: {}", newSubmissionResultDTO.getToken(), newSubmissionResultDTO);
+
+        // thread safe map updating
+        Submission submission = submissions.computeIfPresent(
+                newSubmissionResultDTO.getToken(),
+                (token, submissionInMap) ->
+                        SubmissionMapper.updateEntityFromDto(submissionInMap, newSubmissionResultDTO));
 
         assert submission != null;
 
-        if (submission.getStatus().getId() != 3) {
+        if (submission.getStatus() != SubmissionStatus.ACCEPTED) {
             logger.warn(
-                    "Submission {} failed unexpectedly with message {}.",
+                    "Submission {} failed with status {} and message {}, stderr: {}.",
                     submission.getToken(),
-                    submission.getMessage());
+                    submission.getStatus().name(),
+                    submission.getErrorMessage(),
+                    submission.getStderr());
         }
-        submission.setProblemId(createdSubmission.getProblemId());
-        submission.setLanguage(createdSubmission.getLanguage());
-        submission.setUserId("no user");
-        finalizedSubmissions.put(submission.getToken(), submission);
     }
 }

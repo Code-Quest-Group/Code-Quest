@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import java.io.IOException;
 import org.springframework.web.bind.annotation.*;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.CreateSubmissionDTO;
+import pl.agh.edu.wi.informatyka.codequest.submission.model.Judge0SubmissionResultDTO;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.Submission;
 import pl.agh.edu.wi.informatyka.codequest.util.DataExamples;
 
@@ -71,13 +72,12 @@ public class SubmissionsController {
                     @RequestBody
                     CreateSubmissionDTO requestBody)
             throws IOException {
-        String token = submissionsService.submitSubmission(requestBody);
-        return token;
+        return submissionsService.submitSubmission(requestBody);
     }
 
     @Operation(summary = "webhook received from Judge0 to signal a given job has finished")
     @PutMapping(value = "/webhook")
-    public void submitWebhook(@Valid @RequestBody Submission submission) {
+    public void submitWebhook(@RequestBody Judge0SubmissionResultDTO submission) {
         this.submissionsService.handleSubmissionWebhook(submission);
     }
 }
