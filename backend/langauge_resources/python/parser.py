@@ -48,7 +48,7 @@ if __name__ == '__main__':
     parser.add_argument('--file', '-f', type=str, help='load the test cases from a file instead of stdin')
     parser.add_argument('--test-args', '-t', action='store_true',
                         help='print parsed arguments to stdout instead of test results')
-    parser.add_argument('--fail-fast', '-ff', action='store_true', help='stop and exit after a first failure')
+    parser.add_argument('--fail-at-end ', '-fae', action='store_true', help='do not fail after a first failure')
 
     args = parser.parse_args()
 
@@ -62,12 +62,16 @@ if __name__ == '__main__':
 
     Tested_class = ProblemDebug if args.test_args else Problem
 
-    for parsed_args_set in parsed_args_sets:
-        problem = Tested_class()
-        try:
+    if hasattr(args, 'fail_at_end'):
+        for parsed_args_set in parsed_args_sets:
+            problem = Tested_class()
+            try:
+                result = problem.solve(*parsed_args_set)
+                print(result)
+            except Exception as e:
+                print("ERROR: ", e)
+    else:
+        for parsed_args_set in parsed_args_sets:
+            problem = Tested_class()
             result = problem.solve(*parsed_args_set)
             print(result)
-        except Exception as e:
-            print("ERROR: ", e)
-            if args.fail_fast:
-                exit(1)
