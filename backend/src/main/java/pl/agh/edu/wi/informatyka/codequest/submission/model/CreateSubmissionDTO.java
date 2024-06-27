@@ -1,4 +1,4 @@
-package pl.agh.edu.wi.informatyka.codequest.submission.dto;
+package pl.agh.edu.wi.informatyka.codequest.submission.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;

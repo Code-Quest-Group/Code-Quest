@@ -1,4 +1,4 @@
-package pl.agh.edu.wi.informatyka.codequest;
+package pl.agh.edu.wi.informatyka.codequest.problem;
 
 import java.util.List;
 import lombok.AllArgsConstructor;

@@ -10,8 +10,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import org.springframework.web.bind.annotation.*;
-import pl.agh.edu.wi.informatyka.codequest.submission.dto.CreateSubmissionDTO;
-import pl.agh.edu.wi.informatyka.codequest.submission.dto.Submission;
+import pl.agh.edu.wi.informatyka.codequest.submission.model.CreateSubmissionDTO;
+import pl.agh.edu.wi.informatyka.codequest.submission.model.Submission;
 import pl.agh.edu.wi.informatyka.codequest.util.DataExamples;
 
 @RestController

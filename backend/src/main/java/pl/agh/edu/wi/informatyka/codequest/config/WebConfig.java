@@ -1,4 +1,4 @@
-package pl.agh.edu.wi.informatyka.codequest;
+package pl.agh.edu.wi.informatyka.codequest.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

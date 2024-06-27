@@ -1,4 +1,4 @@
-package pl.agh.edu.wi.informatyka.codequest.submission.dto;
+package pl.agh.edu.wi.informatyka.codequest.submission.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -7,7 +7,6 @@ import pl.agh.edu.wi.informatyka.codequest.sourcecode.Language;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@SuppressWarnings("java:S116")
 public class Submission extends Judge0SubmissionResultDTO {
     @JsonProperty("user_id")
     String userId;
