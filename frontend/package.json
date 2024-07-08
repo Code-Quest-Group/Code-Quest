@@ -1,47 +1,31 @@
 {
-  "name": "front-end",
-  "version": "0.0.0",
-  "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "serve:ssr:front-end": "node dist/front-end/server/server.mjs"
-  },
+  "name": "frontend",
   "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
   "dependencies": {
-    "@angular/animations": "^18.0.0",
-    "@angular/common": "^18.0.0",
-    "@angular/compiler": "^18.0.0",
-    "@angular/core": "^18.0.0",
-    "@angular/forms": "^18.0.0",
-    "@angular/platform-browser": "^18.0.0",
-    "@angular/platform-browser-dynamic": "^18.0.0",
-    "@angular/platform-server": "^18.0.0",
-    "@angular/router": "^18.0.0",
-    "@angular/ssr": "^18.0.2",
-    "@materia-ui/ngx-monaco-editor": "^6.0.0",
-    "@ngstack/code-editor": "^7.2.0",
-    "@ngstack/translate": "^8.0.0",
-    "express": "^4.18.2",
-    "rxjs": "~7.8.0",
-    "tslib": "^2.3.0",
-    "zone.js": "~0.14.3"
+    "axios": "^1.7.2",
+    "clsx": "^2.1.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^18.0.2",
-    "@angular/cli": "^18.0.2",
-    "@angular/compiler-cli": "^18.0.0",
-    "@types/express": "^4.17.17",
-    "@types/jasmine": "~5.1.0",
-    "@types/node": "^18.18.0",
-    "jasmine-core": "~5.1.0",
-    "karma": "~6.4.0",
-    "karma-chrome-launcher": "~3.2.0",
-    "karma-coverage": "~2.2.0",
-    "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.4.2"
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^7.13.1",
+    "@typescript-eslint/parser": "^7.13.1",
+    "@vitejs/plugin-react": "^4.3.1",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react-refresh": "^0.4.7",
+    "sass": "^1.77.6",
+    "typescript": "^5.2.2",
+    "vite": "^5.3.1"
   }
 }
