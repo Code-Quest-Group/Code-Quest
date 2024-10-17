@@ -4,9 +4,9 @@ type ProblemDetailsProps = {
 }
 
 export const ProblemDetails = ({ problemId }: ProblemDetailsProps) => {
-    return (
-        <div>
-            {problemId}
-        </div>
-    )
+  return (
+    <div>
+      {problemId}
+    </div>
+  )
 }

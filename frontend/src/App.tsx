@@ -1,4 +1,4 @@
-import { ProblemList } from "./components/views/problem-list/problem-list"
+import { ProblemList } from './components/views/problem-list/problem-list'
 
 function App() {
   return (

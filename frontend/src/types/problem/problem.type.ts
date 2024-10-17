@@ -8,4 +8,4 @@ export type Problem = {
     testCases: string;
     expectedResult: string;
   };
-  
+
