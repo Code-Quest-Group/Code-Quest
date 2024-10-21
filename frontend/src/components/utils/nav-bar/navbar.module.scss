@@ -1,0 +1,35 @@
+.navbarContainer {
+    width: 100%;
+    padding: 1rem 0.75rem;
+    height: 5rem;
+}
+
+.navbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    height: 100%;
+    width: calc(100% - 1.5rem);
+    border-radius: 5px;
+    background-color: var(--navbar-color);
+
+    -webkit-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+    > section {
+        display: flex;
+        flex-direction: row;
+
+        &:last-child {
+            margin-left: auto; // Push this section to the right
+        }
+    }
+
+    .navbarLinks {
+        font-size: 2rem;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}

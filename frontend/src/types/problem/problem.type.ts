@@ -7,5 +7,4 @@ export type Problem = {
     codeTemplate: string;
     testCases: string;
     expectedResult: string;
-  };
-
+  }
