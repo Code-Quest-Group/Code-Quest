@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { ProblemService } from '../../../services/problem-service'
 import { Problem } from '../../../types'
 
@@ -23,8 +24,8 @@ export const ProblemList = () => {
       <h1>Problems</h1>
       <ul>
         {problems.map((problem, index) => (
-          <li key={index} onClick={(problem) => {console.log('Problem clicked:', problem)}}>
-            {problem.name}
+          <li key={index}>
+            <Link to={`/problems/${problem.problemId}`}>{problem.name}</Link>
           </li>
         ))}
       </ul>

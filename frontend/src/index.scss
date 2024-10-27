@@ -1,10 +1,35 @@
 :root {
   @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;700&display=swap');
+
+  // Global color variables
+  --background-color: #8EB1E5;
+  --navbar-color: #B5D2FF;
+  --font-primary-color: #443D4D;
+  --primary-white: #FFFFFF;
+  --secondary-white: #F5F5F5;
+  --teriary-white: #E4E4E4;
+  --primary-dark: #000000;
+  --gui-primary-color: #0D8EEB;
+  --gui-secondary-color: #ED2929;
+  --primary-green: #45FF26;
+  --primary-orange: #FFC90A;
+
+  // Global classes
+  .hidden {
+    display: none;
+  }
 }
 
 html, body {
   margin: 0;
   width: 100%;
   height: 100%;
+  background-color: var(--background-color);
+  font-family: 'Fredoka', sans-serif; 
 }
 
+main {
+  margin: 0;
+  width: 100%;
+  padding: 0.75rem;
+}

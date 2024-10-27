@@ -23,7 +23,20 @@ const getProblems = async() => {
   }
 }
 
+const getProblem = async(problemId: string) => {
+  try {
+    const response = await axios.get(`http://localhost:8080/problems/${problemId}`)
+    const problem = response.data as Problem
+
+    return problem
+
+  } catch (error) {
+    console.error('Error fetching problem:', error)
+    throw error
+  }
+}
+
 export const ProblemService = {
-  getProblems
-  // Other methods will be here
+  getProblems,
+  getProblem
 }
