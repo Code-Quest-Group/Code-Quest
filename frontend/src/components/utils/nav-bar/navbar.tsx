@@ -1,30 +1,45 @@
-import clsx from 'clsx';
-import { useState } from 'react';
-import { CodeQuestLogo } from '../logo';
+import clsx from 'clsx'
+import { CodeQuestLogo } from '../logo'
 
-import { useNavigate } from 'react-router-dom';
-import classes from './navbar.module.scss';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
+import SettingsIcon from '@mui/icons-material/Settings'
+import { IconButton } from '@mui/material'
+import { useLayout } from '../../../providers'
+import { Seperator } from '../seperator'
+import classes from './navbar.module.scss'
 
 export const Navbar = () => {
-  const [showNavbar, setShowNavbar] = useState(true)
-  const navigate = useNavigate();
-
-  
+  const { showNavbar, toggleNavbar } = useLayout()
 
   return (
-    <div className={classes.navbarContainer}>
-      <nav className={clsx(classes.navbar, { ['hidden']: !showNavbar })}>
+    <div className={clsx(classes.navbarContainer, { [classes.hidden]: !showNavbar })}>
+      <nav className={classes.navbar}>
         <section className={classes.leftSection}>
           <CodeQuestLogo />
-          <a onClick={() => navigate('/problems')} className={classes.navbarLinks}>Problem List</a>
+          <a href="/problems" className={classes.navbarLinks} tabIndex={Number(showNavbar)}>Problem List</a>
         </section>
         <section className={classes.rightSection}>
-          <a className={classes.navbarLinks}>Settings</a>
-          {/* Seperator will be here */}
-          <a className={classes.navbarLinks}>Username</a>
+          <a className={classes.navbarLinks} aria-label="settings" href='/settings' tabIndex={Number(showNavbar)}>
+            <p>Settings</p>
+            <SettingsIcon fontSize="large"/>
+          </a>
+          <Seperator hasMargins/>
+          <a className={classes.navbarLinks} aria-label="account" href="/account" tabIndex={Number(showNavbar)}>
+            <p>Username</p>
+            <AccountCircleIcon fontSize="large"/>
+          </a>
         </section>
-        {/* Button will be here (to hide and show navbar */}
       </nav>
+      <IconButton
+        onClick={toggleNavbar}
+        className={clsx(classes.toggleButton, { [classes.closed]: !showNavbar })}
+        aria-label={showNavbar ? 'Hide Navbar' : 'Show Navbar'}
+        size='small'
+      >
+        {showNavbar ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+      </IconButton>
     </div>
   )
 }

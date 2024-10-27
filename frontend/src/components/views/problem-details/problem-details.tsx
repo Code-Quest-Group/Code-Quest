@@ -1,5 +1,7 @@
+import clsx from 'clsx'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { useLayout } from '../../../providers'
 import { ProblemService } from '../../../services/problem-service'
 import { Problem } from '../../../types'
 
@@ -8,6 +10,7 @@ export const ProblemDetails = () => {
   const [problem, setProblem] = useState<Problem | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const { showNavbar } = useLayout()
 
   useEffect(() => {
     const fetchProblem = async() => {
@@ -39,7 +42,7 @@ export const ProblemDetails = () => {
   }
 
   return (
-    <main>
+    <main className={clsx({'full-height': !showNavbar})}>
       <h1>{problem.name}</h1>
       <p>{problem.description}</p>
     </main>

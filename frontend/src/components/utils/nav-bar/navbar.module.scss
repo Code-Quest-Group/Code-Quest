@@ -1,7 +1,29 @@
 .navbarContainer {
-    width: 100%;
+    width: calc(100% - 1.5rem);
     padding: 1rem 0.75rem;
     height: 5rem;
+    position: relative;
+    transition: transform 0.3s ease;
+    transform: translateY(0);
+    z-index: 10;
+
+    .toggleButton {
+        position: absolute;
+        bottom: -0.125rem;
+        left: calc(50% - 1.5rem);
+        z-index: 100;
+        background-color: var(--gui-primary-color) !important;
+        color: var(--primary-white);
+        transition: bottom 0.3s ease;
+    }
+
+    .toggleButton.closed {
+        bottom: -2.125rem;
+    }
+}
+
+.navbarContainer.hidden {
+    transform: translateY(-100%);
 }
 
 .navbar {
@@ -9,7 +31,7 @@
     flex-direction: row;
     justify-content: flex-start;
     height: 100%;
-    width: calc(100% - 1.5rem);
+    width: 100%;
     border-radius: 5px;
     background-color: var(--navbar-color);
 
@@ -26,10 +48,25 @@
     }
 
     .navbarLinks {
-        font-size: 2rem;
+        font-size: 3rem;
+        color: var(--font-primary-color);
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        margin: 0 1rem;
 
         &:hover {
             cursor: pointer;
+        }
+
+        > p {
+            margin: 0;
+            display: inline;
+        }
+
+        > svg {
+            margin-left: 0.5rem;
         }
     }
 }
