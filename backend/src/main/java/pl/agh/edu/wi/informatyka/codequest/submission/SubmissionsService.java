@@ -78,11 +78,11 @@ public class SubmissionsService {
         //        System.out.println("assembled source code: " + code);
         //        System.out.println("===========================================");
 
-        Problem currentProblem = problemsService.getProblem(createSubmissionDTO.getProblemId());
-        if (currentProblem == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Problem with id '" + createSubmissionDTO.getProblemId() + "' not found");
-        }
+        Problem currentProblem = problemsService
+                .getProblem(createSubmissionDTO.getProblemId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Problem with id '" + createSubmissionDTO.getProblemId() + "' not found"));
 
         Map<String, String> map = new HashMap<>();
         map.put("source_code", code);
@@ -154,7 +154,7 @@ public class SubmissionsService {
             return; //
         }
 
-        Problem problem = problemsService.getProblem(submission.getProblemId());
+        Problem problem = problemsService.getProblem(submission.getProblemId()).orElseThrow();
 
         // TODO This will fail when user writes to stdout, fix: https://github.com/judge0/judge0/issues/290
         String[] submissionOutput = submission.getStdout().split("\n");
