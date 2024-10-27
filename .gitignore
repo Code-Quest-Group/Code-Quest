@@ -84,3 +84,5 @@ judge0.conf
 
 # logback logs
 /logs
+
+.env
