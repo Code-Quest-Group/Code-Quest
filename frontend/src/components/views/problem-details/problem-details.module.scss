@@ -1,0 +1,59 @@
+.problemDetailsContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+
+    > div {
+        background-color: var(--secondary-white);
+        border-radius: 5px;
+    }
+
+    .leftSection {
+        width: 38dvw;
+    }
+
+    .rightSection {
+        width: 58dvw;
+    }
+
+    .headerSection {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        background-color: var(--teriary-white);
+        height: 2rem;
+        border-radius: 5px 5px 0 0;
+        color: var(--font-primary-color);
+        font-family: var(--primary-font-family);
+
+        > button {
+            height: 100%;
+            background-color: inherit;
+            border: none;
+            width: 24dvw;
+            font-size: 1.125rem;
+
+            &:first-child {
+                border-top-left-radius: 5px;
+            }
+
+            &:last-child {
+                border-top-right-radius: 5px;
+            }
+
+            &.selected {
+                filter: brightness(95%); 
+            }
+
+            &:hover {
+                cursor: pointer;
+                filter: brightness(85%);
+            }
+        }
+
+        > span {
+            font-size: 1.5rem;
+            font-weight: 400;
+        }
+    }
+}

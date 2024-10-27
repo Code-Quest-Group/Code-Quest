@@ -21,12 +21,12 @@ export const Navbar = () => {
           <a href="/problems" className={classes.navbarLinks} tabIndex={Number(showNavbar)}>Problem List</a>
         </section>
         <section className={classes.rightSection}>
-          <a className={classes.navbarLinks} aria-label="settings" href='/settings' tabIndex={Number(showNavbar)}>
+          <a className={classes.navbarLinks} href='/settings' tabIndex={Number(showNavbar)}>
             <p>Settings</p>
             <SettingsIcon fontSize="large"/>
           </a>
           <Seperator hasMargins/>
-          <a className={classes.navbarLinks} aria-label="account" href="/account" tabIndex={Number(showNavbar)}>
+          <a className={classes.navbarLinks} href="/account" tabIndex={Number(showNavbar)}>
             <p>Username</p>
             <AccountCircleIcon fontSize="large"/>
           </a>
