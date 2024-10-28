@@ -1,14 +1,24 @@
 package pl.agh.edu.wi.informatyka.codequest.submission.model;
 
-import java.time.ZonedDateTime;
+import org.springframework.stereotype.Component;
+import pl.agh.edu.wi.informatyka.codequest.problem.Problem;
+import pl.agh.edu.wi.informatyka.codequest.problem.ProblemsRepository;
 
+@Component
 public class SubmissionMapper {
-    private SubmissionMapper() {}
+    private final ProblemsRepository problemsRepository;
 
-    public static Submission createEntityFromDto(CreateSubmissionDTO dto) {
+    private SubmissionMapper(ProblemsRepository problemsRepository) {
+        this.problemsRepository = problemsRepository;
+    }
+
+    public Submission createEntityFromDto(CreateSubmissionDTO dto) {
         Submission entity = new Submission();
-        entity.setCreatedAt(ZonedDateTime.now());
-        entity.setProblemId(dto.getProblemId());
+        Problem problem = this.problemsRepository
+                .findById(dto.getProblemId())
+                .orElseThrow(() -> new RuntimeException("Problem not found with id: " + dto.getProblemId()));
+
+        entity.setProblem(problem);
         entity.setLanguage(dto.getLanguage());
         entity.setStatus(SubmissionStatus.PROCESSING);
 

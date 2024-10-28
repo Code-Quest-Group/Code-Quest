@@ -1,16 +1,7 @@
 package pl.agh.edu.wi.informatyka.codequest.submission;
 
-import static pl.agh.edu.wi.informatyka.codequest.sourcecode.Language.PYTHON;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import java.net.URI;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,14 +18,24 @@ import pl.agh.edu.wi.informatyka.codequest.problem.ProblemsService;
 import pl.agh.edu.wi.informatyka.codequest.sourcecode.PythonSourceCodePreprocessor;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.*;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import static pl.agh.edu.wi.informatyka.codequest.sourcecode.Language.PYTHON;
+
 @Service
 public class SubmissionsService {
 
     Logger logger = LoggerFactory.getLogger(SubmissionsService.class);
 
-    ConcurrentMap<String, Submission> submissions = new ConcurrentHashMap<>();
-
     private final ProblemsService problemsService;
+
+    private final SubmissionsRepository submissionsRepository;
+
+    private final SubmissionMapper submissionMapper;
 
     private final String judgingServiceUrl;
 
@@ -42,13 +43,17 @@ public class SubmissionsService {
     private String resourcesPath;
 
     public SubmissionsService(
-            ProblemsService problemsService, @Value("${judge0.service.url}") String judgingServiceUrl) {
+            ProblemsService problemsService, SubmissionsRepository submissionsRepository,
+            SubmissionMapper submissionMapper,
+            @Value("${judge0.service.url}") String judgingServiceUrl) {
         this.problemsService = problemsService;
+        this.submissionsRepository = submissionsRepository;
         this.judgingServiceUrl = judgingServiceUrl;
         logger.info("Judge 0 service url: {}", judgingServiceUrl);
+        this.submissionMapper = submissionMapper;
     }
 
-    public String submitSubmission(CreateSubmissionDTO createSubmissionDTO) throws IOException {
+    public long submitSubmission(CreateSubmissionDTO createSubmissionDTO) throws IOException {
         HttpEntity<String> request = assembleJudgeRequest(createSubmissionDTO);
 
         RestTemplate restTemplate = new RestTemplate();
@@ -57,16 +62,17 @@ public class SubmissionsService {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "No token returned???");
 
         String token = jsonResponse.get("token").textValue();
-        Submission submission = SubmissionMapper.createEntityFromDto(createSubmissionDTO);
+        Submission submission = this.submissionMapper.createEntityFromDto(createSubmissionDTO);
         submission.setToken(token);
 
-        submissions.put(token, submission);
+
+        submission = submissionsRepository.save(submission);
         logger.info(
                 "Submission {} created for {} in {}",
                 submission.getToken(),
-                submission.getProblemId(),
+                submission.getProblem().getProblemId(),
                 submission.getLanguage());
-        return jsonResponse.toString();
+        return submission.getSubmissionId();
     }
 
     private HttpEntity<String> assembleJudgeRequest(CreateSubmissionDTO createSubmissionDTO) throws IOException {
@@ -101,13 +107,9 @@ public class SubmissionsService {
         return new HttpEntity<>(body, headers);
     }
 
-    public Submission getSubmission(String submissionId) {
-        Submission submission = submissions.get(submissionId);
-        if (submission == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Submission not found");
-        }
-
-        return submission;
+    public Submission getSubmission(Long submissionId) {
+        return submissionsRepository.findById(submissionId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Submission not found"));
     }
 
     public void handleSubmissionWebhook(Judge0SubmissionResultDTO submissionResultDTO) {
@@ -130,14 +132,11 @@ public class SubmissionsService {
         }
         logger.debug("Submission {} raw results: {}", newSubmissionResultDTO.getToken(), newSubmissionResultDTO);
 
-        submissions.computeIfPresent(newSubmissionResultDTO.getToken(), (token, submissionInMap) -> {
-            SubmissionMapper.updateEntityFromDto(submissionInMap, newSubmissionResultDTO);
-            judgeSubmissionResults(submissionInMap);
-            return submissionInMap;
+        submissionsRepository.findByToken(newSubmissionResultDTO.getToken()).ifPresent((submission) -> {
+            SubmissionMapper.updateEntityFromDto(submission, newSubmissionResultDTO);
+            judgeSubmissionResults(submission);
+            submissionsRepository.save(submission);
         });
-
-        // thread safe map updating
-
     }
 
     private void judgeSubmissionResults(Submission submission) {
@@ -154,7 +153,7 @@ public class SubmissionsService {
             return; //
         }
 
-        Problem problem = problemsService.getProblem(submission.getProblemId()).orElseThrow();
+        Problem problem = submission.getProblem();
 
         // TODO This will fail when user writes to stdout, fix: https://github.com/judge0/judge0/issues/290
         String[] submissionOutput = submission.getStdout().split("\n");
@@ -174,7 +173,7 @@ public class SubmissionsService {
                 logger.debug(
                         "Submission {} problem {}: {}",
                         submission.getToken(),
-                        submission.getProblemId(),
+                        submission.getProblem().getProblemId(),
                         wrongAnswerMessage);
             }
         }
