@@ -9,6 +9,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.io.IOException;
+import java.util.Collections;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.CreateSubmissionDTO;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.Judge0SubmissionResultDTO;
@@ -33,7 +36,7 @@ public class SubmissionsController {
             content = @Content(schema = @Schema(implementation = Submission.class)))
     @ApiResponse(responseCode = "401", description = "Submission invalid")
     public Submission getSubmission(
-            @PathVariable @Parameter(example = "576d8010-c8a1-4e08-9bc6-400da4f22c99") String submissionId) {
+            @PathVariable @Parameter(example = "678345435") Long submissionId) {
         return submissionsService.getSubmission(submissionId);
     }
 
@@ -46,7 +49,7 @@ public class SubmissionsController {
                     @Content(
                             mediaType = "application/json",
                             schema = @Schema(example = "{\"token\": \"576d8010-c8a1-4e08-9bc6-400da4f22c99\"}")))
-    public String submitSubmission(
+    public ResponseEntity<?> submitSubmission(
             @Valid
                     @io.swagger.v3.oas.annotations.parameters.RequestBody(
                             content =
@@ -75,7 +78,8 @@ public class SubmissionsController {
                     @RequestBody
                     CreateSubmissionDTO requestBody)
             throws IOException {
-        return submissionsService.submitSubmission(requestBody);
+        long submissionId = submissionsService.submitSubmission(requestBody);
+        return ResponseEntity.ok(Collections.singletonMap("submission_id", submissionId));
     }
 
     @Operation(summary = "webhook received from Judge0 to signal a given job has finished")

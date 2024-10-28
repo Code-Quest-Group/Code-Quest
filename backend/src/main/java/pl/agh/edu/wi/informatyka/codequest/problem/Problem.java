@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.agh.edu.wi.informatyka.codequest.sourcecode.Language;
+import pl.agh.edu.wi.informatyka.codequest.submission.model.Submission;
 import pl.agh.edu.wi.informatyka.codequest.util.LanguageListConverter;
 
 @Entity
@@ -16,6 +17,7 @@ import pl.agh.edu.wi.informatyka.codequest.util.LanguageListConverter;
 public class Problem {
 
     @Id
+    @Column(name = "problem_id")
     String problemId;
 
     @Column(nullable = false)
@@ -39,4 +41,7 @@ public class Problem {
 
     @Column(name = "expected_result", nullable = false, columnDefinition = "text")
     String expectedResult;
+
+    @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Submission> submissions;
 }
