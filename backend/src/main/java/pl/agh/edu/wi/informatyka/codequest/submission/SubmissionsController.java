@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.Collections;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.CreateSubmissionDTO;
@@ -35,8 +34,7 @@ public class SubmissionsController {
             description = "Submission run and finished successfully ",
             content = @Content(schema = @Schema(implementation = Submission.class)))
     @ApiResponse(responseCode = "401", description = "Submission invalid")
-    public Submission getSubmission(
-            @PathVariable @Parameter(example = "678345435") Long submissionId) {
+    public Submission getSubmission(@PathVariable @Parameter(example = "678345435") Long submissionId) {
         return submissionsService.getSubmission(submissionId);
     }
 
