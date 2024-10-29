@@ -38,7 +38,7 @@ public class User {
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
 
-    @Column(columnDefinition = "tinyint(1) default 0", nullable = false)
+    @Column(nullable = false)
     private boolean enabled;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
