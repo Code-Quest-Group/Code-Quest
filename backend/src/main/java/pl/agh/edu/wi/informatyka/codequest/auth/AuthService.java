@@ -52,6 +52,11 @@ public class AuthService {
                 .findByEmailOrUsername(loginUserDTO.getUsernameOrEmail(), loginUserDTO.getUsernameOrEmail())
                 .orElseThrow(() -> new RuntimeException("Invalid credentials"));
 
+        // for Google oauth2 users password is null
+        if (user.getPasswordHash() == null) {
+            throw new RuntimeException("Invalid credentials");
+        }
+
         if (passwordEncoder.matches(loginUserDTO.getPassword(), user.getPasswordHash())) {
             logger.info("User {} successfully authenticated", user.getUserId());
             user.setLastLogin(LocalDateTime.now());
@@ -61,5 +66,26 @@ public class AuthService {
             logger.info("User {} failed to authenticate", user.getUserId());
             throw new RuntimeException("Invalid credentials");
         }
+    }
+
+    public User loginOrRegisterGoogleUser(String userId, String email, String name) {
+        User user = userRepository.findById(userId).orElseGet(() -> {
+            User newUser = new User();
+            newUser.setEmail(email);
+            newUser.setUsername(name);
+            newUser.setUserId(userId);
+            newUser.setEnabled(true);
+            newUser = userRepository.save(newUser);
+            logger.info("New google user registered {} {}", userId, email);
+            return newUser;
+        });
+        user.setLastLogin(LocalDateTime.now());
+        user = userRepository.save(user);
+        logger.info("Google user logged in {} {}", userId, email);
+        return user;
+    }
+
+    public String generateJWTToken(User user) {
+        return jwtUtil.generateToken(user.getUserId());
     }
 }
