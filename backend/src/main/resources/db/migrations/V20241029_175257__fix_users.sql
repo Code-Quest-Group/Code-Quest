@@ -1,0 +1,11 @@
+ALTER TABLE users
+    ADD enabled TINYINT(1) DEFAULT 0 NOT NULL;
+
+ALTER TABLE users
+    MODIFY country VARCHAR(255) NULL;
+
+ALTER TABLE users
+    MODIFY full_name VARCHAR(255) NULL;
+
+ALTER TABLE users
+    MODIFY username VARCHAR(255) NULL;

@@ -1,10 +1,10 @@
 package pl.agh.edu.wi.informatyka.codequest.user.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.Submission;
@@ -16,22 +16,22 @@ import pl.agh.edu.wi.informatyka.codequest.submission.model.Submission;
 public class User {
 
     @Id
-    @Column(name="user_id", length = 36, nullable = false, unique = true)
+    @Column(name = "user_id", length = 36, nullable = false, unique = true)
     private String userId;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String username;
 
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password_hash", nullable = false)
-    private String passwordHash; // Store hashed passwords only!
+    @JsonIgnore
+    @Column(name = "password_hash")
+    private String passwordHash;
 
-    @Column(name = "full_name", nullable = false)
+    @Column(name = "full_name")
     private String fullName;
 
-    @Column(nullable = false)
     private String country;
 
     @Column(name = "created_at", nullable = false)
@@ -40,11 +40,15 @@ public class User {
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
 
+    @Column(nullable = false)
+    private boolean enabled;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Submission> submissions;
 
     public User() {
         this.createdAt = LocalDateTime.now();
+        this.enabled = false;
     }
 
     @PrePersist

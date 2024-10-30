@@ -2,7 +2,6 @@ package pl.agh.edu.wi.informatyka.codequest.submission;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.data.repository.CrudRepository;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.Submission;
 

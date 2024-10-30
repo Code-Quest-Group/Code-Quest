@@ -1,5 +1,6 @@
 package pl.agh.edu.wi.informatyka.codequest.problem;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,7 @@ public class Problem {
     @Column(nullable = false)
     String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "text")
     String description;
 
     @Convert(converter = LanguageListConverter.class)
@@ -42,6 +43,7 @@ public class Problem {
     @Column(name = "expected_result", nullable = false, columnDefinition = "text")
     String expectedResult;
 
-    @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore()
+    @OneToMany(mappedBy = "problem", cascade = CascadeType.REMOVE, orphanRemoval = true)
     List<Submission> submissions;
 }

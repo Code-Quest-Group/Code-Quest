@@ -1,7 +1,14 @@
 package pl.agh.edu.wi.informatyka.codequest.submission;
 
+import static pl.agh.edu.wi.informatyka.codequest.sourcecode.Language.PYTHON;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.net.URI;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,14 +24,6 @@ import pl.agh.edu.wi.informatyka.codequest.problem.Problem;
 import pl.agh.edu.wi.informatyka.codequest.problem.ProblemsService;
 import pl.agh.edu.wi.informatyka.codequest.sourcecode.PythonSourceCodePreprocessor;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.*;
-
-import java.io.IOException;
-import java.net.URI;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
-import static pl.agh.edu.wi.informatyka.codequest.sourcecode.Language.PYTHON;
 
 @Service
 public class SubmissionsService {
@@ -43,7 +42,8 @@ public class SubmissionsService {
     private String resourcesPath;
 
     public SubmissionsService(
-            ProblemsService problemsService, SubmissionsRepository submissionsRepository,
+            ProblemsService problemsService,
+            SubmissionsRepository submissionsRepository,
             SubmissionMapper submissionMapper,
             @Value("${judge0.service.url}") String judgingServiceUrl) {
         this.problemsService = problemsService;
@@ -64,7 +64,6 @@ public class SubmissionsService {
         String token = jsonResponse.get("token").textValue();
         Submission submission = this.submissionMapper.createEntityFromDto(createSubmissionDTO);
         submission.setToken(token);
-
 
         submission = submissionsRepository.save(submission);
         logger.info(
@@ -108,7 +107,8 @@ public class SubmissionsService {
     }
 
     public Submission getSubmission(Long submissionId) {
-        return submissionsRepository.findById(submissionId)
+        return submissionsRepository
+                .findById(submissionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Submission not found"));
     }
 
