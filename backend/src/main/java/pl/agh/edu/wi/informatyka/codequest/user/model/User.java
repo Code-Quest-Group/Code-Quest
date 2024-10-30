@@ -1,5 +1,6 @@
 package pl.agh.edu.wi.informatyka.codequest.user.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,7 +25,8 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password_hash", nullable = false)
+    @JsonIgnore
+    @Column(name = "password_hash")
     private String passwordHash;
 
     @Column(name = "full_name")

@@ -4,7 +4,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import pl.agh.edu.wi.informatyka.codequest.user.model.User;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, String> {
     Optional<User> findByEmail(String email);
 
     boolean existsByEmail(String email);

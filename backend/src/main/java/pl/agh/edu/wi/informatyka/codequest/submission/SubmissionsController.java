@@ -46,7 +46,7 @@ public class SubmissionsController {
             content =
                     @Content(
                             mediaType = "application/json",
-                            schema = @Schema(example = "{\"token\": \"576d8010-c8a1-4e08-9bc6-400da4f22c99\"}")))
+                            schema = @Schema(example = "{\"submission_id\": \"44326\"}")))
     public ResponseEntity<?> submitSubmission(
             @Valid
                     @io.swagger.v3.oas.annotations.parameters.RequestBody(
