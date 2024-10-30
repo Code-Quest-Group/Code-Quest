@@ -3,11 +3,11 @@ package pl.agh.edu.wi.informatyka.codequest.auth.model;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
 public class RegisterUserDTO {
 
     @NotBlank(message = "Email is required")
