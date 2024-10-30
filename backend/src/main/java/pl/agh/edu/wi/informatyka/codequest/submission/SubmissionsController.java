@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.io.IOException;
@@ -27,7 +28,7 @@ public class SubmissionsController {
         this.submissionsService = submissionsService;
     }
 
-    @Operation(summary = "Get submission by ID")
+    @Operation(summary = "Get submission by ID", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/{submissionId}")
     @ApiResponse(
             responseCode = "200",
@@ -38,7 +39,7 @@ public class SubmissionsController {
         return submissionsService.getSubmission(submissionId);
     }
 
-    @Operation(summary = "Submit new submission")
+    @Operation(summary = "Submit new submission", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value = "/", consumes = "application/json", produces = "application/json")
     @ApiResponse(
             responseCode = "201",
@@ -80,7 +81,9 @@ public class SubmissionsController {
         return ResponseEntity.ok(Collections.singletonMap("submission_id", submissionId));
     }
 
-    @Operation(summary = "webhook received from Judge0 to signal a given job has finished")
+    @Operation(
+            summary = "webhook received from Judge0 to signal a given job has finished",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @PutMapping(value = "/webhook")
     public void submitWebhook(@RequestBody Judge0SubmissionResultDTO submission) {
         this.submissionsService.handleSubmissionWebhook(submission);

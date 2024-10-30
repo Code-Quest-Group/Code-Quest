@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.agh.edu.wi.informatyka.codequest.auth.jwt.JwtUtil;
 import pl.agh.edu.wi.informatyka.codequest.auth.model.LoginUserDTO;
 import pl.agh.edu.wi.informatyka.codequest.auth.model.RegisterUserDTO;
 import pl.agh.edu.wi.informatyka.codequest.user.UserRepository;
