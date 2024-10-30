@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 import pl.agh.edu.wi.informatyka.codequest.auth.model.AuthResponseDTO;
 import pl.agh.edu.wi.informatyka.codequest.auth.model.LoginUserDTO;
@@ -16,13 +15,9 @@ import pl.agh.edu.wi.informatyka.codequest.util.GenericResponse;
 @RequestMapping("/auth")
 public class AuthController {
     private final AuthService authService;
-    private final JwtUtil jwtUtil;
-    private final AuthenticationManager authenticationManager;
 
-    public AuthController(AuthService authService, JwtUtil jwtUtil) {
+    public AuthController(AuthService authService) {
         this.authService = authService;
-        this.jwtUtil = jwtUtil;
-        this.authenticationManager = null;
     }
 
     @PostMapping("/register")
@@ -42,7 +37,7 @@ public class AuthController {
         try {
             User user = authService.authenticate(loginUserDTO);
 
-            String token = jwtUtil.generateToken(user.getUserId());
+            String token = authService.generateJWTToken(user);
             return ResponseEntity.ok(GenericResponse.<AuthResponseDTO>builder()
                     .data(new AuthResponseDTO(token))
                     .success(true)
