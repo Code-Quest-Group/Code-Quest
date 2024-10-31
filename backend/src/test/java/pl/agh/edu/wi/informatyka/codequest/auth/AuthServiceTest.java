@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import pl.agh.edu.wi.informatyka.codequest.auth.jwt.JwtUtil;
 import pl.agh.edu.wi.informatyka.codequest.auth.model.LoginUserDTO;
 import pl.agh.edu.wi.informatyka.codequest.auth.model.RegisterUserDTO;
 import pl.agh.edu.wi.informatyka.codequest.user.UserRepository;

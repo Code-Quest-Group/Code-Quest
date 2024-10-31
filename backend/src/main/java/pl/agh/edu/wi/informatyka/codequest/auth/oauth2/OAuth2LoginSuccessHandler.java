@@ -1,4 +1,4 @@
-package pl.agh.edu.wi.informatyka.codequest.auth;
+package pl.agh.edu.wi.informatyka.codequest.auth.oauth2;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import pl.agh.edu.wi.informatyka.codequest.auth.AuthService;
 import pl.agh.edu.wi.informatyka.codequest.auth.model.AuthResponseDTO;
 import pl.agh.edu.wi.informatyka.codequest.user.model.User;
 import pl.agh.edu.wi.informatyka.codequest.util.GenericResponse;

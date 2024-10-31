@@ -41,9 +41,11 @@ public class User {
     private LocalDateTime lastLogin;
 
     @Column(nullable = false)
+    @JsonIgnore()
     private boolean enabled;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore()
     private List<Submission> submissions;
 
     public User() {
@@ -56,5 +58,15 @@ public class User {
         if (userId == null) {
             userId = UUID.randomUUID().toString();
         }
+    }
+
+    @Override
+    public String toString() {
+        return "User{" + "userId='"
+                + userId + '\'' + ", username='"
+                + username + '\'' + ", email='"
+                + email + '\'' + ", lastLogin="
+                + lastLogin + ", createdAt="
+                + createdAt + '}';
     }
 }
