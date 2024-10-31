@@ -2,18 +2,11 @@
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    min-height: 56rem;
 
     > div {
         background-color: var(--secondary-white);
         border-radius: 5px;
-    }
-
-    .leftSection {
-        width: 38dvw;
-    }
-
-    .rightSection {
-        width: 58dvw;
     }
 
     .headerSection {
@@ -54,6 +47,193 @@
         > span {
             font-size: 1.5rem;
             font-weight: 400;
+        }
+    }
+
+    .leftSection {
+        width: 38dvw;
+        height: 100%;
+
+        .problemInformationContainer {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            height: 100%;
+            min-height: 52.125rem;
+
+            > header {
+                font-size: 2rem;
+                margin-bottom: 2rem;
+            }
+
+            > section {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                margin-bottom: 2rem;
+
+                > header {
+                    font-size: 2.125rem;
+                    margin: 0;
+                }
+
+                > p  {
+                    font-size: 1.5rem;
+                    margin-left: auto;
+                }
+
+                > span {
+                    padding: 0.375rem 0.5rem;
+                    margin-left: 3rem;
+                    position: relative;
+                    background-color: var(--color);
+
+                    &:first-child {
+                        margin-left: 2rem;
+                        --color: var(--primary-green);
+                    }
+
+                    &:nth-child(2) {
+                        --color: var(--primary-orange);
+                    }
+
+                    &:nth-child(3) {
+                        --color: var(--gui-secondary-color);
+                    }
+
+                    &:before {
+                        content: "";
+                        position: absolute;
+                        width: 0;
+                        height: 0;
+                        left: -2rem;
+                        top: 0;
+                        border-top: 1rem solid transparent;
+                        border-right: 2rem solid var(--color);
+                        border-bottom: 1rem solid transparent;
+                    }
+                }
+            }
+
+            .whiteBackgroundDescription {
+                padding: 1rem;
+                background-color: var(--primary-white);
+                border-radius: 5px;
+                margin-bottom: 2rem;
+
+                > p {
+                    color: var(--primary-dark)
+                }
+            }
+
+            .buttonGroup {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: space-around;
+                margin-top: auto;
+            }
+        }
+    }
+
+    .rightSection {
+        width: 58dvw;
+        height: 100%;
+
+        .mainCodingContainer {
+            .codingOptions {
+                padding: 0.5rem 1rem;
+                display: flex;
+                flex-direction: row;
+
+                > p {
+                    font-size: 1.25rem;
+                    color: var(--font-primary-color);
+                    margin-right: 1rem;
+                    align-items: center;
+                    justify-content: center;
+                    height: 100%;
+                }
+
+                > span { // This is temporary
+                    background-color: var(--primary-white);
+                    padding-right: 3rem;
+                    margin-top: 0.25rem;
+                    text-shadow: 
+                        1px 1px 2px rgba(0, 0, 0, 0.15), 
+                        -1px -1px 2px rgba(255, 255, 255, 0.5);
+                    height: 1.5rem;
+                }
+
+                > button {
+                    height: 1.75rem;
+                    margin-left: auto;
+                }
+            }
+
+            .testsSummary {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-around;
+                height: fit-content;
+
+                > ul {
+                    background-color: var(--teriary-white);
+                    padding: 0.5rem 1rem;
+                    margin: 0.5rem 0 0.5rem 1rem;
+                    list-style: none;
+                    border-radius: 5px;
+
+                    > li {
+                        button {       
+                            color: var(--pimary-dark);
+                            font-family: ver(--primary-font-family) !important;
+                            white-space: nowrap;
+
+                            > svg {
+                                margin-left: 0.5rem;
+                            }
+                        }
+                    }
+                }
+
+                > div {
+                    margin: 0.5rem 1rem;
+                    background-color: var(--primary-white);
+                    width: 75%;
+                    border-radius: 5px;
+                    padding: 0.5rem 1rem;
+
+                    > header {
+                        font-size: 1.5rem;
+                        margin-bottom: 1.5rem;
+                        font-weight: 500;
+                    }
+
+                    p {
+                        margin-top: 0.75rem;
+                    }
+                }
+            }
+
+            .buttonGroup {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: right;
+                padding: 1rem;
+
+                > button {
+                    &:first-child {
+                        margin-right: auto;
+                    }
+
+                    &:nth-child(2) {
+                        margin-right: 1rem;
+                    }
+                }
+            }
         }
     }
 }

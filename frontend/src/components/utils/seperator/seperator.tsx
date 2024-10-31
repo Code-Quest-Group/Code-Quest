@@ -8,8 +8,10 @@ type SeperatorProps = {
 }
 
 export const Seperator = ({ isHorizontal, hasMargins, className }: SeperatorProps) => {
-  return <span className={clsx(classes.seperator,
+  return <span className={clsx(
+    classes.seperator,
     {[classes.horizontal]: isHorizontal, [classes.margin]: hasMargins},
     className
-  )}/>
+  )}
+  />
 }

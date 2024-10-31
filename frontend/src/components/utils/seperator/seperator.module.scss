@@ -5,6 +5,10 @@
 }
 
 .horizontal {
+    display: block;
+    border-top: 2px solid var(--gui-primary-color);
+    border-left: none;
+    border-right: none;
     width: 100%;
     height: 0;
 }

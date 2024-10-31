@@ -18,12 +18,17 @@
 
   // Global classes
   .hidden {
-    display: none;
+    display: none !important;
   }
 
   .full-height {
     transform: translateY(-6rem);
-    height: 95dvh;
+  }
+
+  .inside-shadow {
+    -webkit-box-shadow: inset 10px 10px 14px -12px rgba(38,37,38,1);
+    -moz-box-shadow: inset 10px 10px 14px -12px rgba(38,37,38,1);
+    box-shadow: inset 10px 10px 14px -12px rgba(38,37,38,1);
   }
 }
 
@@ -33,17 +38,26 @@ html, body {
   height: 100%;
   background-color: var(--background-color);
   font-family: 'Fredoka', sans-serif;
-  overflow: hidden;
+  overflow-x: hidden;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 main {
   margin: 0;
   width: calc(100% - 1.5rem);
+  height: 100%;
   padding: 0.75rem;
   transition: transform 0.3s ease, height 0.3s ease;
-  height: 85dvh;
 }
 
 a {
   text-decoration: none;
+}
+
+p {
+  margin: 0
 }
