@@ -6,7 +6,7 @@ export const CodeEditor = () => {
 
   return (
     <Editor
-      height="32rem"
+      height="23rem"
       defaultLanguage="python"
       value={code}
       onChange={(value) => setCode(value ?? '')}
