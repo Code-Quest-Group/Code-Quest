@@ -1,10 +1,13 @@
+import clsx from 'clsx'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useLayout } from '../../../providers'
 import { ProblemService } from '../../../services/problem-service'
 import { Problem } from '../../../types'
 
 export const ProblemList = () => {
   const [problems, setProblems] = useState<Problem[]>([ ])
+  const { showNavbar } = useLayout()
 
   useEffect(() => {
     const fetchProblems = async() => {
@@ -20,7 +23,7 @@ export const ProblemList = () => {
   }, [])
 
   return (
-    <main>
+    <main className={clsx({'full-height': !showNavbar})}>
       <h1>Problems</h1>
       <ul>
         {problems.map((problem, index) => (

@@ -1,0 +1,18 @@
+.customButton {
+    padding: 0.5rem 1rem !important;
+    background-color: var(--gui-primary-color) !important;
+    color: var(--primary-white) !important;
+
+    span {
+        font-size: 1.5rem !important;
+        font-family: var(--primary-font-family) !important;
+    }
+
+    > svg {
+        margin-left: 1rem;
+    }
+}
+
+.seriousButton {
+    background-color: var(--gui-secondary-color) !important;
+}
