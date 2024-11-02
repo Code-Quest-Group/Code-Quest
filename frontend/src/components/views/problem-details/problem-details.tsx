@@ -9,7 +9,7 @@ import { Problem } from '../../../types'
 import { Seperator } from '../../utils'
 import { CodeEditor } from './code-editor'
 import classes from './problem-details.module.scss'
-import { parseTestCases } from './problem-details.utils'
+import { parseRawResults } from './problem-details.utils'
 import { ProblemOptionsSelector } from './problem-options-selector'
 import { RateButtonGroup } from './rate-group'
 import { SubmitButtonGroup } from './submit-group'
@@ -100,12 +100,10 @@ export const ProblemDetails = () => {
                 <Typography style={{ marginLeft: '0.5rem' }}>Fullscreen Mode</Typography>
               </IconButton>
             </section>
-            <Seperator isHorizontal />
             <CodeEditor />
-            <Seperator isHorizontal />
             <TestsSummary
-              formattedTests={parseTestCases(problem.testCases, problem.inputFormat)}
-              formattedExpectedResults={parseTestCases(problem.expectedResult, 'int')}
+              formattedTests={parseRawResults(problem.testCases, problem.inputFormat)}
+              formattedExpectedResults={parseRawResults(problem.expectedResult, 'int')}
               className={classes.testsSummary}
             />
             <Seperator isHorizontal />

@@ -1,22 +1,27 @@
-type ParsedTestCases = number[][]
+type ParsedResults = (number | string)[][]
 
-export const parseTestCases = (testCases: string, format: string): ParsedTestCases => {
+export const parseRawResults = (testCases: string, format: string): ParsedResults => {
   // Split the test cases string into an array, filtering out any empty strings
-  const numbers = testCases.split('\n').map(Number).filter(num => !isNaN(num))
+  const rawCases = testCases.split('\n').map(value => value.trim()).filter(Boolean)
 
   // Interpret the format to determine how many numbers to read per group
   const formatParts = format.split(' ').map(part => part.trim())
   const groupSize = formatParts.length
 
-  // Group the numbers based on the group size
-  const parsedCases: ParsedTestCases = []
+  // Group the values based on the group size
+  const prasedResults: ParsedResults = []
 
-  for (let i = 0; i < numbers.length; i += groupSize) {
-    const group = numbers.slice(i, i + groupSize)
+  for (let i = 0; i < rawCases.length; i += groupSize) {
+    const group = rawCases.slice(i, i + groupSize).map(value => {
+      const numValue = Number(value)
+      // Check if the value can be parsed as a number
+      return isNaN(numValue) ? value : numValue
+    })
+
     if (group.length === groupSize) {
-      parsedCases.push(group)
+      prasedResults.push(group)
     }
   }
 
-  return parsedCases
+  return prasedResults
 }

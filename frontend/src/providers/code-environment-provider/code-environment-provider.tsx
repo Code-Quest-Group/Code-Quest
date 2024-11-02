@@ -13,11 +13,15 @@ type CodeEnvironmentContextType = {
     testCases: string
     failingTests: boolean[]
     currentTestIndex: number
+    submissionId: number
+    receivedOutput: (string | number)[][]
     setCurrentProblem: (problem: Problem) => void
     setCode: (code: string) => void
     setTestCases: (testCases: string) => void
     setFailingTests: (failingTests: boolean[]) => void
     setCurrentTestIndex: (index: number) => void
+    setSubmissionId: (id: number) => void
+    setReceivedOutput: (output: (string | number)[][]) => void
 }
 
 const CodeEnvironmentContext = createContext<CodeEnvironmentContextType>({
@@ -26,11 +30,15 @@ const CodeEnvironmentContext = createContext<CodeEnvironmentContextType>({
   testCases: '',
   failingTests: [],
   currentTestIndex: 1,
+  submissionId: 0,
+  receivedOutput: [],
   setCurrentProblem: () => {},
   setCode: () => {},
   setTestCases: () => {},
   setFailingTests: () => {},
   setCurrentTestIndex: () => {},
+  setSubmissionId: () => {},
+  setReceivedOutput: () => {},
 })
 
 export const useCodeEnvironment = () => {
@@ -43,6 +51,8 @@ export const CodeEnvironmentProvider = ({ children, problem }: CodeEnvironmentPr
   const [testCases, setTestCases] = useState(problem.testCases)
   const [failingTests, setFailingTests] = useState([true])
   const [currentTestIndex, setCurrentTestIndex] = useState(1)
+  const [submissionId, setSubmissionId] = useState(0)
+  const [receivedOutput, setReceivedOutput] = useState<(string | number)[][]>([])
 
   return (
     <CodeEnvironmentContext.Provider
@@ -52,11 +62,15 @@ export const CodeEnvironmentProvider = ({ children, problem }: CodeEnvironmentPr
         testCases,
         failingTests,
         currentTestIndex,
+        submissionId,
+        receivedOutput,
         setCurrentProblem,
         setCode,
         setTestCases,
         setFailingTests,
         setCurrentTestIndex,
+        setSubmissionId,
+        setReceivedOutput,
       }}
     >
       {children}
