@@ -20,6 +20,8 @@ public class SubmissionMapper {
 
         entity.setProblem(problem);
         entity.setLanguage(dto.getLanguage());
+        entity.setUser(dto.getUser());
+        entity.setUserCode(dto.getSourceCode());
         entity.setStatus(SubmissionStatus.PROCESSING);
 
         return entity;

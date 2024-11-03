@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import pl.agh.edu.wi.informatyka.codequest.sourcecode.Language;
+import pl.agh.edu.wi.informatyka.codequest.user.model.User;
 
 @Tag(name = "DTO for posting submission")
 @Data
@@ -25,4 +26,7 @@ public class CreateSubmissionDTO {
 
     @Schema(description = "Standard input")
     private String stdin;
+
+    @Schema(hidden = true)
+    private User user = null;
 }
