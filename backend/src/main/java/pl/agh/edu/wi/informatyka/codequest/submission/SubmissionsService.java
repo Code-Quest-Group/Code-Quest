@@ -8,10 +8,12 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -106,10 +108,9 @@ public class SubmissionsService {
         return new HttpEntity<>(body, headers);
     }
 
-    public Submission getSubmission(Long submissionId) {
-        return submissionsRepository
-                .findById(submissionId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Submission not found"));
+    public List<Submission> getSubmissions(SubmissionQueryDTO submissionQueryDTO) {
+        Specification<Submission> spec = SubmissionSpecification.buildSpecification(submissionQueryDTO);
+        return submissionsRepository.findAll(spec);
     }
 
     public void handleSubmissionWebhook(Judge0SubmissionResultDTO submissionResultDTO) {

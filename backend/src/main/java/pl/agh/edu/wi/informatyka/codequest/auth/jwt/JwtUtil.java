@@ -1,7 +1,8 @@
-package pl.agh.edu.wi.informatyka.codequest.auth;
+package pl.agh.edu.wi.informatyka.codequest.auth.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import java.util.Date;
@@ -22,13 +23,19 @@ public class JwtUtil {
     }
 
     public String extractUsername(String token) {
+
         DecodedJWT decodedJWT = verifyToken(token);
         return decodedJWT.getSubject();
     }
 
-    public boolean isTokenExpired(String token) {
-        DecodedJWT decodedJWT = verifyToken(token);
-        return decodedJWT.getExpiresAt().before(new Date());
+    public boolean isTokenValid(String token) {
+        try {
+            DecodedJWT decodedJWT = verifyToken(token);
+            return decodedJWT.getExpiresAt() != null
+                    && decodedJWT.getExpiresAt().after(new Date());
+        } catch (JWTVerificationException e) {
+            return false;
+        }
     }
 
     private DecodedJWT verifyToken(String token) {

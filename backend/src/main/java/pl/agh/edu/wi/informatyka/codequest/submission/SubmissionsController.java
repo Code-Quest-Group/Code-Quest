@@ -1,20 +1,24 @@
 package pl.agh.edu.wi.informatyka.codequest.submission;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.CreateSubmissionDTO;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.Judge0SubmissionResultDTO;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.Submission;
+import pl.agh.edu.wi.informatyka.codequest.submission.model.SubmissionQueryDTO;
+import pl.agh.edu.wi.informatyka.codequest.user.model.User;
 import pl.agh.edu.wi.informatyka.codequest.util.DataExamples;
 
 @RestController
@@ -27,18 +31,21 @@ public class SubmissionsController {
         this.submissionsService = submissionsService;
     }
 
-    @Operation(summary = "Get submission by ID")
-    @GetMapping("/{submissionId}")
+    @Operation(summary = "Get submission by ID", security = @SecurityRequirement(name = "bearerAuth"))
+    @GetMapping()
     @ApiResponse(
             responseCode = "200",
             description = "Submission run and finished successfully ",
             content = @Content(schema = @Schema(implementation = Submission.class)))
     @ApiResponse(responseCode = "401", description = "Submission invalid")
-    public Submission getSubmission(@PathVariable @Parameter(example = "678345435") Long submissionId) {
-        return submissionsService.getSubmission(submissionId);
+    public List<Submission> getSubmission(
+            @AuthenticationPrincipal User user, @ModelAttribute SubmissionQueryDTO submissionQueryDTO) {
+        // TODO after implementing permissions admin should be able to search queries of other users
+        submissionQueryDTO.setUserId(user.getUserId());
+        return submissionsService.getSubmissions(submissionQueryDTO);
     }
 
-    @Operation(summary = "Submit new submission")
+    @Operation(summary = "Submit new submission", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value = "/", consumes = "application/json", produces = "application/json")
     @ApiResponse(
             responseCode = "201",
@@ -48,6 +55,7 @@ public class SubmissionsController {
                             mediaType = "application/json",
                             schema = @Schema(example = "{\"submission_id\": \"44326\"}")))
     public ResponseEntity<?> submitSubmission(
+            @AuthenticationPrincipal User user,
             @Valid
                     @io.swagger.v3.oas.annotations.parameters.RequestBody(
                             content =
@@ -76,11 +84,14 @@ public class SubmissionsController {
                     @RequestBody
                     CreateSubmissionDTO requestBody)
             throws IOException {
+        requestBody.setUser(user);
         long submissionId = submissionsService.submitSubmission(requestBody);
         return ResponseEntity.ok(Collections.singletonMap("submission_id", submissionId));
     }
 
-    @Operation(summary = "webhook received from Judge0 to signal a given job has finished")
+    @Operation(
+            summary = "webhook received from Judge0 to signal a given job has finished",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @PutMapping(value = "/webhook")
     public void submitWebhook(@RequestBody Judge0SubmissionResultDTO submission) {
         this.submissionsService.handleSubmissionWebhook(submission);

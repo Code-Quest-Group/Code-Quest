@@ -18,9 +18,13 @@ public class Submission {
     @JsonProperty("submission_id")
     private long submissionId;
 
+    @JsonProperty("user_code")
+    private String userCode;
+
+    @JsonIgnore
     @JsonProperty("user_id")
-    @JoinColumn(name = "user_id", nullable = true) // TODO nullable false after implementing users
     @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     User user;
 
     @JsonIgnore
@@ -75,5 +79,10 @@ public class Submission {
     @JsonProperty("problem_id")
     public String getProblemId() {
         return (problem != null) ? problem.getProblemId() : null;
+    }
+
+    @JsonProperty("user_id")
+    public String getUserId() {
+        return this.getUser().getUserId();
     }
 }
