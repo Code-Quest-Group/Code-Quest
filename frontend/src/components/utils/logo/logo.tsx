@@ -1,5 +1,13 @@
+import { Box } from '@mui/material'
+import logo from '../../../assets/logo.png'
+
 export const CodeQuestLogo = () => {
-    return (
-        <>CQ</>
-    )
+  return (
+    <Box
+      component="img"
+      src={logo}
+      alt="CodeQuest Logo"
+      sx={{ width: '120px', height: 'auto', marginLeft: '0.5rem' }}
+    />
+  )
 }
