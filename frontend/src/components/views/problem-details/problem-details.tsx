@@ -15,34 +15,26 @@ import { RateButtonGroup } from './rate-group'
 import { SubmitButtonGroup } from './submit-group'
 import { TestsSummary } from './tests-summary'
 
-export const ProblemDetails = () => {
+const ProblemDetails = () => {
   const { problemId } = useParams<{ problemId: string }>()
   const [selectedSection, setSelectedSection] = useState('description')
   const [problem, setProblem] = useState<Problem | null>(null)
-  const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const { showNavbar } = useLayout()
 
   useEffect(() => {
     const fetchProblem = async() => {
-      setLoading(true)
       setError(null)
       try {
         const fetchedProblem = await ProblemService.getProblem(problemId!)
         setProblem(fetchedProblem)
       } catch (error) {
         setError('Failed to fetch problem data ' + error)
-      } finally {
-        setLoading(false)
       }
     }
 
     fetchProblem()
   }, [problemId])
-
-  if (loading) {
-    return <h1>Loading...</h1>
-  }
 
   if (error) {
     return <h1>{error}</h1>
@@ -114,3 +106,5 @@ export const ProblemDetails = () => {
     </CodeEnvironmentProvider>
   )
 }
+
+export default ProblemDetails

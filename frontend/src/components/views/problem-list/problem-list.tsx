@@ -5,7 +5,7 @@ import { useLayout } from '../../../providers'
 import { ProblemService } from '../../../services/problem-service'
 import { Problem } from '../../../types'
 
-export const ProblemList = () => {
+const ProblemList = () => {
   const [problems, setProblems] = useState<Problem[]>([ ])
   const { showNavbar } = useLayout()
 
@@ -35,3 +35,5 @@ export const ProblemList = () => {
     </main>
   )
 }
+
+export default ProblemList

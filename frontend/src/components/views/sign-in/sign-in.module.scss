@@ -1,0 +1,85 @@
+.signInPageContainer {
+    width: 100%;
+    height: 100%;
+    min-height: 50rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .contentCard {
+        min-height: 30rem;
+        width: 30rem;
+        -webkit-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        background-color: var(--secondary-white);
+
+        .tabs {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            background-color: var(--tertiary-white);
+            height: 2rem;
+            border-radius: 5px 5px 0 0;
+            color: var(--font-primary-color);
+            width: 100%;
+            margin-bottom: 2rem;
+
+            > button {
+                height: 100%;
+                background-color: inherit;
+                border: none;
+                width: 50%;
+                font-size: 1.125rem;
+                font-family: var(--primary-font-family);
+                filter: brightness(85%);
+
+                &:first-child {
+                    border-top-left-radius: 5px;
+                }
+
+                &:last-child {
+                    border-top-right-radius: 5px;
+                }
+
+                &.selected {
+                    filter: brightness(100%); 
+                }
+
+                &:hover {
+                    cursor: pointer;
+                    filter: brightness(100%);
+                }
+            }
+        }
+
+        .formContainer {
+            padding: 1rem;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            width: calc(100% - 2rem);
+            min-height: 24rem;
+
+            > form {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                height: 100%;
+                min-height: 23rem;
+                
+                > div {
+                    width: 95%;
+                    margin-bottom: 2rem;
+                }
+
+                > button {
+                    margin-top: auto;
+                }
+            }
+        }
+    }
+}

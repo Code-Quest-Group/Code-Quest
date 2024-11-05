@@ -7,7 +7,7 @@
   --font-primary-color: #443D4D;
   --primary-white: #FFFFFF;
   --secondary-white: #F5F5F5;
-  --teriary-white: #E4E4E4;
+  --tertiary-white: #E4E4E4;
   --primary-dark: #000000;
   --gui-primary-color: #0D8EEB;
   --gui-secondary-color: #ED2929;
@@ -32,6 +32,10 @@
   }
 }
 
+#root {
+  height: calc(100% - 2.5rem);
+}
+
 html, body {
   margin: 0;
   width: 100%;
@@ -49,7 +53,7 @@ html, body {
 main {
   margin: 0;
   width: calc(100% - 1.5rem);
-  height: 100%;
+  min-height: calc(100% - 10rem);
   padding: 0.75rem;
   transition: transform 0.3s ease, height 0.3s ease;
 }
