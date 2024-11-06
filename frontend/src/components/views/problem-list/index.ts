@@ -1,1 +1,1 @@
-export { ProblemList } from './problem-list'
+export { default as ProblemList } from './problem-list'

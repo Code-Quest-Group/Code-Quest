@@ -1,1 +1,1 @@
-export { ProblemDetails } from './problem-details'
+export { default as ProblemDetails } from './problem-details'

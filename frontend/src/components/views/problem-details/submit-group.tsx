@@ -39,20 +39,40 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
   useEffect(() => {
     if (!submissionId) return
 
+    let attempts = 0
+
     const pollInterval = setInterval(async() => {
       try {
-        const response = await axios.get(`http://localhost:8080/submissions/${submissionId}`)
+        attempts += 1
+
+        if (attempts > 30) {
+          clearInterval(pollInterval)
+          toast.error('Failed to get back submission results')
+          console.warn('Polling stopped after 30 attempts')
+          return
+        }
+
+        const params = {
+          params: {
+            submissionId,
+            problemId: problem?.problemId,
+            language: 'PYTHON'
+          }
+        }
+
+        const response = await axios.get('http://localhost:8080/submissions', params)
+
         if (response.status === 200) {
-          const payload: SubmissionResponse = response.data
+          const payload: SubmissionResponse = response.data[0]
           clearInterval(pollInterval)
           setSubmissionId(0)
 
           if (payload.status === 'ACCEPTED') {
-            toast.success(`Passed tests cases ${payload.correct_testcases} / ${payload.total_testcases}`)
+            toast.success(`Passed test cases ${payload.correct_testcases} / ${payload.total_testcases}`)
           } else if (payload.status === 'WRONG_ANSWER') {
-            toast.warning(`Passed tests cases ${payload.correct_testcases} / ${payload.total_testcases}`)
+            toast.warning(`Passed test cases ${payload.correct_testcases} / ${payload.total_testcases}`)
           } else if (payload.status === 'RUNTIME_ERROR_NZEC') {
-            toast.error(`Runtime error! ${payload.stderr}`, {autoClose: false})
+            toast.error(`Runtime error! ${payload.stderr}`, { autoClose: false })
           }
 
           const receivedOutput = payload.stdout
@@ -60,7 +80,6 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
             : Array(problem?.testCases.length).fill(null)
 
           setReceivedOutput(receivedOutput)
-
         }
       } catch (error) {
         console.error('Error polling submission status:', error)
