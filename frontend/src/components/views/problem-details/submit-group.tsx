@@ -2,7 +2,7 @@ import { CircularProgress, Typography } from '@mui/material'
 import axios from 'axios'
 import { useEffect } from 'react'
 import { toast } from 'react-toastify'
-import { useCodeEnvironment } from '../../../providers'
+import { useCodeEnvironment, useUser } from '../../../providers'
 import { SubmissionResponse } from '../../../types'
 import { Button } from '../../utils'
 import { parseRawResults } from './problem-details.utils'
@@ -13,10 +13,16 @@ type SubmitButtonGroupProps = {
 
 export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
   const { code, problem, submissionId, setSubmissionId, setReceivedOutput } = useCodeEnvironment()
+  const { username } = useUser()
 
   const inputFormat = problem?.inputFormat.includes('int') ? 'int' : 'string'
 
   const handleSubmit = async() => {
+    if (username === '') {
+      toast.warning("Please log in to submit")
+      return
+    }
+    
     try {
       const response = await axios.post('http://localhost:8080/submissions/', {
         sourceCode: code,
