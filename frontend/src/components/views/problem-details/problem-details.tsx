@@ -10,14 +10,12 @@ import { Seperator } from '../../utils'
 import { CodeEditor } from './code-editor'
 import classes from './problem-details.module.scss'
 import { parseRawResults } from './problem-details.utils'
-import { ProblemOptionsSelector } from './problem-options-selector'
-import { RateButtonGroup } from './rate-group'
 import { SubmitButtonGroup } from './submit-group'
 import { TestsSummary } from './tests-summary'
+import { LeftSection } from './problem-details-left-section/problem-details-left-section'
 
 const ProblemDetails = () => {
   const { problemId } = useParams<{ problemId: string }>()
-  const [selectedSection, setSelectedSection] = useState('description')
   const [problem, setProblem] = useState<Problem | null>(null)
   const [error, setError] = useState<string | null>(null)
   const { showNavbar } = useLayout()
@@ -47,37 +45,7 @@ const ProblemDetails = () => {
   return (
     <CodeEnvironmentProvider problem={problem}>
       <main className={clsx(classes.problemDetailsContainer, {'full-height': !showNavbar})}>
-        <div className={classes.leftSection}>
-          <ProblemOptionsSelector
-            handleSelection={setSelectedSection}
-            className={classes.headerSection}
-            selectedClassName={classes.selected}
-            currentSelection={selectedSection}
-          />
-          <div className={classes.problemInformationContainer}>
-            <section>
-              <header>{problem.name}</header>
-              <p> 3.5 / 5 ⭐</p>
-            </section>
-            <section>
-              <span>HARD</span>
-              <span>EASY</span>
-              <span>MEDIUM</span>
-            </section>
-            <div className={classes.whiteBackgroundDescription}>
-              <p>{problem.description}</p>
-            </div>
-            <header>Example</header>
-            <div className={classes.whiteBackgroundDescription}>
-              <p>TBD: Lorem ipsum...</p>
-            </div>
-            <header>Constraints</header>
-            <div className={classes.whiteBackgroundDescription}>
-              <p>TBD: Lorem ipsum..</p>
-            </div>
-            <RateButtonGroup className={classes.buttonGroup} />
-          </div>
-        </div>
+        <LeftSection classes={classes} problem={problem}/>
         <Seperator />
         <div className={classes.rightSection}>
           <div className={classes.headerSection}>

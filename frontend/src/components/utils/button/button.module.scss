@@ -1,5 +1,8 @@
+@use '@/mixins' as breakpoints;
+
 .customButton {
     min-height: 3.5rem;
+    max-height: 3.5rem;
     padding: 0.5rem 1rem !important;
     background-color: var(--gui-primary-color) !important;
     color: var(--primary-white) !important;
@@ -11,6 +14,27 @@
 
     > svg {
         margin-left: 1rem;
+    }
+}
+
+.hasIcon {
+    @include breakpoints.for-tablets {
+        :global(.MuiTypography-button) {
+            visibility: hidden;
+            width: 0;
+        }
+
+        :global(.MuiButton-endIcon) {
+            margin: 0;
+            
+            > svg {
+                font-size: 1.75rem;
+            }
+        }
+    }
+
+    @include breakpoints.for-phones {
+       
     }
 }
 

@@ -9,7 +9,7 @@ export const CodeEditor = () => {
     <div className='container'>
       <Seperator isHorizontal />
       <Editor
-        height="30rem"
+        height="max(50vh, 30rem)"
         defaultLanguage="python"
         value={code}
         onChange={(value) => setCode(value ?? '')}

@@ -8,7 +8,7 @@ type CodeEnvironmentProviderProps = {
 }
 
 type CodeEnvironmentContextType = {
-    problem: Problem | undefined
+    problem: Problem
     code: string
     testCases: string
     failingTests: boolean[]
@@ -25,7 +25,7 @@ type CodeEnvironmentContextType = {
 }
 
 const CodeEnvironmentContext = createContext<CodeEnvironmentContextType>({
-  problem: undefined,
+  problem: {} as Problem,
   code: '',
   testCases: '',
   failingTests: [],
@@ -46,7 +46,7 @@ export const useCodeEnvironment = () => {
 }
 
 export const CodeEnvironmentProvider = ({ children, problem }: CodeEnvironmentProviderProps) => {
-  const [currentProblem, setCurrentProblem] = useState<Problem | undefined>(problem)
+  const [currentProblem, setCurrentProblem] = useState<Problem>(problem)
   const [code, setCode] = useState(problem.codeTemplate ? `\n${problem.codeTemplate}` : '')
   const [testCases, setTestCases] = useState(problem.testCases)
   const [failingTests, setFailingTests] = useState([true])

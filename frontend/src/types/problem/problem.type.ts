@@ -1,10 +1,18 @@
+import { Solution } from "./solution.type";
+
 export type Problem = {
-    problemId: string;
-    name: string;
-    description: string;
-    supportedLanguages: string;
-    inputFormat: string;
-    codeTemplate: string;
-    testCases: string;
-    expectedResult: string;
-  }
+  problemId: string;
+  name: string;
+  description: string;
+  supportedLanguages: string;
+  inputFormat: string;
+  codeTemplate: string;
+  testCases: string;
+  expectedResult: string;
+  tags: string[]
+  example: string;
+  constraints: string;
+  hints?: string
+  pseudocode?: string 
+  userSolutions?: Solution[]
+}
