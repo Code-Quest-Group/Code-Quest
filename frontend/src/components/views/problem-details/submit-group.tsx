@@ -6,9 +6,9 @@ import { useCodeEnvironment, useUser } from '../../../providers'
 import { SubmissionResponse } from '../../../types'
 import { Button } from '../../utils'
 import { parseRawResults } from './problem-details.utils'
-import PlayCircleFilledWhiteIcon from '@mui/icons-material/PlayCircleFilledWhite';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import EditNoteIcon from '@mui/icons-material/EditNote';
+import PlayCircleFilledWhiteIcon from '@mui/icons-material/PlayCircleFilledWhite'
+import PlayArrowIcon from '@mui/icons-material/PlayArrow'
+import EditNoteIcon from '@mui/icons-material/EditNote'
 
 type SubmitButtonGroupProps = {
     className: string
@@ -22,10 +22,10 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
 
   const handleSubmit = async() => {
     if (username === '') {
-      toast.warning("Please log in to submit")
+      toast.warning('Please log in to submit')
       return
     }
-    
+
     try {
       const response = await axios.post('http://localhost:8080/submissions/', {
         sourceCode: code,
@@ -100,8 +100,8 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
 
   return (
     <div className={className}>
-      <Button 
-        onClick={() => window.alert('Not implemened 😇')} 
+      <Button
+        onClick={() => window.alert('Not implemened 😇')}
         icon={<EditNoteIcon />}
         popup={'Click to run custom test case'}
       >
@@ -109,8 +109,8 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
            Custom Test Case
         </Typography>
       </Button>
-      <Button 
-        onClick={() => window.alert('Not implemened 😇')} 
+      <Button
+        onClick={() => window.alert('Not implemened 😇')}
         icon={<PlayArrowIcon />}
         popup={'Click to run test case'}
       >
@@ -118,13 +118,13 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
             Run Test Case
         </Typography>
       </Button>
-      <Button 
-        onClick={handleSubmit} 
+      <Button
+        onClick={handleSubmit}
         disabled={Boolean(submissionId)}
         style={{ position: 'relative', width: '8rem' }}
         popup={'Click to submit solution'}
-        icon={submissionId ? 
-          <CircularProgress size={20} style={{color: 'white'}}/> 
+        icon={submissionId ?
+          <CircularProgress size={20} style={{color: 'white'}}/>
           : <PlayCircleFilledWhiteIcon />
         }
       >

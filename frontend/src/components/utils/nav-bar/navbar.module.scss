@@ -17,6 +17,7 @@
         background-color: var(--gui-primary-color) !important;
         color: var(--primary-white);
         transition: bottom 0.3s ease;
+        border: 1px solid var(--primary-white);
     }
 
     .toggleButton.closed {
@@ -49,13 +50,13 @@
         }
 
         >span {
-            @include breakpoints.for-phones {
+            @include breakpoints.for-tablets {
                 display: none !important;
             }
         }
 
         >a {
-            @include breakpoints.for-phones {
+            @include breakpoints.for-tablets {
                 margin-left: 0 !important;
 
                 >p {

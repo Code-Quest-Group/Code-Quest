@@ -1,0 +1,183 @@
+@use '@/mixins' as breakpoints;
+
+.mainContent {
+    height: 100%;
+    background-color: var(--secondary-white);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    min-height: 56rem;
+
+    >section {
+        width: 100%;
+    }
+
+    .topSection {
+        height: 6rem;
+
+        .uiContainer {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+            height: 100%;
+
+            >button {
+                margin: 0 1rem;
+            }
+
+            >div {
+                margin-left: auto;
+                margin-right: 1rem;
+                width: 20rem;
+            }
+
+            fieldset {
+                border: 2px solid var(--gui-primary-color) !important;
+            }
+
+            @include breakpoints.for-phones {
+                >button {
+                    margin-left: 0.75rem;
+                    margin-right: 0;
+
+                    &:last-of-type {
+                        margin-right: 0.5rem !important;
+                    }
+                }
+            }
+        }
+    }
+
+    .middleSection {
+        min-height: 34rem;
+        overflow-y: hidden;
+
+        .filler {
+            min-height: 51rem;
+            height: 100%;
+            background: repeating-linear-gradient(0deg,
+                    var(--tertiary-white) 0rem,
+                    var(--tertiary-white) 3rem,
+                    var(--secondary-white) 3rem,
+                    var(--secondary-white) 6rem);
+        }
+
+        >ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+
+            >li {
+                height: 3rem;
+                display: flex;
+                align-items: center;
+                transition: background-color 0.25s ease-out;
+                -webkit-transition: background-color 0.25s ease-out;
+                -moz-transition: background-color 0.25s ease-out;
+                -o-transition: background-color 0.25s ease-out;
+
+                &:first-of-type {
+                    padding-top: 0.5rem;
+                }
+
+                >a {
+                    display: flex;
+                    padding: 0.5rem 3rem;
+                    flex-direction: row;
+                    align-items: center;
+                    height: 2rem;
+                    width: 100%;
+                    color: var(--primary-dark);
+
+                    >header {
+                        font-size: 2rem;
+                        white-space: nowrap;
+                        margin-right: 2rem;
+                        min-width: 30rem;
+                    }
+
+                    >span {
+                        background-color: var(--primary-white);
+                        padding: 0.5rem 1rem;
+                        font-size: 1.25rem;
+                    }
+
+                    li {
+                        margin-bottom: 0;
+                    }
+
+
+                    @include breakpoints.for-tablets {
+                        padding: 0.3625rem 1rem;
+
+                        >header {
+                            font-size: 1.25rem;
+                            min-width: 12rem;
+                        }
+
+                        >span {
+                            padding: 0.25rem 0.5rem;
+                            font-size: 1rem;
+                        }
+
+                        li {
+                            margin-left: 0.5rem;
+                            font-size: 0.75rem;
+                            padding: 0.25rem 0.5rem;
+                        }
+                    }
+
+                    @include breakpoints.for-phones {
+                        >header {
+                            font-size: 1.125rem;
+                            margin-right: 0.25rem;
+                        }
+
+                        li {
+                            display: none;
+                        }
+                    }
+                }
+
+                &:nth-child(odd) {
+                    background-color: inherit;
+                }
+
+                &:nth-child(even) {
+                    background-color: var(--tertiary-white);
+                }
+            }
+
+            .hoverEffect {
+                &:hover {
+                    background-color: #b4b4b6;
+                }
+            }
+        }
+    }
+
+    .bottomSection {
+        margin-top: auto;
+        height: 6rem;
+
+        .paginationGroup {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+
+            >button {
+                margin: 0 1rem;
+
+                @include breakpoints.for-phones {
+                    margin-left: 0.25rem;
+                    margin-right: 0;
+                }
+            }
+        }
+    }
+
+
+}

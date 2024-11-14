@@ -12,8 +12,8 @@ export const RateButtonGroup = ({ className }: RateButtonGroupProps) => {
 
   return (
     <div className={className}>
-      <Button 
-        onClick={() => window.alert('Not implemened 😇')} 
+      <Button
+        onClick={() => window.alert('Not implemened 😇')}
         icon={<ThumbsUpDownIcon />}
         popup={'Click to rate this problem'}
       >
@@ -21,8 +21,8 @@ export const RateButtonGroup = ({ className }: RateButtonGroupProps) => {
            Rate
         </Typography>
       </Button>
-      <Button 
-        onClick={() => window.alert('Not implemened 😇')} 
+      <Button
+        onClick={() => window.alert('Not implemened 😇')}
         icon={<CommentIcon />}
         popup={'Click to leave a comment'}
       >
@@ -30,9 +30,9 @@ export const RateButtonGroup = ({ className }: RateButtonGroupProps) => {
             Comment
         </Typography>
       </Button>
-      <Button 
+      <Button
         onClick={() => window.alert('Not implemened 😇')}
-        seriousButton 
+        seriousButton
         icon={<ReportProblemIcon />}
         popup={'Click to report this problem'}
       >

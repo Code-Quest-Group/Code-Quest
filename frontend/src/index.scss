@@ -26,9 +26,9 @@
   }
 
   .inside-shadow {
-    -webkit-box-shadow: inset 10px 10px 14px -12px rgba(38,37,38,1);
-    -moz-box-shadow: inset 10px 10px 14px -12px rgba(38,37,38,1);
-    box-shadow: inset 10px 10px 14px -12px rgba(38,37,38,1);
+    -webkit-box-shadow: inset 10px 10px 14px -12px rgba(38, 37, 38, 1);
+    -moz-box-shadow: inset 10px 10px 14px -12px rgba(38, 37, 38, 1);
+    box-shadow: inset 10px 10px 14px -12px rgba(38, 37, 38, 1);
   }
 }
 
@@ -37,7 +37,8 @@
   min-height: 100%;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   width: 100%;
   height: 100%;
