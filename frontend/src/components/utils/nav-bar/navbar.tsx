@@ -39,11 +39,11 @@ export const Navbar = () => {
     <>
       <div className={clsx(classes.navbarContainer, { [classes.hidden]: !showNavbar })}>
         <nav className={classes.navbar}>
-          <section className={classes.leftSection}>
+          <section>
             <CodeQuestLogo />
             <a href="/problems" className={classes.navbarLinks} tabIndex={tabIndex}>Problem List</a>
           </section>
-          <section className={classes.rightSection}>
+          <section>
             {username === '' ? (
               <a className={classes.navbarLinks} tabIndex={tabIndex} onClick={handleOpenModal}>
                 <p>Sign in</p>
@@ -54,7 +54,8 @@ export const Navbar = () => {
                 <a className={classes.navbarLinks} href="/account" tabIndex={tabIndex}>
                   <p>{username}</p>
                   <AccountCircleIcon fontSize="large"/>
-                </a> <Seperator hasMargins/>
+                </a>
+                <Seperator hasMargins/>
                 <a className={classes.navbarLinks} onClick={handleLogout} tabIndex={tabIndex}>
                   <p>Log out</p>
                   <LogoutIcon fontSize="large"/>

@@ -13,12 +13,15 @@ import { parseRawResults } from './problem-details.utils'
 import { SubmitButtonGroup } from './submit-group'
 import { TestsSummary } from './tests-summary'
 import { LeftSection } from './problem-details-left-section/problem-details-left-section'
+import { FullScreen, useFullScreenHandle } from 'react-full-screen'
+import { LanguageDropdown } from './language-selector'
 
 const ProblemDetails = () => {
   const { problemId } = useParams<{ problemId: string }>()
   const [problem, setProblem] = useState<Problem | null>(null)
   const [error, setError] = useState<string | null>(null)
   const { showNavbar } = useLayout()
+  const fullScreenHandle = useFullScreenHandle()
 
   useEffect(() => {
     const fetchProblem = async() => {
@@ -53,14 +56,22 @@ const ProblemDetails = () => {
           </div>
           <div className={classes.mainCodingContainer}>
             <section className={classes.codingOptions}>
-              <p>Language</p>
-              <span>Python</span>
-              <IconButton aria-label="fullscreen mode" disableRipple>
+              <LanguageDropdown />
+              <IconButton
+                aria-label="fullscreen mode"
+                onClick={fullScreenHandle.enter}
+                disableRipple
+              >
                 <FullscreenIcon />
                 <Typography style={{ marginLeft: '0.5rem' }}>Fullscreen Mode</Typography>
               </IconButton>
             </section>
-            <CodeEditor />
+            <FullScreen handle={fullScreenHandle}>
+              <CodeEditor className={clsx({
+                [classes.fullscreenCodeEditor]: fullScreenHandle.active,
+              })}
+              />
+            </FullScreen>
             <TestsSummary
               formattedTests={parseRawResults(problem.testCases, problem.inputFormat)}
               formattedExpectedResults={parseRawResults(problem.expectedResult, 'int')}

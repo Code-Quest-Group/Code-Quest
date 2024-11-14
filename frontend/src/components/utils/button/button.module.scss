@@ -12,7 +12,7 @@
         font-family: var(--primary-font-family) !important;
     }
 
-    > svg {
+    >svg {
         margin-left: 1rem;
     }
 }
@@ -26,16 +26,14 @@
 
         :global(.MuiButton-endIcon) {
             margin: 0;
-            
-            > svg {
+
+            >svg {
                 font-size: 1.75rem;
             }
         }
     }
 
-    @include breakpoints.for-phones {
-       
-    }
+    @include breakpoints.for-phones {}
 }
 
 .seriousButton {

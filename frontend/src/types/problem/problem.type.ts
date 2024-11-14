@@ -1,10 +1,10 @@
-import { Solution } from "./solution.type";
+import { Solution } from './solution.type'
 
 export type Problem = {
   problemId: string;
   name: string;
   description: string;
-  supportedLanguages: string;
+  supportedLanguages: string[];
   inputFormat: string;
   codeTemplate: string;
   testCases: string;
@@ -12,7 +12,7 @@ export type Problem = {
   tags: string[]
   example: string;
   constraints: string;
-  hints?: string
-  pseudocode?: string 
-  userSolutions?: Solution[]
+  hints?: string;
+  pseudocode?: string;
+  userSolutions?: Solution[];
 }
