@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { Seperator } from '../../utils'
+import { Seperator } from '../../../utils'
 
 type ProblemOptionsSelectorProps = {
     className?: string
@@ -32,8 +32,8 @@ export const ProblemOptionsSelector = ({
       </button>
       <Seperator />
       <button
-        className={clsx({[selectedClassName]: currentSelection === 'pseudocode'})}
-        onClick={() => handleSelection('pseudocode')}
+        className={clsx({[selectedClassName]: currentSelection === 'pseudoCode'})}
+        onClick={() => handleSelection('pseudoCode')}
       >
             Pseudocode
       </button>
@@ -41,7 +41,7 @@ export const ProblemOptionsSelector = ({
       <button
         className={clsx({[selectedClassName]: currentSelection === 'solutions'})}
         onClick={() => handleSelection('solutions')}>
-            User Solutions
+            Solutions
       </button>
     </div>
   )

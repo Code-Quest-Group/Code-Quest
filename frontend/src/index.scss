@@ -26,17 +26,19 @@
   }
 
   .inside-shadow {
-    -webkit-box-shadow: inset 10px 10px 14px -12px rgba(38,37,38,1);
-    -moz-box-shadow: inset 10px 10px 14px -12px rgba(38,37,38,1);
-    box-shadow: inset 10px 10px 14px -12px rgba(38,37,38,1);
+    -webkit-box-shadow: inset 10px 10px 14px -12px rgba(38, 37, 38, 1);
+    -moz-box-shadow: inset 10px 10px 14px -12px rgba(38, 37, 38, 1);
+    box-shadow: inset 10px 10px 14px -12px rgba(38, 37, 38, 1);
   }
 }
 
 #root {
   height: calc(100% - 2.5rem);
+  min-height: 100%;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   width: 100%;
   height: 100%;
@@ -53,7 +55,7 @@ html, body {
 main {
   margin: 0;
   width: calc(100% - 1.5rem);
-  min-height: calc(100% - 10rem);
+  height: calc(100% - 3.5rem);
   padding: 0.75rem;
   transition: transform 0.3s ease, height 0.3s ease;
 }

@@ -2,15 +2,21 @@ import Editor from '@monaco-editor/react'
 import { useCodeEnvironment } from '../../../providers'
 import { Seperator } from '../../utils'
 
-export const CodeEditor = () => {
-  const { code, setCode } = useCodeEnvironment()
+type CodeEditorProps = {
+  className?: string
+}
+
+export const CodeEditor = ({ className }: CodeEditorProps) => {
+  const { code, setCode, currentLanguage } = useCodeEnvironment()
 
   return (
     <div className='container'>
       <Seperator isHorizontal />
       <Editor
-        height="30rem"
-        defaultLanguage="python"
+        key={`code-editor-${currentLanguage}`}
+        height="max(50vh, 30rem)"
+        defaultLanguage='python'
+        language={currentLanguage}
         value={code}
         onChange={(value) => setCode(value ?? '')}
         theme="vs-light"
@@ -20,7 +26,11 @@ export const CodeEditor = () => {
             horizontal: 'hidden',
           },
           scrollBeyondLastLine: false,
+          minimap: {
+            enabled: false,
+          },
         }}
+        className={className}
       />
       <Seperator isHorizontal />
     </div>

@@ -8,14 +8,16 @@ type CodeEnvironmentProviderProps = {
 }
 
 type CodeEnvironmentContextType = {
-    problem: Problem | undefined
+    problem: Problem
     code: string
+    currentLanguage: string
     testCases: string
     failingTests: boolean[]
     currentTestIndex: number
     submissionId: number
     receivedOutput: (string | number)[][]
     setCurrentProblem: (problem: Problem) => void
+    setCurrentLanguage: (language: string) => void
     setCode: (code: string) => void
     setTestCases: (testCases: string) => void
     setFailingTests: (failingTests: boolean[]) => void
@@ -25,14 +27,16 @@ type CodeEnvironmentContextType = {
 }
 
 const CodeEnvironmentContext = createContext<CodeEnvironmentContextType>({
-  problem: undefined,
+  problem: {} as Problem,
   code: '',
+  currentLanguage: '',
   testCases: '',
   failingTests: [],
   currentTestIndex: 1,
   submissionId: 0,
   receivedOutput: [],
   setCurrentProblem: () => {},
+  setCurrentLanguage: () => {},
   setCode: () => {},
   setTestCases: () => {},
   setFailingTests: () => {},
@@ -46,7 +50,8 @@ export const useCodeEnvironment = () => {
 }
 
 export const CodeEnvironmentProvider = ({ children, problem }: CodeEnvironmentProviderProps) => {
-  const [currentProblem, setCurrentProblem] = useState<Problem | undefined>(problem)
+  const [currentProblem, setCurrentProblem] = useState<Problem>(problem)
+  const [currentLanguage, setCurrentLanguage] = useState('PYTHON')
   const [code, setCode] = useState(problem.codeTemplate ? `\n${problem.codeTemplate}` : '')
   const [testCases, setTestCases] = useState(problem.testCases)
   const [failingTests, setFailingTests] = useState([true])
@@ -58,6 +63,7 @@ export const CodeEnvironmentProvider = ({ children, problem }: CodeEnvironmentPr
     <CodeEnvironmentContext.Provider
       value={{
         problem: currentProblem,
+        currentLanguage,
         code,
         testCases,
         failingTests,
@@ -65,6 +71,7 @@ export const CodeEnvironmentProvider = ({ children, problem }: CodeEnvironmentPr
         submissionId,
         receivedOutput,
         setCurrentProblem,
+        setCurrentLanguage,
         setCode,
         setTestCases,
         setFailingTests,

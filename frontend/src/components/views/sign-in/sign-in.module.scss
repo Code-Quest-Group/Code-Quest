@@ -1,21 +1,19 @@
-.signInPageContainer {
-    width: 100%;
-    height: 100%;
-    min-height: 50rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+@use '@/mixins' as breakpoints;
 
-    .contentCard {
-        min-height: 30rem;
-        width: 30rem;
-        -webkit-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        border-radius: 5px;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        background-color: var(--secondary-white);
+.contentCard {
+    min-height: 30rem;
+    width: 30rem;
+    -webkit-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    background-color: var(--secondary-white);
+
+    .content {
+        padding: 0;
+
 
         .tabs {
             display: flex;
@@ -25,10 +23,10 @@
             height: 2rem;
             border-radius: 5px 5px 0 0;
             color: var(--font-primary-color);
-            width: 100%;
+            width: 30rem;
             margin-bottom: 2rem;
 
-            > button {
+            >button {
                 height: 100%;
                 background-color: inherit;
                 border: none;
@@ -46,7 +44,7 @@
                 }
 
                 &.selected {
-                    filter: brightness(100%); 
+                    filter: brightness(100%);
                 }
 
                 &:hover {
@@ -54,32 +52,37 @@
                     filter: brightness(100%);
                 }
             }
-        }
 
-        .formContainer {
-            padding: 1rem;
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            width: calc(100% - 2rem);
-            min-height: 24rem;
-
-            > form {
-                display: flex;
-                flex-direction: column;
-                width: 100%;
-                height: 100%;
-                min-height: 23rem;
-                
-                > div {
-                    width: 95%;
-                    margin-bottom: 2rem;
-                }
-
-                > button {
-                    margin-top: auto;
-                }
+            @include breakpoints.for-phones {
+                width: 18rem;
             }
         }
+    }
+
+    .formContainer {
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        width: calc(100% - 2rem);
+        min-height: 24rem;
+
+        >div {
+            margin-bottom: 2rem;
+            width: 95%;
+        }
+
+        >button {
+            margin-top: auto;
+            margin-left: auto;
+        }
+
+        @include breakpoints.for-phones {
+            width: calc(100% - 2.5rem)
+        }
+    }
+
+    @include breakpoints.for-phones {
+        width: 18rem;
     }
 }

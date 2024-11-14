@@ -1,0 +1,28 @@
+.tagsContainer {
+    width: 100%;
+
+    >ul {
+        list-style: none;
+        display: flex;
+        flex-direction: row;
+        padding-left: 0;
+        flex-wrap: wrap;
+        margin: 0;
+
+        >li {
+            text-transform: capitalize;
+            padding: 0.375rem 1rem;
+            margin-left: 2rem;
+            margin-bottom: 1.25rem;
+            height: 1.25rem;
+            position: relative;
+            background-color: var(--gui-primary-color);
+            color: var(--primary-white);
+            border-radius: 10px;
+
+            &:first-child {
+                margin-left: 0;
+            }
+        }
+    }
+}

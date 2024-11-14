@@ -12,11 +12,17 @@ import { toast } from 'react-toastify'
 import { useLayout, useUser } from '../../../providers'
 import { Seperator } from '../seperator'
 import classes from './navbar.module.scss'
+import { useState } from 'react'
+import { SignInModal } from '../../views/sign-in'
 
 export const Navbar = () => {
   const { showNavbar, toggleNavbar } = useLayout()
   const { username, setToken, setUserId, setUsername } = useUser()
   const navigate = useNavigate()
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const handleOpenModal = () => setIsModalOpen(true)
+  const handleCloseModal = () => setIsModalOpen(false)
 
   const handleLogout = () => {
     setUserId('')
@@ -27,41 +33,47 @@ export const Navbar = () => {
     navigate('/problems')
   }
 
+  const tabIndex = showNavbar ? 0 : -1
+
   return (
-    <div className={clsx(classes.navbarContainer, { [classes.hidden]: !showNavbar })}>
-      <nav className={classes.navbar}>
-        <section className={classes.leftSection}>
-          <CodeQuestLogo />
-          <a href="/problems" className={classes.navbarLinks} tabIndex={Number(showNavbar)}>Problem List</a>
-        </section>
-        <section className={classes.rightSection}>
-          {username === '' ? (
-            <a className={classes.navbarLinks} href='/sign-in' tabIndex={Number(showNavbar)}>
-              <p>Sign in</p>
-              <LoginIcon fontSize="large"/>
-            </a>
-          ) : (
-            <>
-              <a className={classes.navbarLinks} href="/account" tabIndex={Number(showNavbar)}>
-                <p>{username}</p>
-                <AccountCircleIcon fontSize="large"/>
-              </a> <Seperator hasMargins/>
-              <a className={classes.navbarLinks} onClick={handleLogout} tabIndex={Number(showNavbar)}>
-                <p>Log out</p>
-                <LogoutIcon fontSize="large"/>
+    <>
+      <div className={clsx(classes.navbarContainer, { [classes.hidden]: !showNavbar })}>
+        <nav className={classes.navbar}>
+          <section>
+            <CodeQuestLogo />
+            <a href="/problems" className={classes.navbarLinks} tabIndex={tabIndex}>Problem List</a>
+          </section>
+          <section>
+            {username === '' ? (
+              <a className={classes.navbarLinks} tabIndex={tabIndex} onClick={handleOpenModal}>
+                <p>Sign in</p>
+                <LoginIcon fontSize="large"/>
               </a>
-            </>
-          )}
-        </section>
-      </nav>
-      <IconButton
-        onClick={toggleNavbar}
-        className={clsx(classes.toggleButton, { [classes.closed]: !showNavbar })}
-        aria-label={showNavbar ? 'Hide Navbar' : 'Show Navbar'}
-        size='small'
-      >
-        {showNavbar ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-      </IconButton>
-    </div>
+            ) : (
+              <>
+                <a className={classes.navbarLinks} href="/account" tabIndex={tabIndex}>
+                  <p>{username}</p>
+                  <AccountCircleIcon fontSize="large"/>
+                </a>
+                <Seperator hasMargins/>
+                <a className={classes.navbarLinks} onClick={handleLogout} tabIndex={tabIndex}>
+                  <p>Log out</p>
+                  <LogoutIcon fontSize="large"/>
+                </a>
+              </>
+            )}
+          </section>
+        </nav>
+        <IconButton
+          onClick={toggleNavbar}
+          className={clsx(classes.toggleButton, { [classes.closed]: !showNavbar })}
+          aria-label={showNavbar ? 'Hide Navbar' : 'Show Navbar'}
+          size='small'
+        >
+          {showNavbar ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+        </IconButton>
+      </div>
+      <SignInModal open={isModalOpen} onClose={handleCloseModal} />
+    </>
   )
 }

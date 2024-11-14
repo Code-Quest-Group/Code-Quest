@@ -13,7 +13,7 @@ export default [
       globals: globals.browser
     },
     rules: {
-      'semi': ['error', "never"],
+      'semi': ['error', 'never'],
       'react/react-in-jsx-scope': 'off',
       'no-multiple-empty-lines': ['error', { 'max': 1, 'maxEOF': 0 }],
       'space-in-parens': ['error', 'never'],
