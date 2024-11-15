@@ -15,4 +15,5 @@ export type Problem = {
   hints?: string;
   pseudocode?: string;
   userSolutions?: Solution[];
+  rating?: number;
 }

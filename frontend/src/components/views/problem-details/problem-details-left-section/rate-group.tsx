@@ -1,8 +1,8 @@
-import CommentIcon from '@mui/icons-material/Comment'
 import ReportProblemIcon from '@mui/icons-material/ReportProblem'
-import ThumbsUpDownIcon from '@mui/icons-material/ThumbsUpDown'
 import { Typography } from '@mui/material'
 import { Button } from '../../../utils'
+import { RatingButton } from './rate-problem-button'
+import { CommentButton } from './comment-problem-button'
 
 type RateButtonGroupProps = {
     className: string
@@ -12,24 +12,8 @@ export const RateButtonGroup = ({ className }: RateButtonGroupProps) => {
 
   return (
     <div className={className}>
-      <Button
-        onClick={() => window.alert('Not implemened 😇')}
-        icon={<ThumbsUpDownIcon />}
-        popup={'Click to rate this problem'}
-      >
-        <Typography variant="button" style={{ textTransform: 'none' }}>
-           Rate
-        </Typography>
-      </Button>
-      <Button
-        onClick={() => window.alert('Not implemened 😇')}
-        icon={<CommentIcon />}
-        popup={'Click to leave a comment'}
-      >
-        <Typography variant="button" style={{ textTransform: 'none' }}>
-            Comment
-        </Typography>
-      </Button>
+      <RatingButton />
+      <CommentButton />
       <Button
         onClick={() => window.alert('Not implemened 😇')}
         seriousButton

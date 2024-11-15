@@ -45,10 +45,10 @@ export const Navbar = () => {
           </section>
           <section>
             {username === '' ? (
-              <a className={classes.navbarLinks} tabIndex={tabIndex} onClick={handleOpenModal}>
+              <button className={classes.navbarLinks} tabIndex={tabIndex} onClick={handleOpenModal}>
                 <p>Sign in</p>
                 <LoginIcon fontSize="large"/>
-              </a>
+              </button>
             ) : (
               <>
                 <a className={classes.navbarLinks} href="/account" tabIndex={tabIndex}>
@@ -56,10 +56,10 @@ export const Navbar = () => {
                   <AccountCircleIcon fontSize="large"/>
                 </a>
                 <Seperator hasMargins/>
-                <a className={classes.navbarLinks} onClick={handleLogout} tabIndex={tabIndex}>
+                <button className={classes.navbarLinks} onClick={handleLogout} tabIndex={tabIndex}>
                   <p>Log out</p>
                   <LogoutIcon fontSize="large"/>
-                </a>
+                </button>
               </>
             )}
           </section>

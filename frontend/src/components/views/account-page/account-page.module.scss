@@ -1,0 +1,51 @@
+@use '@/mixins' as breakpoints;
+
+.accountPageContainer {
+    height: 100%;
+    background-color: var(--secondary-white);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    min-height: 50rem;
+    height: calc(100% - 4rem);
+    padding: 2rem;
+
+    .topSection {
+        display: inline-flex;
+        align-items: center;
+
+        .userCard {
+            height: 16rem;
+            background-color: var(--tertiary-white);
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            row-gap: 0.5rem;
+            width: 12rem;
+            padding: 1rem;
+            margin-right: 2rem;
+
+            >header {
+                font-size: 2rem;
+            }
+        }
+
+        .problemTypeChart {
+            width: 100%;
+            min-width: 12rem;
+            max-width: 20rem;
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
+
+        .activityChart {
+            height: 14rem;
+            margin-right: 2rem;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+    }
+}
