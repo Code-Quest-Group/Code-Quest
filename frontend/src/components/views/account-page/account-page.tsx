@@ -1,9 +1,14 @@
 import clsx from 'clsx'
 import classes from './account-page.module.scss'
 import { useLayout, useUser } from '../../../providers'
-import { Avatar, Button, Typography } from '@mui/material'
+import { Avatar, List, ListItem, ListItemText, Button as MuiButton, Typography } from '@mui/material'
 import ActivityCalendar from 'react-activity-calendar'
-import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer } from 'recharts'
+import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer, Tooltip } from 'recharts'
+import { Button, Seperator } from '../../utils'
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings'
+import { Create, Refresh } from '@mui/icons-material'
+import { useState } from 'react'
+import { AdminPanel } from './admin-panel'
 
 const data = [
   {
@@ -28,48 +33,84 @@ const data = [
   },
 ]
 
-const chartData = [
-  {
-    subject: 'Math',
-    A: 120,
-    B: 110,
-    fullMark: 150,
-  },
-  {
-    subject: 'Chinese',
-    A: 98,
-    B: 130,
-    fullMark: 150,
-  },
-  {
-    subject: 'English',
-    A: 86,
-    B: 130,
-    fullMark: 150,
-  },
-  {
-    subject: 'Geography',
-    A: 99,
-    B: 100,
-    fullMark: 150,
-  },
-  {
-    subject: 'Physics',
-    A: 85,
-    B: 90,
-    fullMark: 150,
-  },
-  {
-    subject: 'History',
-    A: 65,
-    B: 85,
-    fullMark: 150,
-  },
+const tmpProblems = [
+  { name: 'Add two numbers', href: '/problems/add-two-numbers' },
+  { name: 'Binary Search', href: '/problems/binary-search' },
+  { name: 'Graph Traversal', href: '/problems/graph-traversal' },
+  { name: 'Dynamic Programming', href: '/problems/dynamic-programming' },
+  { name: 'Greedy Algorithm', href: '/problems/greedy-algorithm' },
+  { name: 'Backtracking', href: '/problems/backtracking' },
+  { name: 'String Manipulation', href: '/problems/string-manipulation' },
+  { name: 'Array Operations', href: '/problems/array-operations' },
+  { name: 'Hashing Techniques', href: '/problems/hashing-techniques' },
+  { name: 'Divide and Conquer', href: '/problems/divide-and-conquer' },
+  { name: 'Tree Traversal', href: '/problems/tree-traversal' },
+  { name: 'Matrix Multiplication', href: '/problems/matrix-multiplication' },
+  { name: 'Bit Manipulation', href: '/problems/bit-manipulation' },
+  { name: 'Recursion Basics', href: '/problems/recursion-basics' },
+  { name: 'Queue Operations', href: '/problems/queue-operations' },
+  { name: 'Stack Implementation', href: '/problems/stack-implementation' },
+  { name: 'Linked List Basics', href: '/problems/linked-list-basics' },
+  { name: 'Heap Operations', href: '/problems/heap-operations' },
+  { name: 'Trie Implementation', href: '/problems/trie-implementation' },
+  { name: 'Network Flow Algorithms', href: '/problems/network-flow-algorithms' }
+]
+
+const tmpSubmissions = [
+  { name: 'Problem proposal 1', status: 'Declined' },
+  { name: 'Someones proposal 2', status: 'Approved' },
+  { name: 'Someones proposal 3', status: 'Pending' },
+  { name: 'Someones proposal 4', status: 'Approved' },
+  { name: 'Someones proposal 5', status: 'Declined' },
+  { name: 'Someones proposal 6', status: 'Pending' },
+  { name: 'Someones proposal 7', status: 'Approved' },
+  { name: 'Someones proposal 8', status: 'Declined' },
+  { name: 'Someones proposal 9', status: 'Pending' },
+  { name: 'Someones proposal 10', status: 'Approved' },
 ]
 
 const AccountPage = () => {
+  const [openAdminPanel, setOpenAdminPanel] = useState(false)
   const { username } = useUser()
   const { showNavbar } = useLayout()
+
+  const handleOpenAdminModal = () => setOpenAdminPanel(true)
+  const handleCloseAdminModal = () => setOpenAdminPanel(false)
+
+  const TOTAL_PROBLEMS_SOLVED = 150
+
+  const chartData = [
+    {
+      subject: 'Binary Search',
+      amount: 120,
+      fullMark: TOTAL_PROBLEMS_SOLVED,
+    },
+    {
+      subject: 'Linked Lists',
+      amount: 98,
+      fullMark: TOTAL_PROBLEMS_SOLVED,
+    },
+    {
+      subject: 'Recursion',
+      amount: 10,
+      fullMark: TOTAL_PROBLEMS_SOLVED,
+    },
+    {
+      subject: 'Dynamic Programming',
+      amount: 99,
+      fullMark: TOTAL_PROBLEMS_SOLVED,
+    },
+    {
+      subject: 'Graphs',
+      amount: 85,
+      fullMark: TOTAL_PROBLEMS_SOLVED,
+    },
+    {
+      subject: 'Sorting',
+      amount: 65,
+      fullMark: TOTAL_PROBLEMS_SOLVED,
+    },
+  ]
 
   return (
     <main className={clsx({'full-height': !showNavbar})}>
@@ -82,20 +123,27 @@ const AccountPage = () => {
               sx={{ width: 60, height: 60, fontSize: '2rem' }}
             />
             <header>{username}</header>
-            <Button
+            <MuiButton
               onClick={() => window.alert('Not implemened 😇')}
             >
               <Typography variant="button" style={{ textTransform: 'none' }}>
                 Settings
               </Typography>
-            </Button>
+            </MuiButton>
           </div>
           <div className={classes.problemTypeChart}>
-            <ResponsiveContainer minWidth={'12rem'}>
+            <ResponsiveContainer minWidth={'20rem'}>
               <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
                 <PolarGrid />
                 <PolarAngleAxis dataKey="subject" />
-                <Radar name="Mike" dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
+                <Radar
+                  name="Number of solved problems"
+                  dataKey="amount"
+                  stroke="#8884d8"
+                  fill="#8884d8"
+                  fillOpacity={0.6}
+                />
+                <Tooltip />
               </RadarChart>
             </ResponsiveContainer>
           </div>
@@ -109,7 +157,64 @@ const AccountPage = () => {
             />
           </div>
         </section>
+        <section className={classes.bottomSection}>
+          <div className={classes.solvedProblems}>
+            <header>Completed problems</header>
+            <List>
+              {tmpProblems.map((problem, index) => (
+                <ListItem key={index} component="a" href={problem.href}>
+                  <ListItemText primary={problem.name} />
+                </ListItem>
+              ))}
+            </List>
+          </div>
+          <div className={classes.submissionsAndAdminPanel}>
+            <div className={classes.buttonGroup}>
+              <Button
+                icon={<Create />}
+                popup={'Click to create new problem'}
+              >
+                <Typography variant="button" style={{ textTransform: 'none' }}>
+                  Add Problem
+                </Typography>
+              </Button>
+              <Button icon={<Refresh />} popup={'Click to refresh submissions'}>
+                <Typography variant="button" style={{ textTransform: 'none' }}>
+                  Refresh
+                </Typography>
+              </Button>
+              <Button
+                icon={<AdminPanelSettingsIcon />}
+                popup={'Click to open Admin Panel'}
+                onClick={handleOpenAdminModal}
+              >
+                <Typography variant="button" style={{ textTransform: 'none' }}>
+                  Admin
+                </Typography>
+              </Button>
+            </div>
+            <Seperator isHorizontal />
+            <div className={classes.submissions}>
+              <List>
+                {tmpSubmissions.map((submission, index) => (
+                  <ListItem key={index}>
+                    <ListItemText primary={submission.name} />
+                    <span className={clsx('inside-shadow',
+                      {
+                        [classes.approved]: submission.status === 'Approved',
+                        [classes.rejected]: submission.status === 'Declined'
+                      }
+                    )}>
+                      {submission.status}
+                    </span>
+                  </ListItem>
+                ))}
+              </List>
+            </div>
+          </div>
+        </section>
       </div>
+      <AdminPanel open={openAdminPanel} onClose={handleCloseAdminModal}/>
     </main>
   )
 }

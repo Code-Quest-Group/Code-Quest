@@ -10,7 +10,7 @@ export const CodeEditor = ({ className }: CodeEditorProps) => {
   const { code, setCode, currentLanguage } = useCodeEnvironment()
 
   return (
-    <div className='container'>
+    <div>
       <Seperator isHorizontal />
       <Editor
         key={`code-editor-${currentLanguage}`}

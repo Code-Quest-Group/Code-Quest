@@ -9,6 +9,7 @@
     min-height: 50rem;
     height: calc(100% - 4rem);
     padding: 2rem;
+    row-gap: 2rem;
 
     .topSection {
         display: inline-flex;
@@ -28,24 +29,140 @@
             margin-right: 2rem;
 
             >header {
-                font-size: 2rem;
+                font-size: 2.5rem;
             }
         }
 
         .problemTypeChart {
-            width: 100%;
-            min-width: 12rem;
-            max-width: 20rem;
+            width: 20rem;
+            height: 12rem;
             padding-left: 2rem;
             padding-right: 2rem;
         }
 
         .activityChart {
             height: 14rem;
-            margin-right: 2rem;
+            margin-left: 2rem;
             border-radius: 5px;
             display: flex;
             align-items: center;
+            overflow-x: hidden;
+        }
+    }
+
+    .bottomSection {
+        display: inline-flex;
+        align-items: center;
+
+        .solvedProblems {
+            width: 40%;
+            height: 30rem;
+            background-color: var(--tertiary-white);
+            border-radius: 5px;
+            margin-right: 4rem;
+            padding: 1rem;
+
+            >header {
+                font-size: 2rem;
+                margin-bottom: 1rem;
+            }
+
+            >ul {
+                max-height: calc(100% - 4rem);
+                padding: 0;
+                overflow-y: scroll;
+
+                >a {
+                    color: var(--font-primary-color);
+                    transition: background-color 0.25s ease-out;
+                    -webkit-transition: background-color 0.25s ease-out;
+                    -moz-transition: background-color 0.25s ease-out;
+                    -o-transition: background-color 0.25s ease-out;
+
+                    &:nth-child(odd) {
+                        background-color: var(--secondary-white);
+                    }
+
+                    &:nth-child(even) {
+                        background-color: var(--primary-white);
+                    }
+
+                    &:hover,
+                    &:focus-visible {
+                        background-color: #b4b4b6;
+                        outline: none;
+                    }
+                }
+            }
+        }
+
+        .submissionsAndAdminPanel {
+            height: 30rem;
+            background-color: var(--tertiary-white);
+            border-radius: 5px;
+            padding: 1rem;
+            width: calc(60% - 4rem);
+
+            .buttonGroup {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-around;
+                align-content: center;
+                column-gap: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .submissions {
+                margin-top: 1rem;
+                height: 28rem;
+
+                >ul {
+                    max-height: calc(100% - 4rem);
+                    padding: 0;
+                    overflow-y: scroll;
+
+                    >li {
+                        color: var(--font-primary-color);
+                        transition: background-color 0.25s ease-out;
+                        -webkit-transition: background-color 0.25s ease-out;
+                        -moz-transition: background-color 0.25s ease-out;
+                        -o-transition: background-color 0.25s ease-out;
+
+                        >span {
+                            padding: 0.25rem 0.5rem;
+                            width: 4.25rem;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-weight: 800;
+                            color: var(--secondary-orange);
+                        }
+
+                        .approved {
+                            color: var(--secondary-green);
+                        }
+
+                        .rejected {
+                            color: var(--primary-red);
+                        }
+
+                        &:nth-child(odd) {
+                            background-color: var(--secondary-white);
+                        }
+
+                        &:nth-child(even) {
+                            background-color: var(--primary-white);
+                        }
+
+                        &:hover,
+                        &:focus-visible {
+                            background-color: #b4b4b6;
+                            outline: none;
+                            cursor: pointer;
+                        }
+                    }
+                }
+            }
         }
     }
 }
