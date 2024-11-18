@@ -22,8 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
-import pl.agh.edu.wi.informatyka.codequest.problem.Problem;
 import pl.agh.edu.wi.informatyka.codequest.problem.ProblemsService;
+import pl.agh.edu.wi.informatyka.codequest.problem.model.Problem;
 import pl.agh.edu.wi.informatyka.codequest.sourcecode.PythonSourceCodePreprocessor;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.*;
 

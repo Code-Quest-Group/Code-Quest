@@ -2,6 +2,7 @@ package pl.agh.edu.wi.informatyka.codequest.problem;
 
 import java.util.*;
 import org.springframework.stereotype.Service;
+import pl.agh.edu.wi.informatyka.codequest.problem.model.Problem;
 
 @Service
 public class ProblemsService {

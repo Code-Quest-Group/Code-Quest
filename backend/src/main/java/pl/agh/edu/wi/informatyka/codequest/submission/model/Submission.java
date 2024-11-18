@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.time.ZonedDateTime;
 import lombok.Data;
-import pl.agh.edu.wi.informatyka.codequest.problem.Problem;
+import pl.agh.edu.wi.informatyka.codequest.problem.model.Problem;
 import pl.agh.edu.wi.informatyka.codequest.sourcecode.Language;
 import pl.agh.edu.wi.informatyka.codequest.user.model.User;
 

@@ -1,8 +1,8 @@
 package pl.agh.edu.wi.informatyka.codequest.submission.model;
 
 import org.springframework.stereotype.Component;
-import pl.agh.edu.wi.informatyka.codequest.problem.Problem;
 import pl.agh.edu.wi.informatyka.codequest.problem.ProblemsRepository;
+import pl.agh.edu.wi.informatyka.codequest.problem.model.Problem;
 
 @Component
 public class SubmissionMapper {

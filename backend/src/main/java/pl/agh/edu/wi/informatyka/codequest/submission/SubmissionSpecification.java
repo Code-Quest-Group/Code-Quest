@@ -4,7 +4,7 @@ import jakarta.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.data.jpa.domain.Specification;
-import pl.agh.edu.wi.informatyka.codequest.problem.Problem_;
+import pl.agh.edu.wi.informatyka.codequest.problem.model.Problem_;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.Submission;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.SubmissionQueryDTO;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.Submission_;

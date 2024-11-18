@@ -1,4 +1,4 @@
-package pl.agh.edu.wi.informatyka.codequest.problem;
+package pl.agh.edu.wi.informatyka.codequest.problem.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
