@@ -10,6 +10,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 import pl.agh.edu.wi.informatyka.codequest.util.GenericResponse;
+import pl.agh.edu.wi.informatyka.codequest.util.ResponseStatus;
 
 @Component
 public class OAuth2LoginFailureHandler implements AuthenticationFailureHandler {
@@ -23,6 +24,7 @@ public class OAuth2LoginFailureHandler implements AuthenticationFailureHandler {
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType("application/json");
         response.getWriter()
-                .write(objectMapper.writeValueAsString(new GenericResponse<>(false, exception.getMessage(), null)));
+                .write(objectMapper.writeValueAsString(
+                        new GenericResponse<>(ResponseStatus.ERROR, exception.getMessage(), null)));
     }
 }

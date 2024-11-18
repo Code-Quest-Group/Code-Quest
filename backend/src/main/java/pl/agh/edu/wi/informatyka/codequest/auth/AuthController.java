@@ -10,6 +10,7 @@ import pl.agh.edu.wi.informatyka.codequest.auth.model.LoginUserDTO;
 import pl.agh.edu.wi.informatyka.codequest.auth.model.RegisterUserDTO;
 import pl.agh.edu.wi.informatyka.codequest.user.model.User;
 import pl.agh.edu.wi.informatyka.codequest.util.GenericResponse;
+import pl.agh.edu.wi.informatyka.codequest.util.ResponseStatus;
 
 @RestController
 @RequestMapping("/auth")
@@ -26,7 +27,7 @@ public class AuthController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(GenericResponse.builder()
-                        .success(true)
+                        .status(ResponseStatus.OK)
                         .message("User registered successfully")
                         .data(Map.of("user_id", user.getUserId()))
                         .build());
@@ -40,12 +41,12 @@ public class AuthController {
             String token = authService.generateJWTToken(user);
             return ResponseEntity.ok(GenericResponse.<AuthResponseDTO>builder()
                     .data(new AuthResponseDTO(token))
-                    .success(true)
+                    .status(ResponseStatus.OK)
                     .build());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(GenericResponse.<AuthResponseDTO>builder()
-                            .success(false)
+                            .status(ResponseStatus.ERROR)
                             .message(e.getMessage())
                             .build());
         }
@@ -55,7 +56,7 @@ public class AuthController {
     public ResponseEntity<GenericResponse<String>> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(GenericResponse.<String>builder()
-                        .success(false)
+                        .status(ResponseStatus.ERROR)
                         .message("User already exists: " + ex.getMessage())
                         .build());
     }

@@ -12,6 +12,7 @@ import pl.agh.edu.wi.informatyka.codequest.auth.AuthService;
 import pl.agh.edu.wi.informatyka.codequest.auth.model.AuthResponseDTO;
 import pl.agh.edu.wi.informatyka.codequest.user.model.User;
 import pl.agh.edu.wi.informatyka.codequest.util.GenericResponse;
+import pl.agh.edu.wi.informatyka.codequest.util.ResponseStatus;
 
 @Component
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
@@ -40,7 +41,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         GenericResponse<AuthResponseDTO> genericResponse = GenericResponse.<AuthResponseDTO>builder()
                 .data(new AuthResponseDTO(token))
-                .success(true)
+                .status(ResponseStatus.OK)
                 .build();
 
         response.setContentType("application/json");
