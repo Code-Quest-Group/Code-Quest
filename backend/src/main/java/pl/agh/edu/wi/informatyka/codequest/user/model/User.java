@@ -25,6 +25,10 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(name = "user_role", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role userRole;
+
     @JsonIgnore
     @Column(name = "password_hash")
     private String passwordHash;
