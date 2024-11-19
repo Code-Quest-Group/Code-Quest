@@ -6,6 +6,8 @@ import { Navbar } from './components/utils/nav-bar'
 import { LayoutProvider } from './providers/'
 import { UserProvider } from './providers/user-provider/user-provider'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
+import NotFoundPage from './components/views/not-found-page/not-found-page'
+import { LoadingPage } from './components/views/loading-page/loading-page'
 
 const ProblemList = React.lazy(() => import('./components/views/problem-list/problem-list'))
 const ProblemDetails = React.lazy(() => import('./components/views/problem-details/problem-details'))
@@ -28,7 +30,7 @@ function App() {
               draggable
             />
             <Navbar />
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<LoadingPage />}>
               <Routes>
                 <Route
                   path="/"
@@ -64,13 +66,24 @@ function App() {
                   }
                 />
                 <Route
-                  path="/account"
+                  path="/account/:username"
                   element={
                     <>
                       <Helmet>
                         <meta name="description" content="Users account page" />
                       </Helmet>
                       <AccountPage />
+                    </>
+                  }
+                />
+                <Route
+                  path="*"
+                  element={
+                    <>
+                      <Helmet>
+                        <meta name="description" content="Page not found" />
+                      </Helmet>
+                      <NotFoundPage />
                     </>
                   }
                 />

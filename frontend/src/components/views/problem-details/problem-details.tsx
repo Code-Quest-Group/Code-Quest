@@ -2,7 +2,7 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen'
 import { IconButton, Typography } from '@mui/material'
 import clsx from 'clsx'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { CodeEnvironmentProvider, useLayout } from '../../../providers'
 import { ProblemService } from '../../../services/problem-service'
 import { Problem } from '../../../types'
@@ -22,6 +22,7 @@ const ProblemDetails = () => {
   const [error, setError] = useState<string | null>(null)
   const { showNavbar } = useLayout()
   const fullScreenHandle = useFullScreenHandle()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchProblem = async() => {
@@ -37,8 +38,9 @@ const ProblemDetails = () => {
     fetchProblem()
   }, [problemId])
 
-  if (error) {
-    return <h1>{error}</h1>
+  if (error && !problem) {
+    navigate('/not-found')
+    return
   }
 
   if (!problem) {

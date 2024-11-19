@@ -16,7 +16,7 @@ export const ProblemDetailsDescription = ({ classes }: ProblemDetailsDescription
         <p>{problem.rating ?? 5} / 5</p>
       </section>
 
-      <TagsList tags={['hard', 'easy', 'numbers']} />
+      <TagsList tags={problem.tags ?? ['Linked Lists', 'Binary Search', 'Recursion']} />
       <div className={classes.whiteBackgroundDescription}>
         <p>{problem.description}</p>
       </div>

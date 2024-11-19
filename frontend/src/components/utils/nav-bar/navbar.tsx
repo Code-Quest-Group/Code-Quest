@@ -31,6 +31,7 @@ export const Navbar = () => {
     toast.info('Logged out')
 
     navigate('/problems')
+    window.location.reload()
   }
 
   const tabIndex = showNavbar ? 0 : -1
@@ -51,7 +52,7 @@ export const Navbar = () => {
               </button>
             ) : (
               <>
-                <a className={classes.navbarLinks} href="/account" tabIndex={tabIndex}>
+                <a className={classes.navbarLinks} href={`/account/${username}`} tabIndex={tabIndex}>
                   <p>{username}</p>
                   <AccountCircleIcon fontSize="large"/>
                 </a>

@@ -14,8 +14,8 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import { TagsList } from '../../utils/tags-list/tags-list'
 
-const MAXIMUM_PROBLEMS: number = 7
-const tmpTags = ['Dadamio', 'hard', 'ultra easy']
+const MAXIMUM_PROBLEMS: number = 14
+const tmpTags = ['Linked Lists', 'Binary Search', 'Recursion']
 
 const ProblemList = () => {
   const [problems, setProblems] = useState<Problem[]>([ ])
@@ -101,7 +101,6 @@ const ProblemList = () => {
               </li>
             ))}
           </ul>
-          <div className={classes.filler} />
         </section>
         <section className={classes.bottomSection}>
           <Seperator isHorizontal />

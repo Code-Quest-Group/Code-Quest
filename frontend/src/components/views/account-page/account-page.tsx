@@ -14,7 +14,7 @@ const data = [
   {
     date:'2024-01-01',
     count: 3,
-    level: 1
+    level: 2
   },
   {
     date: '2024-06-23',
@@ -81,32 +81,32 @@ const AccountPage = () => {
 
   const chartData = [
     {
-      subject: 'Binary Search',
+      problemType: 'Binary Search',
       amount: 120,
       fullMark: TOTAL_PROBLEMS_SOLVED,
     },
     {
-      subject: 'Linked Lists',
+      problemType: 'Linked Lists',
       amount: 98,
       fullMark: TOTAL_PROBLEMS_SOLVED,
     },
     {
-      subject: 'Recursion',
+      problemType: 'Recursion',
       amount: 10,
       fullMark: TOTAL_PROBLEMS_SOLVED,
     },
     {
-      subject: 'Dynamic Programming',
+      problemType: 'Dynamic Programming',
       amount: 99,
       fullMark: TOTAL_PROBLEMS_SOLVED,
     },
     {
-      subject: 'Graphs',
+      problemType: 'Graphs',
       amount: 85,
       fullMark: TOTAL_PROBLEMS_SOLVED,
     },
     {
-      subject: 'Sorting',
+      problemType: 'Sorting',
       amount: 65,
       fullMark: TOTAL_PROBLEMS_SOLVED,
     },
@@ -135,7 +135,7 @@ const AccountPage = () => {
             <ResponsiveContainer minWidth={'20rem'}>
               <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
                 <PolarGrid />
-                <PolarAngleAxis dataKey="subject" />
+                <PolarAngleAxis dataKey="problemType" />
                 <Radar
                   name="Number of solved problems"
                   dataKey="amount"

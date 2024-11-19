@@ -23,6 +23,7 @@ const tmpProblemProposals: Proposal[] = [
     correctSolution: 'Some solution...',
     constraints: '0 < num < 10',
     example: '[3, 2, 3, 1] => [1, 2, 3, 3]',
+    tags: ['huh'],
   },
   {
     name: 'Find Maximum Subarray',
@@ -32,6 +33,7 @@ const tmpProblemProposals: Proposal[] = [
     correctSolution: 'Use Kadane’s Algorithm to find the maximum subarray sum.',
     constraints: '-10^4 <= nums[i] <= 10^4, 1 <= nums.length <= 10^5',
     example: '[1, -2, 3, 4, -1, 2, 1, -5, 4] => 8',
+    tags: ['huh'],
   },
 ]
 

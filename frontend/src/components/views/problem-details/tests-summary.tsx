@@ -35,7 +35,9 @@ export const TestsSummary = ({
           <li key={index}>
             <Button onClick={() => setCurrentTestIndex(index + 1)}>
               <Typography variant="button" style={{ fontWeight: (index + 1 === currentTestIndex) ? 'bold' : 'normal' }}>
-                Test Case {index + 1}:
+                <p>Test</p>
+                {' '}
+                Case {index + 1}:
               </Typography>
               {failingTests[index] ? <CancelIcon color='error' /> : <CheckCircleIcon color="success" />}
             </Button>
