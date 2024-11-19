@@ -5,8 +5,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
@@ -41,8 +43,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         userService.loadUserById(username).orElseThrow(() -> new UsernameNotFoundException(username));
 
                 if (jwtUtil.isTokenValid(jwt)) {
-                    UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(user, null, null);
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                            user, null, List.of(new SimpleGrantedAuthority("ROLE_" + user.getUserRole())));
 
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }

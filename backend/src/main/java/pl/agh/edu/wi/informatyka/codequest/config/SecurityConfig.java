@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import pl.agh.edu.wi.informatyka.codequest.auth.jwt.JwtAuthenticationFilter;
 import pl.agh.edu.wi.informatyka.codequest.auth.oauth2.OAuth2LoginFailureHandler;
 import pl.agh.edu.wi.informatyka.codequest.auth.oauth2.OAuth2LoginSuccessHandler;
+import pl.agh.edu.wi.informatyka.codequest.user.model.Role;
 
 @Configuration
 @EnableWebSecurity
@@ -35,16 +36,15 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // TODO implement permissions
         http.authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.PUT, "/submissions/webhook")
                         .permitAll()
                         .requestMatchers("/submissions/**", "/user/**")
-                        .authenticated()
+                        .hasAnyRole(Role.USER.name(), Role.ADMIN.name())
                         .requestMatchers(HttpMethod.POST, "/problems/**")
-                        .authenticated()
+                        .hasRole(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.DELETE, "/problems/**")
-                        .authenticated()
+                        .hasRole(Role.ADMIN.name())
                         .anyRequest()
                         .permitAll())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
