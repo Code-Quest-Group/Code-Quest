@@ -62,6 +62,10 @@ public class User {
         if (userId == null) {
             userId = UUID.randomUUID().toString();
         }
+
+        if (userRole == null) {
+            userRole = Role.USER;
+        }
     }
 
     @Override
