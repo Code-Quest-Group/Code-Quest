@@ -89,6 +89,7 @@
                 >p {
                     font-size: 1.5rem;
                     margin-left: auto;
+                    white-space: nowrap;
                 }
             }
 
@@ -164,8 +165,21 @@
                     margin: 0.5rem 0 0.5rem 1rem;
                     list-style: none;
                     border-radius: 5px;
+                    max-height: 12rem;
+                    overflow-y: auto;
+                    overflow-x: hidden;
 
                     >li {
+
+                        p {
+                            margin: 0;
+                            display: inline-flex;
+
+                            @include breakpoints.for-phones {
+                                display: none;
+                            }
+                        }
+
                         button {
                             color: var(--pimary-dark);
                             font-family: ver(--primary-font-family) !important;
@@ -176,12 +190,17 @@
                             }
                         }
                     }
+
+                    @include breakpoints.for-phones {
+                        margin-left: 0.5rem;
+                        padding-left: 0.25rem;
+                    }
                 }
 
                 >div {
                     margin: 0.5rem 1rem;
                     background-color: var(--primary-white);
-                    width: 75%;
+                    width: 74%;
                     border-radius: 5px;
                     padding: 0.5rem 1rem;
 
@@ -193,6 +212,10 @@
 
                     p {
                         margin-top: 0.75rem;
+                    }
+
+                    @include breakpoints.for-phones {
+                        width: 60%;
                     }
                 }
             }

@@ -27,7 +27,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     if (token && username && userId) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
     }
-    
+
     const interceptor = axios.interceptors.request.use(
       (config) => {
         if (token) {

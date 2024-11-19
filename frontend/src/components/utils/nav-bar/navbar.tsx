@@ -31,6 +31,7 @@ export const Navbar = () => {
     toast.info('Logged out')
 
     navigate('/problems')
+    window.location.reload()
   }
 
   const tabIndex = showNavbar ? 0 : -1
@@ -45,21 +46,21 @@ export const Navbar = () => {
           </section>
           <section>
             {username === '' ? (
-              <a className={classes.navbarLinks} tabIndex={tabIndex} onClick={handleOpenModal}>
+              <button className={classes.navbarLinks} tabIndex={tabIndex} onClick={handleOpenModal}>
                 <p>Sign in</p>
                 <LoginIcon fontSize="large"/>
-              </a>
+              </button>
             ) : (
               <>
-                <a className={classes.navbarLinks} href="/account" tabIndex={tabIndex}>
+                <a className={classes.navbarLinks} href={`/account/${username}`} tabIndex={tabIndex}>
                   <p>{username}</p>
                   <AccountCircleIcon fontSize="large"/>
                 </a>
                 <Seperator hasMargins/>
-                <a className={classes.navbarLinks} onClick={handleLogout} tabIndex={tabIndex}>
+                <button className={classes.navbarLinks} onClick={handleLogout} tabIndex={tabIndex}>
                   <p>Log out</p>
                   <LogoutIcon fontSize="large"/>
-                </a>
+                </button>
               </>
             )}
           </section>

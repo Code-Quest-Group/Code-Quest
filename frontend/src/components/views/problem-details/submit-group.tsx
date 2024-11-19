@@ -8,7 +8,7 @@ import { Button } from '../../utils'
 import { parseRawResults } from './problem-details.utils'
 import PlayCircleFilledWhiteIcon from '@mui/icons-material/PlayCircleFilledWhite'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
-import EditNoteIcon from '@mui/icons-material/EditNote'
+import { CustomTestButton } from './custom-test-button'
 
 type SubmitButtonGroupProps = {
     className: string
@@ -100,15 +100,7 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
 
   return (
     <div className={className}>
-      <Button
-        onClick={() => window.alert('Not implemened 😇')}
-        icon={<EditNoteIcon />}
-        popup={'Click to run custom test case'}
-      >
-        <Typography variant="button" style={{ textTransform: 'none' }}>
-           Custom Test Case
-        </Typography>
-      </Button>
+      <CustomTestButton />
       <Button
         onClick={() => window.alert('Not implemened 😇')}
         icon={<PlayArrowIcon />}

@@ -7,7 +7,7 @@ export const CodeQuestLogo = () => {
       component="img"
       src={logo}
       alt="CodeQuest Logo"
-      sx={{ width: '120px', height: 'auto', marginLeft: '0.5rem' }}
+      sx={{ width: 'auto', height: 'auto', marginLeft: '0.5rem' }}
     />
   )
 }

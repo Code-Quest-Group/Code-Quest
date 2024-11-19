@@ -49,19 +49,21 @@
             margin-left: auto;
         }
 
-        >span {
-            @include breakpoints.for-tablets {
+        @include breakpoints.for-tablets {
+
+            >span {
                 display: none !important;
             }
         }
 
-        >a {
-            @include breakpoints.for-tablets {
-                margin-left: 0 !important;
+        @include breakpoints.for-tablets {
 
-                >p {
-                    display: none !important;
-                }
+            >a {
+                margin-left: 0 !important;
+            }
+
+            p {
+                display: none !important;
             }
         }
     }
@@ -74,6 +76,8 @@
         align-items: center;
         justify-content: center;
         margin: 0 1rem;
+        background-color: inherit;
+        border: none;
 
         &:hover {
             cursor: pointer;

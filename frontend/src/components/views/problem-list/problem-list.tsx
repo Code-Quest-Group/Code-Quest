@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useLayout } from '../../../providers'
 import { ProblemService } from '../../../services/problem-service'
 import { Problem } from '../../../types'
@@ -14,13 +14,15 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import { TagsList } from '../../utils/tags-list/tags-list'
 
-const MAXIMUM_PROBLEMS: number = 7
+const MAXIMUM_PROBLEMS: number = 14
+const tmpTags = ['Linked Lists', 'Binary Search', 'Recursion']
 
 const ProblemList = () => {
   const [problems, setProblems] = useState<Problem[]>([ ])
   const [filteredProblems, setFilteredProblems] = useState<Problem[]>([ ])
   const [searchTerm, setSearchTerm] = useState('')
   const { showNavbar } = useLayout()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchProblems = async() => {
@@ -36,8 +38,16 @@ const ProblemList = () => {
     fetchProblems()
   }, [])
 
-  const tmpTags = ['Dadamio', 'hard', 'ultra easy']
   const truncateName = (str: string) => str.length > 20 ? str.slice(0, 20) + '...' : str
+
+  const pickRandomProblem = () => {
+    if (problems.length === 0) {
+      return null
+    }
+
+    const randomProblem = problems[Math.floor(Math.random() * problems.length)]
+    navigate(`/problems/${randomProblem.problemId}`)
+  }
 
   useEffect(() => {
     const filtered = problems.filter((problem) =>
@@ -56,7 +66,11 @@ const ProblemList = () => {
                 Recommended Problem
               </Typography>
             </Button>
-            <Button icon={<ShuffleOnIcon />} popup={'Click to open random problem'}>
+            <Button
+              icon={<ShuffleOnIcon />}
+              popup={'Click to open random problem'}
+              onClick={pickRandomProblem}
+            >
               <Typography variant="button" style={{ textTransform: 'none' }}>
                 Pick Random
               </Typography>
@@ -87,7 +101,6 @@ const ProblemList = () => {
               </li>
             ))}
           </ul>
-          <div className={classes.filler} />
         </section>
         <section className={classes.bottomSection}>
           <Seperator isHorizontal />
