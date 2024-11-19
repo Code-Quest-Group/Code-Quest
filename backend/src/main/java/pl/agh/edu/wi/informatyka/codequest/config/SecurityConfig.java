@@ -39,6 +39,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.PUT, "/submissions/webhook")
                         .permitAll()
+                        .requestMatchers(HttpMethod.POST, "/submissions/")
+                        .hasRole(Role.ADMIN.name())
                         .requestMatchers("/submissions/**", "/user/**")
                         .hasAnyRole(Role.USER.name(), Role.ADMIN.name())
                         .requestMatchers(HttpMethod.POST, "/problems/**")
