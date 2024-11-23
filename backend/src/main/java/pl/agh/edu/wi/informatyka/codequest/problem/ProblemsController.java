@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import pl.agh.edu.wi.informatyka.codequest.problem.dto.CreateProblemDTO;
 import pl.agh.edu.wi.informatyka.codequest.problem.dto.CreateProblemResponse;
 import pl.agh.edu.wi.informatyka.codequest.problem.model.Problem;
@@ -30,10 +29,7 @@ public class ProblemsController {
 
     @GetMapping("/{problemId}")
     public Problem getProblems(@PathVariable @Parameter(example = "add-two-numbers") String problemId) {
-        return problemsService
-                .getProblem(problemId)
-                .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Problem " + problemId + " not found"));
+        return problemsService.getProblemOrThrow(problemId);
     }
 
     @GetMapping()

@@ -1,5 +1,7 @@
 package pl.agh.edu.wi.informatyka.codequest.sourcecode;
 
+import pl.agh.edu.wi.informatyka.codequest.codetemplate.model.CodeTemplate;
+
 /**
  * This interface is responsible for taking user code submission, validating it and adding logic responsible for parsing
  * the test cases from stdin. <br>
@@ -26,4 +28,7 @@ package pl.agh.edu.wi.informatyka.codequest.sourcecode;
 public interface SourceCodePreprocessor {
 
     String assembleSourceCode(String code);
+
+    /** Assemble source code together with internal solution for custom submissions */
+    String assembleSourceCode(String sourceCode, CodeTemplate codeTemplate);
 }

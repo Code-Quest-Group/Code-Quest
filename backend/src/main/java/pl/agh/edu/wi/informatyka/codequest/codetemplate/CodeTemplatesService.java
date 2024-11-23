@@ -9,7 +9,9 @@ import pl.agh.edu.wi.informatyka.codequest.codetemplate.dto.CodeTemplateQueryDTO
 import pl.agh.edu.wi.informatyka.codequest.codetemplate.dto.CreateCodeTemplateDTO;
 import pl.agh.edu.wi.informatyka.codequest.codetemplate.dto.CreateCodeTemplateResponse;
 import pl.agh.edu.wi.informatyka.codequest.codetemplate.model.CodeTemplate;
+import pl.agh.edu.wi.informatyka.codequest.codetemplate.model.TemplateType;
 import pl.agh.edu.wi.informatyka.codequest.problem.ProblemsRepository;
+import pl.agh.edu.wi.informatyka.codequest.submission.dto.CreateSubmissionDTO;
 import pl.agh.edu.wi.informatyka.codequest.util.GenericResponse;
 import pl.agh.edu.wi.informatyka.codequest.util.ResponseStatus;
 
@@ -56,5 +58,14 @@ public class CodeTemplatesService {
 
     public void deleteCodeTemplate(Long codeTemplateId) {
         this.codeTemplatesRepository.deleteById(codeTemplateId);
+    }
+
+    public CodeTemplate getSolutionCodeTemplate(CreateSubmissionDTO dto) {
+        CodeTemplate codeTemplate = this.codeTemplatesRepository
+                .findByProblemIdAndLanguageAndTemplateType(
+                        dto.getProblemId(), dto.getLanguage(), TemplateType.REFERENCE_SOLUTION)
+                .orElseThrow(() -> new IllegalArgumentException("CodeTemplate not found"));
+
+        return codeTemplate;
     }
 }

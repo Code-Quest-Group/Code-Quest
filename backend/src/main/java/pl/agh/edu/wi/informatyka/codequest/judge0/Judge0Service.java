@@ -1,0 +1,130 @@
+package pl.agh.edu.wi.informatyka.codequest.judge0;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.util.UriComponentsBuilder;
+import pl.agh.edu.wi.informatyka.codequest.problem.model.Problem;
+import pl.agh.edu.wi.informatyka.codequest.submission.dto.CreateCustomSubmissionDTO;
+import pl.agh.edu.wi.informatyka.codequest.submission.dto.CreateSubmissionDTO;
+import pl.agh.edu.wi.informatyka.codequest.submission.dto.Judge0SubmissionResultDTO;
+import pl.agh.edu.wi.informatyka.codequest.submission.event.SubmissionExecutionCompletedEvent;
+
+/** Service responsible for handling communication with Judge0 */
+@Service
+public class Judge0Service {
+    Logger logger = LoggerFactory.getLogger(Judge0Service.class);
+
+    private final ApplicationEventPublisher eventPublisher;
+
+    private final String judgingServiceUrl;
+
+    private final Map<String, Judge0SubmissionResultDTO> judgeResults = new HashMap<>();
+    private final ObjectMapper objectMapper;
+
+    public Judge0Service(
+            ApplicationEventPublisher eventPublisher,
+            @Value("${judge0.service.url}") String judgingServiceUrl,
+            ObjectMapper objectMapper) {
+        this.eventPublisher = eventPublisher;
+
+        this.judgingServiceUrl = judgingServiceUrl;
+        this.objectMapper = objectMapper;
+        logger.info("Judge 0 service url: {}", judgingServiceUrl);
+    }
+
+    public void handleSubmissionWebhook(Judge0SubmissionResultDTO submissionResultDTO) {
+        if (judgeResults.containsKey(submissionResultDTO.getToken())) {
+            Judge0SubmissionResultDTO previousSubmissionResultDTO = judgeResults.get(submissionResultDTO.getToken());
+            if (Objects.equals(
+                    previousSubmissionResultDTO.getJudge0Status().getId(),
+                    submissionResultDTO.getJudge0Status().getId())) {
+                logger.debug("Ignoring duplicate submission webhook {}", submissionResultDTO.getToken());
+                return;
+            }
+        }
+        judgeResults.put(submissionResultDTO.getToken(), submissionResultDTO);
+        logger.info("Submission {} finished processing.", submissionResultDTO.getToken());
+
+        URI uri = UriComponentsBuilder.fromHttpUrl(judgingServiceUrl)
+                .pathSegment("submissions", submissionResultDTO.getToken())
+                .queryParam("fields", "*")
+                .build()
+                .toUri();
+
+        // this retrieves data for the same token, because the Judge0 webhook returns only a subset of data and a Base64
+        // encoded stdout
+        final Judge0SubmissionResultDTO fullSubmissionResultDTO =
+                new RestTemplate().getForObject(uri, Judge0SubmissionResultDTO.class);
+
+        if (fullSubmissionResultDTO == null) {
+            logger.error("Submission {} not found in judge0.", submissionResultDTO.getToken());
+            return;
+        }
+        this.eventPublisher.publishEvent(new SubmissionExecutionCompletedEvent(this, fullSubmissionResultDTO));
+    }
+
+    public String postSubmission(Map<String, String> judge0Args) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            String jsonBody = objectMapper.writeValueAsString(judge0Args);
+
+            HttpEntity<String> request = new HttpEntity<>(jsonBody, headers);
+
+            RestTemplate restTemplate = new RestTemplate();
+            JsonNode jsonResponse =
+                    restTemplate.postForObject(judgingServiceUrl + "/submissions", request, JsonNode.class);
+            if (jsonResponse == null)
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "No token returned???");
+
+            String token = jsonResponse.get("token").textValue();
+            logger.debug("Submission {}  send to judge0", token);
+
+            return token;
+        } catch (Exception e) {
+            logger.error("Failed to post submission to judge0: {}", e.getMessage(), e);
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR, "Failed to post submission to judge0: " + e.getMessage());
+        }
+    }
+
+    public Map<String, String> assembleSubmissionArgs(
+            CreateSubmissionDTO createSubmissionDTO, Problem currentProblem, String code) {
+        String commandLineArgs = "\"" + currentProblem.getInputFormat() + "\"";
+        Map<String, String> map = new HashMap<>();
+        map.put("source_code", code);
+        map.put("language_id", createSubmissionDTO.getLanguage().getLanguageId());
+        map.put("command_line_arguments", commandLineArgs);
+        map.put("stdin", currentProblem.getTestCases());
+        map.put("callback_url", "http://host.docker.internal:8080/judge0/webhook");
+        return map;
+    }
+
+    public Map<String, String> assembleCustomSubmissionArgs(
+            CreateCustomSubmissionDTO createCustomSubmissionDTO, Problem currentProblem, String code) {
+        String commandLineArgs =
+                "\"" + currentProblem.getInputFormat() + "\" " + "--validate-input-types --run-system-solution";
+        Map<String, String> map = new HashMap<>();
+        map.put("source_code", code);
+        map.put("language_id", createCustomSubmissionDTO.getLanguage().getLanguageId());
+        map.put("command_line_arguments", commandLineArgs);
+        map.put("stdin", createCustomSubmissionDTO.getCustomTestcases());
+        map.put("callback_url", "http://host.docker.internal:8080/judge0/webhook");
+        return map;
+    }
+}

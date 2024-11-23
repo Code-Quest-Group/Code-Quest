@@ -3,6 +3,7 @@ package pl.agh.edu.wi.informatyka.codequest.sourcecode;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import pl.agh.edu.wi.informatyka.codequest.codetemplate.model.CodeTemplate;
 
 public class PythonSourceCodePreprocessor implements SourceCodePreprocessor {
     private final String parserCode;
@@ -14,5 +15,10 @@ public class PythonSourceCodePreprocessor implements SourceCodePreprocessor {
     @Override
     public String assembleSourceCode(String code) {
         return code + "\n\n" + parserCode;
+    }
+
+    @Override
+    public String assembleSourceCode(String sourceCode, CodeTemplate codeTemplate) {
+        return codeTemplate.getCode() + "\n\n" + sourceCode + "\n\n" + parserCode;
     }
 }

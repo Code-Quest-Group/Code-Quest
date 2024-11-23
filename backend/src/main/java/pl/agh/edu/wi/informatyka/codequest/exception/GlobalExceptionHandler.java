@@ -9,6 +9,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import pl.agh.edu.wi.informatyka.codequest.util.GenericResponse;
 import pl.agh.edu.wi.informatyka.codequest.util.ResponseStatus;
@@ -40,12 +41,12 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleAllExceptions(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Object> handleAllExceptions(ResponseStatusException ex) {
+        return ResponseEntity.status(ex.getStatusCode())
                 .body(GenericResponse.builder()
                         .status(ResponseStatus.ERROR)
-                        .message("Internal Server Error")
+                        .message("Resource Not Found")
                         .data(ex.getMessage())
                         .build());
     }

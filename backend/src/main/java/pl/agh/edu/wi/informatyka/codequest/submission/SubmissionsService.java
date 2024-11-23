@@ -1,30 +1,25 @@
 package pl.agh.edu.wi.informatyka.codequest.submission;
 
-import static pl.agh.edu.wi.informatyka.codequest.sourcecode.Language.PYTHON;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.net.URI;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.util.UriComponentsBuilder;
+import pl.agh.edu.wi.informatyka.codequest.codetemplate.CodeTemplatesService;
+import pl.agh.edu.wi.informatyka.codequest.codetemplate.model.CodeTemplate;
+import pl.agh.edu.wi.informatyka.codequest.judge0.Judge0Service;
 import pl.agh.edu.wi.informatyka.codequest.problem.ProblemsService;
 import pl.agh.edu.wi.informatyka.codequest.problem.model.Problem;
-import pl.agh.edu.wi.informatyka.codequest.sourcecode.PythonSourceCodePreprocessor;
+import pl.agh.edu.wi.informatyka.codequest.sourcecode.CodePreprocessorFactory;
+import pl.agh.edu.wi.informatyka.codequest.sourcecode.SourceCodePreprocessor;
+import pl.agh.edu.wi.informatyka.codequest.submission.dto.*;
+import pl.agh.edu.wi.informatyka.codequest.submission.event.SubmissionExecutionCompletedEvent;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.*;
 
 @Service
@@ -32,80 +27,87 @@ public class SubmissionsService {
 
     Logger logger = LoggerFactory.getLogger(SubmissionsService.class);
 
-    private final ProblemsService problemsService;
-
     private final SubmissionsRepository submissionsRepository;
+    private final SubmissionVerifierService submissionVerifierService;
+    private final ProblemsService problemsService;
+    private final CodeTemplatesService codeTemplatesService;
+    private final CodePreprocessorFactory codePreprocessorFactory;
 
     private final SubmissionMapper submissionMapper;
 
-    private final String judgingServiceUrl;
+    private final Judge0Service judge0Service;
 
-    @Value("${language.parsers.resources.path}")
-    private String resourcesPath;
+    private final Map<String, CustomSubmission> customSubmissions = new ConcurrentHashMap<>();
+    private final Map<String, String> customSubmissionTokenMapping = new ConcurrentHashMap<>();
 
     public SubmissionsService(
             ProblemsService problemsService,
+            CodeTemplatesService codeTemplatesService,
+            CodePreprocessorFactory codePreprocessorFactory,
             SubmissionsRepository submissionsRepository,
+            SubmissionVerifierService submissionVerifierService,
             SubmissionMapper submissionMapper,
-            @Value("${judge0.service.url}") String judgingServiceUrl) {
+            Judge0Service judge0Service) {
         this.problemsService = problemsService;
+        this.codeTemplatesService = codeTemplatesService;
+        this.codePreprocessorFactory = codePreprocessorFactory;
         this.submissionsRepository = submissionsRepository;
-        this.judgingServiceUrl = judgingServiceUrl;
-        logger.info("Judge 0 service url: {}", judgingServiceUrl);
+        this.submissionVerifierService = submissionVerifierService;
         this.submissionMapper = submissionMapper;
+        this.judge0Service = judge0Service;
     }
 
-    public long submitSubmission(CreateSubmissionDTO createSubmissionDTO) throws IOException {
-        HttpEntity<String> request = assembleJudgeRequest(createSubmissionDTO);
+    public String submitSubmission(CreateSubmissionDTO createSubmissionDTO) {
+        String code;
+        try {
+            SourceCodePreprocessor codePreprocessor =
+                    this.codePreprocessorFactory.getCodePreprocessor(createSubmissionDTO.getLanguage());
+            code = codePreprocessor.assembleSourceCode(createSubmissionDTO.getSourceCode());
+        } catch (IOException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR, "Failed to assemble submission request: " + e.getMessage());
+        }
 
-        RestTemplate restTemplate = new RestTemplate();
-        JsonNode jsonResponse = restTemplate.postForObject(judgingServiceUrl + "/submissions", request, JsonNode.class);
-        if (jsonResponse == null)
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "No token returned???");
+        Problem currentProblem = problemsService.getProblemOrThrow(createSubmissionDTO.getProblemId());
+        Map<String, String> judge0args =
+                judge0Service.assembleSubmissionArgs(createSubmissionDTO, currentProblem, code);
 
-        String token = jsonResponse.get("token").textValue();
+        logger.info("Submission judge0args: {}", judge0args);
+
+        String token = judge0Service.postSubmission(judge0args);
         Submission submission = this.submissionMapper.createEntityFromDto(createSubmissionDTO);
         submission.setToken(token);
-
         submission = submissionsRepository.save(submission);
-        logger.info(
-                "Submission {} created for {} in {}",
-                submission.getToken(),
-                submission.getProblem().getProblemId(),
-                submission.getLanguage());
         return submission.getSubmissionId();
     }
 
-    private HttpEntity<String> assembleJudgeRequest(CreateSubmissionDTO createSubmissionDTO) throws IOException {
-        PythonSourceCodePreprocessor codePreprocessor = new PythonSourceCodePreprocessor(resourcesPath);
+    public String submitCustomSubmission(CreateCustomSubmissionDTO createCustomSubmissionDTO) {
+        String code;
+        try {
+            SourceCodePreprocessor codePreprocessor =
+                    this.codePreprocessorFactory.getCodePreprocessor(createCustomSubmissionDTO.getLanguage());
+            CodeTemplate codeTemplate = this.codeTemplatesService.getSolutionCodeTemplate(createCustomSubmissionDTO);
 
-        String code = codePreprocessor.assembleSourceCode(createSubmissionDTO.getSourceCode());
+            code = codePreprocessor.assembleSourceCode(createCustomSubmissionDTO.getSourceCode(), codeTemplate);
+        } catch (IOException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR, "Failed to assemble submission request: " + e.getMessage());
+        }
 
-        //        System.out.println("===========================================");
-        //        System.out.println("assembled source code: " + code);
-        //        System.out.println("===========================================");
+        Problem currentProblem = problemsService.getProblemOrThrow(createCustomSubmissionDTO.getProblemId());
 
-        Problem currentProblem = problemsService
-                .getProblem(createSubmissionDTO.getProblemId())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Problem with id '" + createSubmissionDTO.getProblemId() + "' not found"));
+        Map<String, String> argsMap =
+                judge0Service.assembleCustomSubmissionArgs(createCustomSubmissionDTO, currentProblem, code);
 
-        Map<String, String> map = new HashMap<>();
-        map.put("source_code", code);
-        map.put("language_id", PYTHON.getLanguageId());
-        map.put(
-                "command_line_arguments",
-                "\"" + currentProblem.getInputFormat() + "\""); // input format must be escaped
-        map.put("stdin", currentProblem.getTestCases());
-        map.put("callback_url", "http://host.docker.internal:8080/submissions/webhook");
+        String token = judge0Service.postSubmission(argsMap);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        CustomSubmission submission = this.submissionMapper.createCustomSubmissionFromDto(createCustomSubmissionDTO);
+        submission.setToken(token);
 
-        String body = new ObjectMapper().writeValueAsString(map);
+        this.customSubmissions.put(submission.getSubmissionId(), submission);
+        this.customSubmissionTokenMapping.put(submission.getToken(), submission.getSubmissionId());
 
-        return new HttpEntity<>(body, headers);
+        return submission.getSubmissionId();
     }
 
     public List<Submission> getSubmissions(SubmissionQueryDTO submissionQueryDTO) {
@@ -113,84 +115,39 @@ public class SubmissionsService {
         return submissionsRepository.findAll(spec);
     }
 
-    public void handleSubmissionWebhook(Judge0SubmissionResultDTO submissionResultDTO) {
-        logger.info("Submission {} finished processing.", submissionResultDTO.getToken());
+    @Async
+    @EventListener
+    public void handleSubmissionExecutionCompletedEvent(SubmissionExecutionCompletedEvent event) {
+        Judge0SubmissionResultDTO result = event.getSubmissionResult();
 
-        URI uri = UriComponentsBuilder.fromHttpUrl(judgingServiceUrl)
-                .pathSegment("submissions", submissionResultDTO.getToken())
-                .queryParam("fields", "*")
-                .build()
-                .toUri();
+        if (this.customSubmissionTokenMapping.containsKey(result.getToken())) {
+            String submissionId = this.customSubmissionTokenMapping.get(result.getToken());
+            CustomSubmission customSubmission = this.customSubmissions.get(submissionId);
+            submissionMapper.updateEntityFromDto(customSubmission, result);
+            this.submissionVerifierService.judgeCustomSubmissionResults(customSubmission, result);
+            this.customSubmissions.put(customSubmission.getToken(), customSubmission);
 
-        // this retrieves data for the same token, because the Judge0 webhook returns only a subset of data and a Base64
-        // encoded stdout
-        final Judge0SubmissionResultDTO newSubmissionResultDTO =
-                new RestTemplate().getForObject(uri, Judge0SubmissionResultDTO.class);
-
-        if (newSubmissionResultDTO == null) {
-            logger.error("Submission {} not found in judge0.", submissionResultDTO.getToken());
-            return;
-        }
-        logger.debug("Submission {} raw results: {}", newSubmissionResultDTO.getToken(), newSubmissionResultDTO);
-
-        submissionsRepository.findByToken(newSubmissionResultDTO.getToken()).ifPresent((submission) -> {
-            SubmissionMapper.updateEntityFromDto(submission, newSubmissionResultDTO);
-            judgeSubmissionResults(submission);
-            submissionsRepository.save(submission);
-        });
-    }
-
-    private void judgeSubmissionResults(Submission submission) {
-        assert submission != null;
-
-        // check only submission that finished successfully to the end
-        if (submission.getStatus() != SubmissionStatus.ACCEPTED) {
-            logger.warn(
-                    "Submission {} failed with status {} and message {}, stderr: {}.",
-                    submission.getToken(),
-                    submission.getStatus().name(),
-                    submission.getErrorMessage(),
-                    submission.getStderr());
-            return; //
-        }
-
-        Problem problem = submission.getProblem();
-
-        // TODO This will fail when user writes to stdout, fix: https://github.com/judge0/judge0/issues/290
-        String[] submissionOutput = submission.getStdout().split("\n");
-        String[] expectedOutput = problem.getExpectedResult().split("\n");
-        int correctTestcasesCount = 0;
-        int totalTestcasesCount = expectedOutput.length;
-        int len = Math.min(submissionOutput.length, expectedOutput.length);
-        String wrongAnswerMessage = null;
-
-        for (int i = 0; i < len; i++) {
-            if (submissionOutput[i].equals(expectedOutput[i])) {
-                correctTestcasesCount++;
-            } else if (wrongAnswerMessage == null) {
-                String nthTestCase = getNthTestCase(problem, i);
-                wrongAnswerMessage = "Testcase '%s', wrong answer '%s' expected '%s'"
-                        .formatted(nthTestCase, submissionOutput[i], expectedOutput[i]);
-                logger.debug(
-                        "Submission {} problem {}: {}",
-                        submission.getToken(),
-                        submission.getProblem().getProblemId(),
-                        wrongAnswerMessage);
+        } else {
+            Submission submission =
+                    this.submissionsRepository.findByToken(result.getToken()).orElse(null);
+            if (submission == null) {
+                logger.warn("Submission with token {} not found in the database", result.getToken());
+                return;
             }
+            submissionMapper.updateEntityFromDto(submission, result);
+            this.submissionVerifierService.judgeSubmissionResults(submission, result);
+            submissionsRepository.save(submission);
         }
-
-        if (correctTestcasesCount < totalTestcasesCount) {
-            submission.setStatus(SubmissionStatus.WRONG_ANSWER);
-        }
-
-        submission.setErrorMessage(wrongAnswerMessage);
-        submission.setCorrectTestcases(correctTestcasesCount);
-        submission.setTotalTestcases(totalTestcasesCount);
     }
 
-    private String getNthTestCase(Problem problem, int n) {
-        String[] input = problem.getTestCases().split("\n");
-        int inputsCount = problem.getInputFormat().split(" ").length;
-        return String.join(" ", Arrays.copyOfRange(input, inputsCount * n, inputsCount * (n + 1)));
+    public CustomSubmission getCustomSubmission(CustomSubmissionQueryDTO customSubmissionQueryDTO) {
+        CustomSubmission customSubmission = this.customSubmissions.get(customSubmissionQueryDTO.getSubmissionId());
+        if (customSubmission == null
+                || !Objects.equals(customSubmission.getUserId(), customSubmissionQueryDTO.getUserId())) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Custom submission with id '" + customSubmissionQueryDTO.getSubmissionId() + "' not found");
+        }
+        return customSubmission;
     }
 }

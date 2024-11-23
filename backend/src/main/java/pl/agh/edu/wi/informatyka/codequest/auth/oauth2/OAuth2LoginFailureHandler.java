@@ -15,7 +15,11 @@ import pl.agh.edu.wi.informatyka.codequest.util.ResponseStatus;
 @Component
 public class OAuth2LoginFailureHandler implements AuthenticationFailureHandler {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
+
+    public OAuth2LoginFailureHandler(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     public void onAuthenticationFailure(

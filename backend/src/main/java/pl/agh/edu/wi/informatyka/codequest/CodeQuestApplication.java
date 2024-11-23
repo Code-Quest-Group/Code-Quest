@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import jakarta.annotation.PostConstruct;
 import java.util.TimeZone;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -32,13 +31,11 @@ public class CodeQuestApplication {
 
     @EventListener
     public void handleContextRefresh(ContextRefreshedEvent event) {
-        handlerAdapter
-                .getMessageConverters()
-                .forEach(c -> {
-                    if (c instanceof MappingJackson2HttpMessageConverter jsonMessageConverter) {
-                        ObjectMapper objectMapper = jsonMessageConverter.getObjectMapper();
-                        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-                    }
-                });
+        handlerAdapter.getMessageConverters().forEach(c -> {
+            if (c instanceof MappingJackson2HttpMessageConverter jsonMessageConverter) {
+                ObjectMapper objectMapper = jsonMessageConverter.getObjectMapper();
+                objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+            }
+        });
     }
 }

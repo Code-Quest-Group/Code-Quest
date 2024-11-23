@@ -1,4 +1,4 @@
-package pl.agh.edu.wi.informatyka.codequest.submission.model;
+package pl.agh.edu.wi.informatyka.codequest.submission.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.tags.Tag;
