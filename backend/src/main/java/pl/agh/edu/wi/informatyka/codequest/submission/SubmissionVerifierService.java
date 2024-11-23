@@ -16,17 +16,17 @@ import pl.agh.edu.wi.informatyka.codequest.submission.model.*;
 @Service
 public class SubmissionVerifierService {
 
-    public static final String ERROR_SEPARATOR = "========================ERROR=========================";
+    public static final String ERROR_SEPARATOR = "===ERROR===";
     public static final String USER_STDOUT_SEPARATOR =
-            "========================USER_STDOUT_SEPARATOR=========================";
+            "===USER_STDOUT_SEPARATOR===";
     public static final String TESTCASE_STDOUT_SEPARATOR =
-            "========================TESTCASE_STDOUT_SEPARATOR=========================";
+            "===TESTCASE_STDOUT_SEPARATOR===";
     public static final String USER_RESULTS_SEPARATOR =
-            "========================USER_RESULTS_SEPARATOR=========================";
+            "===USER_RESULTS_SEPARATOR===";
     public static final String SYSTEM_STDOUT_SEPARATOR =
-            "========================SYSTEM_STDOUT_SEPARATOR=========================";
+            "===SYSTEM_STDOUT_SEPARATOR===";
     public static final String SYSTEM_RESULT_SEPARATOR =
-            "========================SYSTEM_RESULT_SEPARATOR=========================";
+            "===SYSTEM_RESULT_SEPARATOR===";
 
     Logger logger = LoggerFactory.getLogger(SubmissionVerifierService.class);
 

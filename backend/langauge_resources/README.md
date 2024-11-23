@@ -41,26 +41,26 @@ For regular submissions:
 ...
 [user stdout]
 ...
-========================TESTCASE_STDOUT_SEPARATOR=========================
+===TESTCASE_STDOUT_SEPARATOR===
 <testcase 2 user stdout>
 ...
-========================USER_STDOUT_SEPARATOR=========================
+===USER_STDOUT_SEPARATOR===
 <testcase result 1>
 <testcase result 2>
-========================USER_RESULTS_SEPARATOR=========================
+===USER_RESULTS_SEPARATOR===
 ```
 
 For submissions with custom testcases
 ```text
 <testcase 1 user stdout>
-========================TESTCASE_STDOUT_SEPARATOR=========================
+===TESTCASE_STDOUT_SEPARATOR===
 <testcase 2 user stdout>
-========================USER_STDOUT_SEPARATOR=========================
+===USER_STDOUT_SEPARATOR===
 <testcase result 1>
 <testcase result 2>
-========================USER_RESULTS_SEPARATOR=========================
+===USER_RESULTS_SEPARATOR===
 ...
-========================SYSTEM_RESULT_SEPARATOR=========================
+===SYSTEM_RESULT_SEPARATOR===
 <testcase result 2>
 <testcase result 2>
 ```

@@ -95,7 +95,7 @@ if __name__ == '__main__':
 
         Tested_class = ProblemDebug if args.test_args else Problem
     except Exception as e:
-        print("========================ERROR=========================")
+        print("===ERROR===")
         print(str(e))
     else:
 
@@ -105,21 +105,21 @@ if __name__ == '__main__':
             problem = Tested_class()
             try:
                 result = problem.solve(*parsed_args_set)
-                print("========================TESTCASE_STDOUT_SEPARATOR=========================")
+                print("===TESTCASE_STDOUT_SEPARATOR===")
                 results.append(result)
             except Exception as e:
                 if args.fail_at_end:
                     results.append("ERROR: ", e)
                 else:
-                    print("========================ERROR=========================")
+                    print("===ERROR===")
                     print(str(e))
                     exit(0)
 
-        print("========================USER_STDOUT_SEPARATOR=========================")
+        print("===USER_STDOUT_SEPARATOR===")
         for result in results:
             print(json.dumps(result))
 
-        print("========================USER_RESULTS_SEPARATOR=========================")
+        print("===USER_RESULTS_SEPARATOR===")
 
         if args.run_system_solution:
             system_results = []
@@ -128,8 +128,8 @@ if __name__ == '__main__':
                 result = problem.solve(*parsed_args_set)
                 system_results.append(result)
 
-            print("========================SYSTEM_STDOUT_SEPARATOR=========================")
+            print("===SYSTEM_STDOUT_SEPARATOR===")
             for result in system_results:
                 print(json.dumps(result))
-            print("========================SYSTEM_RESULT_SEPARATOR=========================")
+            print("===SYSTEM_RESULT_SEPARATOR===")
 
