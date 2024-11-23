@@ -3,6 +3,7 @@ package pl.agh.edu.wi.informatyka.codequest.judge0;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URI;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -58,7 +59,6 @@ public class Judge0Service {
             }
         }
         judgeResults.put(submissionResultDTO.getToken(), submissionResultDTO);
-        logger.info("Submission {} finished processing.", submissionResultDTO.getToken());
 
         URI uri = UriComponentsBuilder.fromHttpUrl(judgingServiceUrl)
                 .pathSegment("submissions", submissionResultDTO.getToken())
@@ -75,6 +75,7 @@ public class Judge0Service {
             logger.error("Submission {} not found in judge0.", submissionResultDTO.getToken());
             return;
         }
+        logger.info("Submission {} finished processing, time: {} s.", fullSubmissionResultDTO.getToken(), String.format("%.2f", (double)Duration.between(fullSubmissionResultDTO.getCreatedAt(), fullSubmissionResultDTO.getFinishedAt()).toMillis() / 1000));
         this.eventPublisher.publishEvent(new SubmissionExecutionCompletedEvent(this, fullSubmissionResultDTO));
     }
 
@@ -93,7 +94,7 @@ public class Judge0Service {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "No token returned???");
 
             String token = jsonResponse.get("token").textValue();
-            logger.debug("Submission {}  send to judge0", token);
+            logger.debug("Submission {} send to judge0", token);
 
             return token;
         } catch (Exception e) {

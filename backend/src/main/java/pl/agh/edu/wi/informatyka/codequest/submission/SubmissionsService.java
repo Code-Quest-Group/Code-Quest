@@ -72,8 +72,6 @@ public class SubmissionsService {
         Map<String, String> judge0args =
                 judge0Service.assembleSubmissionArgs(createSubmissionDTO, currentProblem, code);
 
-        logger.info("Submission judge0args: {}", judge0args);
-
         String token = judge0Service.postSubmission(judge0args);
         Submission submission = this.submissionMapper.createEntityFromDto(createSubmissionDTO);
         submission.setToken(token);
@@ -115,7 +113,6 @@ public class SubmissionsService {
         return submissionsRepository.findAll(spec);
     }
 
-    @Async
     @EventListener
     public void handleSubmissionExecutionCompletedEvent(SubmissionExecutionCompletedEvent event) {
         Judge0SubmissionResultDTO result = event.getSubmissionResult();
@@ -126,6 +123,7 @@ public class SubmissionsService {
             submissionMapper.updateEntityFromDto(customSubmission, result);
             this.submissionVerifierService.judgeCustomSubmissionResults(customSubmission, result);
             this.customSubmissions.put(customSubmission.getToken(), customSubmission);
+            logger.info("Submission {} finished judging, result: {} / {}", result.getToken(), customSubmission.getCorrectTestcases(), customSubmission.getTotalTestcases());
 
         } else {
             Submission submission =
@@ -137,7 +135,9 @@ public class SubmissionsService {
             submissionMapper.updateEntityFromDto(submission, result);
             this.submissionVerifierService.judgeSubmissionResults(submission, result);
             submissionsRepository.save(submission);
+            logger.info("Submission {} finished judging, result: {} / {}", result.getToken(), submission.getCorrectTestcases(), submission.getTotalTestcases());
         }
+
     }
 
     public CustomSubmission getCustomSubmission(CustomSubmissionQueryDTO customSubmissionQueryDTO) {
