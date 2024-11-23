@@ -75,7 +75,16 @@ public class Judge0Service {
             logger.error("Submission {} not found in judge0.", submissionResultDTO.getToken());
             return;
         }
-        logger.info("Submission {} finished processing, time: {} s.", fullSubmissionResultDTO.getToken(), String.format("%.2f", (double)Duration.between(fullSubmissionResultDTO.getCreatedAt(), fullSubmissionResultDTO.getFinishedAt()).toMillis() / 1000));
+        logger.info(
+                "Submission {} finished processing, time: {} s.",
+                fullSubmissionResultDTO.getToken(),
+                String.format(
+                        "%.2f",
+                        (double) Duration.between(
+                                                fullSubmissionResultDTO.getCreatedAt(),
+                                                fullSubmissionResultDTO.getFinishedAt())
+                                        .toMillis()
+                                / 1000));
         this.eventPublisher.publishEvent(new SubmissionExecutionCompletedEvent(this, fullSubmissionResultDTO));
     }
 

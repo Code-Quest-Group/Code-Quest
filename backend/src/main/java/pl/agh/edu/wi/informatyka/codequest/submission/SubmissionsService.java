@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.*;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.agh.edu.wi.informatyka.codequest.codetemplate.CodeTemplatesService;
@@ -123,7 +122,11 @@ public class SubmissionsService {
             submissionMapper.updateEntityFromDto(customSubmission, result);
             this.submissionVerifierService.judgeCustomSubmissionResults(customSubmission, result);
             this.customSubmissions.put(customSubmission.getToken(), customSubmission);
-            logger.info("Submission {} finished judging, result: {} / {}", result.getToken(), customSubmission.getCorrectTestcases(), customSubmission.getTotalTestcases());
+            logger.info(
+                    "Submission {} finished judging, result: {} / {}",
+                    result.getToken(),
+                    customSubmission.getCorrectTestcases(),
+                    customSubmission.getTotalTestcases());
 
         } else {
             Submission submission =
@@ -135,9 +138,12 @@ public class SubmissionsService {
             submissionMapper.updateEntityFromDto(submission, result);
             this.submissionVerifierService.judgeSubmissionResults(submission, result);
             submissionsRepository.save(submission);
-            logger.info("Submission {} finished judging, result: {} / {}", result.getToken(), submission.getCorrectTestcases(), submission.getTotalTestcases());
+            logger.info(
+                    "Submission {} finished judging, result: {} / {}",
+                    result.getToken(),
+                    submission.getCorrectTestcases(),
+                    submission.getTotalTestcases());
         }
-
     }
 
     public CustomSubmission getCustomSubmission(CustomSubmissionQueryDTO customSubmissionQueryDTO) {
