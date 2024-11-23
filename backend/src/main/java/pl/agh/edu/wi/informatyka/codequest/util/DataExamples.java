@@ -12,32 +12,32 @@ public class DataExamples {
         public static final String VALID_SOLUTION =
                 """
                 {
-                    \"sourceCode\": \"class Problem:\\n    def solve(self, a, b):\\n        return a + b\\n\\n\",
-                    \"problemId\": \"add-two-numbers\",
+                    \"source_code\": \"class Problem:\\n    def solve(self, a, b):\\n        return a + b\\n\\n\",
+                    \"problem_id\": \"add-two-numbers\",
                     \"language\": \"PYTHON\"
                 }\
                 """;
         public static final String RANDOM_FAIL =
                 """
                 {
-                    \"sourceCode\": \"import random\\n\\nclass Problem:\\n    def solve(self, a, b):\\n        return a + b + random.randint(1, 15)//10\\n\\n\",
-                    \"problemId\": \"add-two-numbers\",
+                    \"source_code\": \"import random\\n\\nclass Problem:\\n    def solve(self, a, b):\\n        return a + b + random.randint(1, 15)//10\\n\\n\",
+                    \"problem_id\": \"add-two-numbers\",
                     \"language\": \"PYTHON\"
                 }\
                 """;
         public static final String INVALID_SOLUTION =
                 """
                 {
-                    \"sourceCode\": \"class Problem:\\n    def solve(self, a, b):\\n        return a - b\\n\\n\",
-                    \"problemId\": \"add-two-numbers\",
+                    \"source_code\": \"class Problem:\\n    def solve(self, a, b):\\n        return a - b\\n\\n\",
+                    \"problem_id\": \"add-two-numbers\",
                     \"language\": \"PYTHON\"
                 }\
                 """;
         public static final String INFINITE_LOOP =
                 """
                 {
-                    \"sourceCode\": \"class Problem:\\n    def solve(self, a, b):\\n        while True:            a = 1\\n        return a + b\\n\\n",
-                    \"problemId\": \"add-two-numbers\",
+                    \"source_code\": \"class Problem:\\n    def solve(self, a, b):\\n        while True:            a = 1\\n        return a + b\\n\\n",
+                    \"problem_id\": \"add-two-numbers\",
                     \"language\": \"PYTHON\"
                 }\
                 """;
@@ -47,16 +47,18 @@ public class DataExamples {
         public static final String VALID_SOLUTION =
                 """
                 {
-                    \"sourceCode\": \"class Problem:\\n    \\n    def solve(self, n):\\n        if n < 2:\\n            return n\\n        \\n        return self.solve(n - 1) + self.solve(n - 2)\\n\\n\",
-                    \"problemId\": \"nth-fibonacci-number\",
+                    \"source_code\": \"class Problem:\\n    \\n    def solve(self, n):\\n        if n < 2:\\n            return n\\n        \\n        return self.solve(n - 1) + self.solve(n - 2)\\n\\n\",
+                    \"problem_id\": \"nth-fibonacci-number\",
                     \"language\": \"PYTHON\"
                 }\
                 """;
+        public static final String s =
+                "class Problem:\n    \n    def solve(self, n):\n        if n < 2:\n            return n\n        \n        return self.solve(n - 1) + self.solve(n - 2)\n\n";
         public static final String INVALID_SOLUTION =
                 """
                 {
-                    \"sourceCode\": \"class Problem:\\n    def solve(self, n):\\n        return n\\n\\n\",
-                    \"problemId\": \"nth-fibonacci-number\",
+                    \"source_code\": \"class Problem:\\n    def solve(self, n):\\n        return n\\n\\n\",
+                    \"problem_id\": \"nth-fibonacci-number\",
                     \"language\": \"PYTHON\"
                 }\
                 """;
