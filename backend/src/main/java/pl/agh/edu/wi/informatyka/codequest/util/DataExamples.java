@@ -17,6 +17,14 @@ public class DataExamples {
                     \"language\": \"PYTHON\"
                 }\
                 """;
+        public static final String ONE_WRONG_SOLUTION =
+                """
+                {
+                    \"source_code\": \"class Problem:\\n    def solve(self, a, b):\\n        return a + b if a != 697387 else 0\\n\\n\",
+                    \"problem_id\": \"add-two-numbers\",
+                    \"language\": \"PYTHON\"
+                }\
+                """;
         public static final String RANDOM_FAIL =
                 """
                 {
