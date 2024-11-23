@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.builder.HashCodeExclude;
 import pl.agh.edu.wi.informatyka.codequest.sourcecode.Language;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.Submission;
 import pl.agh.edu.wi.informatyka.codequest.util.LanguageListConverter;
@@ -45,5 +46,6 @@ public class Problem {
 
     @JsonIgnore()
     @OneToMany(mappedBy = "problem", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @HashCodeExclude
     List<Submission> submissions;
 }
