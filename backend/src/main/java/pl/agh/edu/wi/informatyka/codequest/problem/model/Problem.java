@@ -48,4 +48,9 @@ public class Problem {
     @OneToMany(mappedBy = "problem", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @HashCodeExclude
     List<Submission> submissions;
+
+    @Override
+    public String toString() {
+        return "Problem{" + "problemId='" + problemId + '\'' + ", name='" + name + '\'' + '}';
+    }
 }

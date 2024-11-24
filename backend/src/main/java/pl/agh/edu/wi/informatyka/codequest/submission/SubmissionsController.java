@@ -79,7 +79,7 @@ public class SubmissionsController {
                                                         name = "[AddTwo] Valid Solution",
                                                         value = DataExamples.AddTwo.VALID_SOLUTION),
                                                 @ExampleObject(
-                                                        name = "[AddTwo] Valid Solution",
+                                                        name = "[AddTwo] One wrong Solution",
                                                         value = DataExamples.AddTwo.ONE_WRONG_SOLUTION),
                                                 @ExampleObject(
                                                         name = "[AddTwo] Random fail solution",

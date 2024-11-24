@@ -44,7 +44,9 @@ public class UserProblemAttempt {
     public static UserProblemAttempt fromSubmission(Submission submission) {
         UserProblemAttempt userProblemAttempt = new UserProblemAttempt();
         userProblemAttempt.setUser(submission.getUser());
+        userProblemAttempt.setUserId(submission.getUserId());
         userProblemAttempt.setProblem(submission.getProblem());
+        userProblemAttempt.setProblemId(submission.getProblemId());
         userProblemAttempt.setStatus(
                 submission.getStatus() == SubmissionStatus.ACCEPTED
                         ? UserProblemStatus.SUCCEEDED

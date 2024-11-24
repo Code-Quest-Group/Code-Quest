@@ -15,7 +15,7 @@ public interface UserProblemAttemptsRepository extends JpaRepository<UserProblem
     @Query(
             value =
                     "INSERT INTO user_problem_attempts (user_id, problem_id, submission_count, status, last_submission_time) "
-                            + "VALUES (:#{#attempt.user.userId}, :#{#attempt.problem.problemId}, 1, :#{#attempt.status.name()}, :#{#attempt.lastSubmissionTime}) "
+                            + "VALUES (:#{#attempt.userId}, :#{#attempt.problemId}, 1, :#{#attempt.status.name()}, :#{#attempt.lastSubmissionTime}) "
                             + "ON DUPLICATE KEY UPDATE submission_count = submission_count + 1, last_submission_time = :#{#attempt.lastSubmissionTime},"
                             + "status = :#{#attempt.status.name()}",
             nativeQuery = true)

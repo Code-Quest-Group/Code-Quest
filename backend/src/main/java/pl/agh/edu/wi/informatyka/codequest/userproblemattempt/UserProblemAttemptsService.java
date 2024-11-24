@@ -21,14 +21,11 @@ public class UserProblemAttemptsService {
     @EventListener
     public void handleSubmissionJudgedEvent(SubmissionJudgedEvent event) {
         UserProblemAttempt currentAttempt = UserProblemAttempt.fromSubmission(event.getSubmission());
-        logger.info(
-                "Updating user {} problem {} status",
-                currentAttempt.getUser().getUserId(),
-                currentAttempt.getProblem().getProblemId());
+        logger.info("Updating user {} problem '{}' status", currentAttempt.getUserId(), currentAttempt.getProblemId());
 
         // If previously user successfully submitted the solution don't overwrite it with ATTEMPTED
         userProblemAttemptsRepository
-                .findByUserIdAndProblemId(currentAttempt.getProblemId(), currentAttempt.getUserId())
+                .findByUserIdAndProblemId(currentAttempt.getUserId(), currentAttempt.getProblemId())
                 .ifPresent((at) -> {
                     if (currentAttempt.getStatus() == UserProblemStatus.ATTEMPTED) {
                         currentAttempt.setStatus(at.getStatus());
