@@ -3,6 +3,7 @@ import { Typography } from '@mui/material'
 import { Button } from '../../../utils'
 import { RatingButton } from './rate-problem-button'
 import { CommentButton } from './comment-problem-button'
+import { toast } from 'react-toastify'
 
 type RateButtonGroupProps = {
     className: string
@@ -15,7 +16,7 @@ export const RateButtonGroup = ({ className }: RateButtonGroupProps) => {
       <RatingButton />
       <CommentButton />
       <Button
-        onClick={() => window.alert('Not implemened 😇')}
+        onClick={() => toast.info('Reported the problem to administration!')}
         seriousButton
         icon={<ReportProblemIcon />}
         popup={'Click to report this problem'}

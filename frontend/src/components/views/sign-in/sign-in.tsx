@@ -23,7 +23,7 @@ type SignInModalProps = {
 }
 
 export const SignInModal = ({ open, onClose }: SignInModalProps) => {
-  const { setUserId, setToken, setUsername } = useUser()
+  const { setToken, setUsername } = useUser()
 
   const [activeTab, setActiveTab] = useState<'signIn' | 'register'>('signIn')
   const [showPassword, setShowPassword] = useState(false)
@@ -38,7 +38,6 @@ export const SignInModal = ({ open, onClose }: SignInModalProps) => {
     if (activeTab === 'signIn') {
       const emailOrUsername = formData.get('emailOrUsername')
       const password = formData.get('password')
-      setUsername(String(emailOrUsername))
       login(String(emailOrUsername), String(password))
     } else {
       const username = formData.get('username')
@@ -53,9 +52,6 @@ export const SignInModal = ({ open, onClose }: SignInModalProps) => {
         const response = await axios.post('http://localhost:8080/auth/register', payload)
 
         if (response.status === 201) {
-          const newUserId = response.data
-          setUserId(newUserId)
-          setUsername(String(username))
           login(String(username), String(password))
         }
       } catch (error) {
@@ -65,12 +61,13 @@ export const SignInModal = ({ open, onClose }: SignInModalProps) => {
     }
   }
 
-  const login = async(usernameOrEmail: string, password: string) => {
-    const payload = { password, username_or_email: usernameOrEmail }
+  const login = async(username: string, password: string) => {
+    const payload = { password, username_or_email: username }
 
     try {
       const response = await axios.post('http://localhost:8080/auth/login', payload)
       const token = response.data.data.token
+      setUsername(username)
       setToken(token)
       toast.info('Logged in')
       onClose()

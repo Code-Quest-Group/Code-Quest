@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import { Menu, MenuItem, IconButton, Typography } from '@mui/material'
+import { Menu, MenuItem, IconButton, Typography, Button } from '@mui/material'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import { useCodeEnvironment } from '../../../providers'
 
 export const LanguageDropdown = () => {
-  const { currentLanguage, setCurrentLanguage, problem } = useCodeEnvironment()
+  const { currentLanguage, setCurrentLanguage, problem, resetEnvironment, resetValue } = useCodeEnvironment()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -48,6 +48,11 @@ export const LanguageDropdown = () => {
           </MenuItem>
         ))}
       </Menu>
+      <Button onClick={() => resetEnvironment(!resetValue)}>
+        <Typography variant="button" style={{ textTransform: 'none', marginLeft: '0.5rem' }}>
+          Reset Environment
+        </Typography>
+      </Button>
     </div>
   )
 }

@@ -69,9 +69,11 @@ const ProblemDetails = () => {
               </IconButton>
             </section>
             <FullScreen handle={fullScreenHandle}>
-              <CodeEditor className={clsx({
-                [classes.fullscreenCodeEditor]: fullScreenHandle.active,
-              })}
+              <CodeEditor
+                isFullscreen={fullScreenHandle.active}
+                className={clsx({
+                  [classes.fullscreenCodeEditor]: fullScreenHandle.active,
+                })}
               />
             </FullScreen>
             <TestsSummary
