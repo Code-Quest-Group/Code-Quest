@@ -5,6 +5,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.*;
@@ -19,6 +20,7 @@ import pl.agh.edu.wi.informatyka.codequest.sourcecode.CodePreprocessorFactory;
 import pl.agh.edu.wi.informatyka.codequest.sourcecode.SourceCodePreprocessor;
 import pl.agh.edu.wi.informatyka.codequest.submission.dto.*;
 import pl.agh.edu.wi.informatyka.codequest.submission.event.SubmissionExecutionCompletedEvent;
+import pl.agh.edu.wi.informatyka.codequest.submission.event.SubmissionJudgedEvent;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.*;
 
 @Service
@@ -27,6 +29,7 @@ public class SubmissionsService {
     Logger logger = LoggerFactory.getLogger(SubmissionsService.class);
 
     private final SubmissionsRepository submissionsRepository;
+
     private final SubmissionVerifierService submissionVerifierService;
     private final ProblemsService problemsService;
     private final CodeTemplatesService codeTemplatesService;
@@ -35,6 +38,8 @@ public class SubmissionsService {
     private final SubmissionMapper submissionMapper;
 
     private final Judge0Service judge0Service;
+
+    private final ApplicationEventPublisher eventPublisher;
 
     private final Map<String, CustomSubmission> customSubmissions = new ConcurrentHashMap<>();
     private final Map<String, String> customSubmissionTokenMapping = new ConcurrentHashMap<>();
@@ -46,7 +51,8 @@ public class SubmissionsService {
             SubmissionsRepository submissionsRepository,
             SubmissionVerifierService submissionVerifierService,
             SubmissionMapper submissionMapper,
-            Judge0Service judge0Service) {
+            Judge0Service judge0Service,
+            ApplicationEventPublisher eventPublisher) {
         this.problemsService = problemsService;
         this.codeTemplatesService = codeTemplatesService;
         this.codePreprocessorFactory = codePreprocessorFactory;
@@ -54,6 +60,7 @@ public class SubmissionsService {
         this.submissionVerifierService = submissionVerifierService;
         this.submissionMapper = submissionMapper;
         this.judge0Service = judge0Service;
+        this.eventPublisher = eventPublisher;
     }
 
     public String submitSubmission(CreateSubmissionDTO createSubmissionDTO) {
@@ -137,12 +144,14 @@ public class SubmissionsService {
             }
             submissionMapper.updateEntityFromDto(submission, result);
             this.submissionVerifierService.judgeSubmissionResults(submission, result);
-            submissionsRepository.save(submission);
+            submission = submissionsRepository.save(submission);
             logger.info(
                     "Submission {} finished judging, result: {} / {}",
                     result.getToken(),
                     submission.getCorrectTestcases(),
                     submission.getTotalTestcases());
+
+            this.eventPublisher.publishEvent(new SubmissionJudgedEvent(this, submission));
         }
     }
 
