@@ -51,11 +51,6 @@
   }
 }
 
-#root {
-  height: calc(100% - 2.5rem);
-  min-height: 100%;
-}
-
 html,
 body {
   margin: 0;
@@ -69,6 +64,11 @@ body {
   &::-webkit-scrollbar {
     display: none;
   }
+}
+
+#root {
+  height: calc(100% - 2.5rem);
+  min-height: 100%;
 }
 
 main {

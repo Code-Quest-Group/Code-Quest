@@ -11,48 +11,92 @@
     padding: 2rem;
     row-gap: 2rem;
 
+    @include breakpoints.for-tablets {
+        min-height: 66.5rem;
+    }
+
+    @include breakpoints.for-phones {
+        min-height: 114rem;
+    }
+
     .topSection {
         display: inline-flex;
         align-items: center;
 
-        .userCard {
-            height: 16rem;
-            background-color: var(--tertiary-white);
-            border-radius: 5px;
+        @include breakpoints.for-tablets {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: space-around;
-            row-gap: 0.5rem;
-            width: 12rem;
-            padding: 1rem;
-            margin-right: 2rem;
+        }
 
-            >header {
-                font-size: 2.5rem;
+        .topGrouping {
+            display: flex;
+            align-items: center;
+
+            @include breakpoints.for-phones {
+                flex-direction: column;
+                row-gap: 2rem;
+            }
+
+            .userCard {
+                height: 16rem;
+                background-color: var(--tertiary-white);
+                border-radius: 5px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: space-around;
+                row-gap: 0.5rem;
+                width: 12rem;
+                padding: 1rem;
+                margin-right: 2rem;
+
+                >header {
+                    font-size: 2.5rem;
+                    max-width: 100%;
+                    word-wrap: break-word
+                }
+
+                @include breakpoints.for-tablets {
+                    margin-right: 0;
+                }
+            }
+
+            .problemTypeChart {
+                width: 20rem;
+                height: 12rem;
+                padding-left: 2rem;
+                padding-right: 2rem;
+
+                @include breakpoints.for-tablets {
+                    padding: 0;
+                }
             }
         }
 
-        .problemTypeChart {
-            width: 20rem;
-            height: 12rem;
-            padding-left: 2rem;
-            padding-right: 2rem;
-        }
-
         .activityChart {
+            width: 100%;
             height: 14rem;
             margin-left: 2rem;
             border-radius: 5px;
             display: flex;
+            justify-content: center;
             align-items: center;
-            overflow-x: hidden;
+            overflow-x: auto;
+
+            @include breakpoints.for-tablets {
+                margin-left: 0;
+                margin-top: 1rem;
+            }
         }
     }
 
     .bottomSection {
         display: inline-flex;
         align-items: center;
+
+        @include breakpoints.for-phones {
+            flex-direction: column;
+        }
 
         .solvedProblems {
             width: 40%;
@@ -62,9 +106,19 @@
             margin-right: 4rem;
             padding: 1rem;
 
+            @include breakpoints.for-phones {
+                width: 100%;
+                margin-bottom: 2rem;
+                margin-right: 0;
+            }
+
             >header {
                 font-size: 2rem;
                 margin-bottom: 1rem;
+
+                @include breakpoints.for-tablets {
+                    font-size: 1.5rem;
+                }
             }
 
             >ul {
@@ -103,6 +157,11 @@
             padding: 1rem;
             width: calc(60% - 4rem);
 
+            @include breakpoints.for-phones {
+                width: 100%;
+                margin-right: 0;
+            }
+
             .buttonGroup {
                 display: flex;
                 flex-direction: row;
@@ -136,6 +195,12 @@
                             justify-content: center;
                             font-weight: 800;
                             color: var(--secondary-orange);
+                        }
+
+                        >div {
+                            >span {
+                                margin-right: 1rem;
+                            }
                         }
 
                         .approved {

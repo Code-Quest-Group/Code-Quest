@@ -116,36 +116,38 @@ const AccountPage = () => {
     <main className={clsx({'full-height': !showNavbar})}>
       <div className={classes.accountPageContainer}>
         <section className={classes.topSection}>
-          <div className={classes.userCard}>
-            <Avatar
-              alt={username}
-              src="path... maybe"
-              sx={{ width: 60, height: 60, fontSize: '2rem' }}
-            />
-            <header>{username}</header>
-            <MuiButton
-              onClick={() => window.alert('Not implemened 😇')}
-            >
-              <Typography variant="button" style={{ textTransform: 'none' }}>
+          <div className={classes.topGrouping}>
+            <div className={classes.userCard}>
+              <Avatar
+                alt={username}
+                src="path... maybe"
+                sx={{ width: 60, height: 60, fontSize: '2rem' }}
+              />
+              <header>{username}</header>
+              <MuiButton
+                onClick={() => window.alert('Not implemened 😇')}
+              >
+                <Typography variant="button" style={{ textTransform: 'none' }}>
                 Settings
-              </Typography>
-            </MuiButton>
-          </div>
-          <div className={classes.problemTypeChart}>
-            <ResponsiveContainer minWidth={'20rem'}>
-              <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
-                <PolarGrid />
-                <PolarAngleAxis dataKey="problemType" />
-                <Radar
-                  name="Number of solved problems"
-                  dataKey="amount"
-                  stroke="#8884d8"
-                  fill="#8884d8"
-                  fillOpacity={0.6}
-                />
-                <Tooltip />
-              </RadarChart>
-            </ResponsiveContainer>
+                </Typography>
+              </MuiButton>
+            </div>
+            <div className={classes.problemTypeChart}>
+              <ResponsiveContainer minWidth={'20rem'}>
+                <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
+                  <PolarGrid />
+                  <PolarAngleAxis dataKey="problemType" />
+                  <Radar
+                    name="Number of solved problems"
+                    dataKey="amount"
+                    stroke="#8884d8"
+                    fill="#8884d8"
+                    fillOpacity={0.6}
+                  />
+                  <Tooltip />
+                </RadarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
           <div className={classes.activityChart}>
             <ActivityCalendar

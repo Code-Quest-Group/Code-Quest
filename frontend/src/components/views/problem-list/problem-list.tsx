@@ -9,10 +9,11 @@ import { Button, Seperator } from '../../utils'
 import { TextField, Typography } from '@mui/material'
 import RecommendIcon from '@mui/icons-material/Recommend'
 import ShuffleOnIcon from '@mui/icons-material/ShuffleOn'
-import FilterAltIcon from '@mui/icons-material/FilterAlt'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import { TagsList } from '../../utils/tags-list/tags-list'
+import { FiltersButton } from './filters-button'
+import { Tags } from '../../../types/problem/tags.type'
 
 const MAXIMUM_PROBLEMS: number = 14
 const tmpTags = ['Linked Lists', 'Binary Search', 'Recursion']
@@ -20,6 +21,7 @@ const tmpTags = ['Linked Lists', 'Binary Search', 'Recursion']
 const ProblemList = () => {
   const [problems, setProblems] = useState<Problem[]>([ ])
   const [filteredProblems, setFilteredProblems] = useState<Problem[]>([ ])
+  const [selectedFilters, setSelectedFilters] = useState<Tags[]>([ ])
   const [searchTerm, setSearchTerm] = useState('')
   const { showNavbar } = useLayout()
   const navigate = useNavigate()
@@ -50,11 +52,20 @@ const ProblemList = () => {
   }
 
   useEffect(() => {
-    const filtered = problems.filter((problem) =>
-      problem.name.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+    const filtered = problems.filter((problem) => {
+      const hasTags = Array.isArray(problem.tags ?? tmpTags)
+
+      const matchesSearchTerm = problem.name.toLowerCase().includes(searchTerm.toLowerCase())
+
+      const matchesFilters = hasTags && selectedFilters.every((filterTag) =>
+        (problem.tags ?? tmpTags).includes(filterTag as Tags)
+      )
+
+      return matchesSearchTerm && matchesFilters
+    })
+
     setFilteredProblems(filtered)
-  }, [searchTerm])
+  }, [searchTerm, selectedFilters, problems])
 
   return (
     <main className={clsx({'full-height': !showNavbar})}>
@@ -75,11 +86,7 @@ const ProblemList = () => {
                 Pick Random
               </Typography>
             </Button>
-            <Button icon={<FilterAltIcon />} popup={'Click to select filters'}>
-              <Typography variant="button" style={{ textTransform: 'none' }}>
-                Filters
-              </Typography>
-            </Button>
+            <FiltersButton onFiltersChange={setSelectedFilters} />
             <TextField
               label="Search problem by name"
               variant="outlined"

@@ -17,7 +17,6 @@ export const CommentButton = () => {
   }
 
   const handleSubmit = () => {
-    console.log('hello')
     setValue('')
     handleClose()
   }

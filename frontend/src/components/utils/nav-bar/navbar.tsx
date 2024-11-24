@@ -12,7 +12,7 @@ import { toast } from 'react-toastify'
 import { useLayout, useUser } from '../../../providers'
 import { Seperator } from '../seperator'
 import classes from './navbar.module.scss'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SignInModal } from '../../views/sign-in'
 
 export const Navbar = () => {
@@ -20,6 +20,7 @@ export const Navbar = () => {
   const { username, setToken, setUserId, setUsername } = useUser()
   const navigate = useNavigate()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isFirefox, setIsFirefox] = useState(false)
 
   const handleOpenModal = () => setIsModalOpen(true)
   const handleCloseModal = () => setIsModalOpen(false)
@@ -35,6 +36,11 @@ export const Navbar = () => {
   }
 
   const tabIndex = showNavbar ? 0 : -1
+
+  useEffect(() => {
+    const isUsingFirefox = navigator.userAgent.toLowerCase().includes('firefox')
+    setIsFirefox(isUsingFirefox)
+  }, [])
 
   return (
     <>
@@ -67,7 +73,13 @@ export const Navbar = () => {
         </nav>
         <IconButton
           onClick={toggleNavbar}
-          className={clsx(classes.toggleButton, { [classes.closed]: !showNavbar })}
+          className={clsx(
+            classes.toggleButton,
+            {
+              [classes.closed]: !showNavbar,
+              ['hidden']: isFirefox,
+            }
+          )}
           aria-label={showNavbar ? 'Hide Navbar' : 'Show Navbar'}
           size='small'
         >

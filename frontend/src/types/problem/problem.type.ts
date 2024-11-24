@@ -1,5 +1,6 @@
 import { Solution } from './solution.type'
 import { Comment } from './comment.type'
+import { Tags } from './tags.type'
 
 export type Problem = {
   problemId: string;
@@ -10,7 +11,7 @@ export type Problem = {
   codeTemplate: string;
   testCases: string;
   expectedResult: string;
-  tags: string[]; // Brakuje
+  tags: Tags[]; // Brakuje
   example: string; // Brakuje
   constraints: string; // Brakuje
   hints?: string; // Brakuje

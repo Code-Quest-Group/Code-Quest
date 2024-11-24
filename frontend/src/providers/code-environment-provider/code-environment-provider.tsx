@@ -15,6 +15,7 @@ type CodeEnvironmentContextType = {
     failingTests: boolean[]
     currentTestIndex: number
     submissionId: number
+    resetValue: boolean
     receivedOutput: (string | number)[][]
     setCurrentProblem: (problem: Problem) => void
     setCurrentLanguage: (language: string) => void
@@ -24,6 +25,7 @@ type CodeEnvironmentContextType = {
     setCurrentTestIndex: (index: number) => void
     setSubmissionId: (id: number) => void
     setReceivedOutput: (output: (string | number)[][]) => void
+    resetEnvironment: (resetValue: boolean) => void
 }
 
 const CodeEnvironmentContext = createContext<CodeEnvironmentContextType>({
@@ -34,6 +36,7 @@ const CodeEnvironmentContext = createContext<CodeEnvironmentContextType>({
   failingTests: [],
   currentTestIndex: 1,
   submissionId: 0,
+  resetValue: false,
   receivedOutput: [],
   setCurrentProblem: () => {},
   setCurrentLanguage: () => {},
@@ -43,6 +46,7 @@ const CodeEnvironmentContext = createContext<CodeEnvironmentContextType>({
   setCurrentTestIndex: () => {},
   setSubmissionId: () => {},
   setReceivedOutput: () => {},
+  resetEnvironment: () => {},
 })
 
 export const useCodeEnvironment = () => {
@@ -58,6 +62,7 @@ export const CodeEnvironmentProvider = ({ children, problem }: CodeEnvironmentPr
   const [currentTestIndex, setCurrentTestIndex] = useState(1)
   const [submissionId, setSubmissionId] = useState(0)
   const [receivedOutput, setReceivedOutput] = useState<(string | number)[][]>([])
+  const [resetValue, resetEnvironment] = useState(false)
 
   return (
     <CodeEnvironmentContext.Provider
@@ -70,6 +75,7 @@ export const CodeEnvironmentProvider = ({ children, problem }: CodeEnvironmentPr
         currentTestIndex,
         submissionId,
         receivedOutput,
+        resetValue,
         setCurrentProblem,
         setCurrentLanguage,
         setCode,
@@ -78,6 +84,7 @@ export const CodeEnvironmentProvider = ({ children, problem }: CodeEnvironmentPr
         setCurrentTestIndex,
         setSubmissionId,
         setReceivedOutput,
+        resetEnvironment,
       }}
     >
       {children}

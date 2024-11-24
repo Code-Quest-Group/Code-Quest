@@ -35,8 +35,6 @@ type SectionHandlerProps = {
 const SectionHandler = ({currentSection, classes}: SectionHandlerProps) => {
   const { problem } = useCodeEnvironment()
 
-  console.log(currentSection === 'pseudoCode')
-
   if (currentSection === 'hints') {
     return (
       <div className={classes.whiteBackgroundDescription}>
