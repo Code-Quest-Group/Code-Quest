@@ -1,4 +1,4 @@
-package pl.agh.edu.wi.informatyka.codequest.util;
+package pl.agh.edu.wi.informatyka.codequest.util.converter;
 
 import pl.agh.edu.wi.informatyka.codequest.sourcecode.Language;
 

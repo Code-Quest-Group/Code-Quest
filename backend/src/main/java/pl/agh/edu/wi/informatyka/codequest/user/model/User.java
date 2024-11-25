@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.Submission;
@@ -16,7 +15,8 @@ import pl.agh.edu.wi.informatyka.codequest.submission.model.Submission;
 public class User {
 
     @Id
-    @Column(name = "user_id", length = 36, nullable = false, unique = true)
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "user_id")
     private String userId;
 
     @Column(unique = true)
@@ -59,10 +59,6 @@ public class User {
 
     @PrePersist
     protected void onCreate() {
-        if (userId == null) {
-            userId = UUID.randomUUID().toString();
-        }
-
         if (userRole == null) {
             userRole = Role.USER;
         }

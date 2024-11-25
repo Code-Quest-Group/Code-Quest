@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.time.ZonedDateTime;
-import java.util.UUID;
 import lombok.Data;
 import org.apache.commons.lang3.builder.HashCodeExclude;
 import pl.agh.edu.wi.informatyka.codequest.problem.model.Problem;
@@ -17,6 +16,7 @@ import pl.agh.edu.wi.informatyka.codequest.user.model.User;
 public class Submission {
     @Id
     @JsonProperty("submission_id")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String submissionId;
 
     @JsonProperty("user_code")
@@ -28,11 +28,19 @@ public class Submission {
     @JoinColumn(name = "user_id", nullable = false)
     User user;
 
+    @JsonProperty("user_id")
+    @Column(name = "user_id", insertable = false, updatable = false)
+    private String userId;
+
     @JsonIgnore
     @ManyToOne
     @HashCodeExclude
     @JoinColumn(name = "problem_id", nullable = false)
     Problem problem;
+
+    @JsonProperty("problem_id")
+    @Column(name = "problem_id", insertable = false, updatable = false)
+    private String problemId;
 
     @Enumerated(EnumType.STRING)
     Language language;
@@ -75,24 +83,22 @@ public class Submission {
     Float time;
     Float memory;
 
-    @JsonProperty("problem_id")
-    public String getProblemId() {
-        return (problem != null) ? problem.getProblemId() : null;
-    }
-
-    @JsonProperty("user_id")
-    public String getUserId() {
-        return this.getUser().getUserId();
-    }
+    @Column(name = "is_public", nullable = false)
+    @JsonIgnore()
+    private boolean isPublic = false;
 
     public Submission() {
         this.createdAt = ZonedDateTime.now();
     }
 
-    @PrePersist
-    protected void onCreate() {
-        if (submissionId == null) {
-            submissionId = UUID.randomUUID().toString();
-        }
+    @Override
+    public String toString() {
+        return "Submission{" + "submissionId='"
+                + submissionId + '\'' + ", userId="
+                + user.getUserId() + ", problemId="
+                + problem.getProblemId() + ", language="
+                + language + ", status="
+                + status + ", createdAt="
+                + createdAt + '}';
     }
 }

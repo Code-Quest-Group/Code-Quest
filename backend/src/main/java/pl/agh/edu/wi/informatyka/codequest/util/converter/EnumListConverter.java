@@ -1,4 +1,4 @@
-package pl.agh.edu.wi.informatyka.codequest.util;
+package pl.agh.edu.wi.informatyka.codequest.util.converter;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

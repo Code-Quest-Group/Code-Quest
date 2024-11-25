@@ -1,6 +1,7 @@
 package pl.agh.edu.wi.informatyka.codequest.submission;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -10,9 +11,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.Collections;
 import java.util.List;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import pl.agh.edu.wi.informatyka.codequest.submission.dto.*;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.CustomSubmission;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.Submission;
@@ -28,6 +31,18 @@ public class SubmissionsController {
 
     public SubmissionsController(SubmissionsService submissionsService) {
         this.submissionsService = submissionsService;
+    }
+
+    @Operation(summary = "Publish submission", security = @SecurityRequirement(name = "bearerAuth"))
+    @PutMapping("/{submissionId}/publish")
+    public void publishSubmission(
+            @AuthenticationPrincipal User user,
+            @PathVariable @Parameter(example = "7aba9807-b018-4923-a6db-421c7e232237") String submissionId) {
+        Submission submission = this.submissionsService.getSubmissionOrThrow(submissionId);
+        if (!submission.getUserId().equals(user.getUserId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to this resource");
+        }
+        this.submissionsService.publishSubmission(submission);
     }
 
     @Operation(summary = "Get submission by ID", security = @SecurityRequirement(name = "bearerAuth"))
@@ -54,8 +69,7 @@ public class SubmissionsController {
     @ApiResponse(responseCode = "401", description = "Submission invalid")
     public CustomSubmission getCustomSubmission(
             @AuthenticationPrincipal User user, @PathVariable("submission_id") String submissionId) {
-        CustomSubmissionQueryDTO customSubmissionQueryDTO =
-                new CustomSubmissionQueryDTO(submissionId, user.getUserId());
+        CustomSubmissionQueryDTO customSubmissionQueryDTO = new CustomSubmissionQueryDTO(submissionId, user);
         return submissionsService.getCustomSubmission(customSubmissionQueryDTO);
     }
 
@@ -79,7 +93,7 @@ public class SubmissionsController {
                                                         name = "[AddTwo] Valid Solution",
                                                         value = DataExamples.AddTwo.VALID_SOLUTION),
                                                 @ExampleObject(
-                                                        name = "[AddTwo] Valid Solution",
+                                                        name = "[AddTwo] One wrong Solution",
                                                         value = DataExamples.AddTwo.ONE_WRONG_SOLUTION),
                                                 @ExampleObject(
                                                         name = "[AddTwo] Random fail solution",
