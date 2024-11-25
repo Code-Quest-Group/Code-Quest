@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import pl.agh.edu.wi.informatyka.codequest.problem.dto.CreateProblemDTO;
 import pl.agh.edu.wi.informatyka.codequest.problem.dto.CreateProblemResponse;
 import pl.agh.edu.wi.informatyka.codequest.problem.model.Problem;
+import pl.agh.edu.wi.informatyka.codequest.submission.SubmissionsService;
+import pl.agh.edu.wi.informatyka.codequest.submission.model.PublicSubmission;
 import pl.agh.edu.wi.informatyka.codequest.user.model.User;
 import pl.agh.edu.wi.informatyka.codequest.util.GenericResponse;
 import pl.agh.edu.wi.informatyka.codequest.util.ResponseStatus;
@@ -22,9 +24,11 @@ import pl.agh.edu.wi.informatyka.codequest.util.ResponseStatus;
 @Tag(name = "Problems")
 public class ProblemsController {
     private final ProblemsService problemsService;
+    private final SubmissionsService submissionsService;
 
-    public ProblemsController(ProblemsService problemsService) {
+    public ProblemsController(ProblemsService problemsService, SubmissionsService submissionsService) {
         this.problemsService = problemsService;
+        this.submissionsService = submissionsService;
     }
 
     @GetMapping("/{problemId}")
@@ -49,5 +53,12 @@ public class ProblemsController {
                         .message("Successfully created new problem")
                         .data(new CreateProblemResponse(problem.getProblemId()))
                         .build());
+    }
+
+    @GetMapping("/{problemId}/published-submissions")
+    public ResponseEntity<List<PublicSubmission>> getPublicSubmissions(
+            @PathVariable @Parameter(example = "add-two-numbers") String problemId) {
+        List<PublicSubmission> publicSubmissions = this.submissionsService.getPublicSubmissions(problemId);
+        return ResponseEntity.ok(publicSubmissions);
     }
 }

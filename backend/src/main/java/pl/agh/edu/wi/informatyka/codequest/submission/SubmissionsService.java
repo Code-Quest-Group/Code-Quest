@@ -185,4 +185,18 @@ public class SubmissionsService {
         submission.setPublic(true);
         this.submissionsRepository.save(submission);
     }
+
+    public List<PublicSubmission> getPublicSubmissions(String problemId) {
+        return this.submissionsRepository.getPublicByProblemId(problemId).stream()
+                .map(submission -> new PublicSubmission(
+                        submission.getSubmissionId(),
+                        submission.getUserId(),
+                        submission.getUser().getUsername(),
+                        submission.getUserCode(),
+                        submission.getLanguage(),
+                        submission.getFinishedAt(),
+                        submission.getTime(),
+                        submission.getMemory()))
+                .toList();
+    }
 }
