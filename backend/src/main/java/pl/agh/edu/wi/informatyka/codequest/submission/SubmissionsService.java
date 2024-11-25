@@ -174,10 +174,13 @@ public class SubmissionsService {
         return this.submissionsRepository
                 .findById(submissionId)
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Problem with id '" + submissionId + "' not found"));
+                        HttpStatus.NOT_FOUND, "Submission with id '" + submissionId + "' not found"));
     }
 
     public void publishSubmission(Submission submission) {
+        if (submission.getStatus() != SubmissionStatus.ACCEPTED) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Submission is not accepted");
+        }
         logger.info("Publishing submission {}", submission.getSubmissionId());
         submission.setPublic(true);
         this.submissionsRepository.save(submission);

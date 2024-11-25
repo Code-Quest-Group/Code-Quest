@@ -37,9 +37,9 @@ public class SubmissionsController {
     @PutMapping("/{submissionId}/publish")
     public void publishSubmission(
             @AuthenticationPrincipal User user,
-            @PathVariable @Parameter(example = "add-two-numbers") String submissionId) {
+            @PathVariable @Parameter(example = "7aba9807-b018-4923-a6db-421c7e232237") String submissionId) {
         Submission submission = this.submissionsService.getSubmissionOrThrow(submissionId);
-        if (submission.getUserId().equals(user.getUserId())) {
+        if (!submission.getUserId().equals(user.getUserId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to this resource");
         }
         this.submissionsService.publishSubmission(submission);
