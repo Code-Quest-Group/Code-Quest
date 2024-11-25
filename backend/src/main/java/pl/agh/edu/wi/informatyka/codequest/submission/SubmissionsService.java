@@ -22,6 +22,7 @@ import pl.agh.edu.wi.informatyka.codequest.submission.dto.*;
 import pl.agh.edu.wi.informatyka.codequest.submission.event.SubmissionExecutionCompletedEvent;
 import pl.agh.edu.wi.informatyka.codequest.submission.event.SubmissionJudgedEvent;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.*;
+import pl.agh.edu.wi.informatyka.codequest.user.model.Role;
 
 @Service
 public class SubmissionsService {
@@ -128,7 +129,7 @@ public class SubmissionsService {
             CustomSubmission customSubmission = this.customSubmissions.get(submissionId);
             submissionMapper.updateEntityFromDto(customSubmission, result);
             this.submissionVerifierService.judgeCustomSubmissionResults(customSubmission, result);
-            this.customSubmissions.put(customSubmission.getToken(), customSubmission);
+            System.out.println(customSubmission);
             logger.info(
                     "Submission {} finished judging, result: {} / {}",
                     result.getToken(),
@@ -158,7 +159,10 @@ public class SubmissionsService {
     public CustomSubmission getCustomSubmission(CustomSubmissionQueryDTO customSubmissionQueryDTO) {
         CustomSubmission customSubmission = this.customSubmissions.get(customSubmissionQueryDTO.getSubmissionId());
         if (customSubmission == null
-                || !Objects.equals(customSubmission.getUserId(), customSubmissionQueryDTO.getUserId())) {
+                || (customSubmissionQueryDTO.getUser().getUserRole() != Role.ADMIN
+                        && !Objects.equals(
+                                customSubmission.getUserId(),
+                                customSubmissionQueryDTO.getUser().getUserId()))) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
                     "Custom submission with id '" + customSubmissionQueryDTO.getSubmissionId() + "' not found");

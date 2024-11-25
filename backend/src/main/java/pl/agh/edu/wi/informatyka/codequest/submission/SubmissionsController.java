@@ -54,8 +54,7 @@ public class SubmissionsController {
     @ApiResponse(responseCode = "401", description = "Submission invalid")
     public CustomSubmission getCustomSubmission(
             @AuthenticationPrincipal User user, @PathVariable("submission_id") String submissionId) {
-        CustomSubmissionQueryDTO customSubmissionQueryDTO =
-                new CustomSubmissionQueryDTO(submissionId, user.getUserId());
+        CustomSubmissionQueryDTO customSubmissionQueryDTO = new CustomSubmissionQueryDTO(submissionId, user);
         return submissionsService.getCustomSubmission(customSubmissionQueryDTO);
     }
 

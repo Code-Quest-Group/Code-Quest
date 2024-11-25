@@ -38,8 +38,10 @@ public class SubmissionMapper {
                 .orElseThrow(() -> new RuntimeException("Problem not found with id: " + dto.getProblemId()));
 
         entity.setProblem(problem);
+        entity.setProblemId(dto.getProblemId());
         entity.setLanguage(dto.getLanguage());
         entity.setUser(dto.getUser());
+        entity.setUserId(dto.getUser().getUserId());
         entity.setUserCode(dto.getSourceCode());
         entity.setStatus(SubmissionStatus.PROCESSING);
         entity.setSubmissionId("custom_submission_" + UUID.randomUUID());
