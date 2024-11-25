@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -19,6 +20,7 @@ import pl.agh.edu.wi.informatyka.codequest.user.model.Role;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
 
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
@@ -43,9 +45,9 @@ public class SecurityConfig {
                         .hasAnyRole(Role.USER.name(), Role.ADMIN.name())
                         .requestMatchers("/submissions/**", "/user/**")
                         .hasAnyRole(Role.USER.name(), Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.POST, "/problems/**")
+                        .requestMatchers(HttpMethod.POST, "/problems")
                         .hasRole(Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.DELETE, "/problems/**")
+                        .requestMatchers(HttpMethod.DELETE, "/problems")
                         .hasRole(Role.ADMIN.name())
                         .anyRequest()
                         .permitAll())
