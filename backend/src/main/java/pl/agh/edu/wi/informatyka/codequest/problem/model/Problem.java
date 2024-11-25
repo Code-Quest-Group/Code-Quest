@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.HashCodeExclude;
 import pl.agh.edu.wi.informatyka.codequest.sourcecode.Language;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.Submission;
-import pl.agh.edu.wi.informatyka.codequest.util.LanguageListConverter;
+import pl.agh.edu.wi.informatyka.codequest.util.converter.LanguageListConverter;
+import pl.agh.edu.wi.informatyka.codequest.util.converter.ListToJsonConverter;
+
 
 @Entity
 @Table(name = "problems")
