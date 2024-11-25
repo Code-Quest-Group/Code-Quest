@@ -12,6 +12,7 @@ import { LoadingPage } from './components/views/loading-page/loading-page'
 const ProblemList = React.lazy(() => import('./components/views/problem-list/problem-list'))
 const ProblemDetails = React.lazy(() => import('./components/views/problem-details/problem-details'))
 const AccountPage = React.lazy(() => import('./components/views/account-page/account-page'))
+const ProblemCreator = React.lazy(() => import('./components/views/problem-creator/problem-creator'))
 
 function App() {
   return (
@@ -73,6 +74,17 @@ function App() {
                         <meta name="description" content="Users account page" />
                       </Helmet>
                       <AccountPage />
+                    </>
+                  }
+                />
+                <Route
+                  path="/problem-creator"
+                  element={
+                    <>
+                      <Helmet>
+                        <meta name="description" content="Create your own problem" />
+                      </Helmet>
+                      <ProblemCreator />
                     </>
                   }
                 />

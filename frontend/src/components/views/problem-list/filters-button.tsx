@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 import { Typography, Box, Popover, Chip} from '@mui/material'
 import FilterAltIcon from '@mui/icons-material/FilterAlt'
 import { Button } from '../../utils'
@@ -7,9 +7,12 @@ import { Tags } from '../../../types/problem/tags.type'
 type FiltersButtonProps = {
     // eslint-disable-next-line no-unused-vars
     onFiltersChange: (selectedTags: Tags[]) => void
+    title?: string
+    icon?: ReactNode
+    topPosition?: boolean
 }
 
-export const FiltersButton = ({ onFiltersChange }: FiltersButtonProps) => {
+export const FiltersButton = ({ onFiltersChange, title, icon, topPosition }: FiltersButtonProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [selectedTags, setSelectedTags] = useState<string[]>([])
 
@@ -35,11 +38,11 @@ export const FiltersButton = ({ onFiltersChange }: FiltersButtonProps) => {
       <Button
         aria-describedby='open-filters-button'
         onClick={handleClick}
-        icon={<FilterAltIcon />}
+        icon={icon ?? <FilterAltIcon />}
         popup={'Click to open filters selector'}
       >
         <Typography variant="button" style={{ textTransform: 'none' }}>
-            Filters
+          {title ?? 'Filters'}
         </Typography>
       </Button>
 
@@ -48,11 +51,11 @@ export const FiltersButton = ({ onFiltersChange }: FiltersButtonProps) => {
         anchorEl={anchorEl}
         onClose={handleClose}
         anchorOrigin={{
-          vertical: 'bottom',
+          vertical: topPosition ? 'top' : 'bottom',
           horizontal: 'left',
         }}
         transformOrigin={{
-          vertical: 'top',
+          vertical: topPosition ? 'bottom' : 'top',
           horizontal: 'left',
         }}
       >

@@ -28,8 +28,8 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
 
     try {
       const response = await axios.post('http://localhost:8080/submissions/', {
-        sourceCode: code,
-        problemId: problem?.problemId,
+        source_code: code,
+        problem_id: problem?.problemId,
         language: 'PYTHON',
       })
 
@@ -71,10 +71,8 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
 
         const response = await axios.get('http://localhost:8080/submissions', params)
 
-        if (response.status === 200) {
+        if (response.status === 200 && response.data) {
           const payload: SubmissionResponse = response.data[0]
-          clearInterval(pollInterval)
-          setSubmissionId(0)
 
           if (payload.status === 'ACCEPTED') {
             toast.success(`Passed test cases ${payload.correct_testcases} / ${payload.total_testcases}`)
@@ -84,11 +82,16 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
             toast.error(`Runtime error! ${payload.stderr}`, { autoClose: false })
           }
 
-          const receivedOutput = payload.stdout
-            ? parseRawResults(payload.stdout, inputFormat)
-            : Array(problem?.testCases.length).fill(null)
+          if (payload.status !== 'PROCESSING') {
+            clearInterval(pollInterval)
+            setSubmissionId(0)
 
-          setReceivedOutput(receivedOutput)
+            const receivedOutput = payload.stdout
+              ? parseRawResults(payload.stdout, inputFormat)
+              : Array(problem?.testCases.length).fill(null)
+
+            setReceivedOutput(receivedOutput)
+          }
         }
       } catch (error) {
         console.error('Error polling submission status:', error)

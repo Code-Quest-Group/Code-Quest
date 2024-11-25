@@ -9,6 +9,7 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings'
 import { Create, Refresh } from '@mui/icons-material'
 import { useState } from 'react'
 import { AdminPanel } from './admin-panel'
+import { useNavigate } from 'react-router-dom'
 
 const data = [
   {
@@ -73,6 +74,7 @@ const AccountPage = () => {
   const [openAdminPanel, setOpenAdminPanel] = useState(false)
   const { username } = useUser()
   const { showNavbar } = useLayout()
+  const navigate = useNavigate()
 
   const handleOpenAdminModal = () => setOpenAdminPanel(true)
   const handleCloseAdminModal = () => setOpenAdminPanel(false)
@@ -128,7 +130,7 @@ const AccountPage = () => {
                 onClick={() => window.alert('Not implemened 😇')}
               >
                 <Typography variant="button" style={{ textTransform: 'none' }}>
-                Settings
+                  Settings
                 </Typography>
               </MuiButton>
             </div>
@@ -175,6 +177,7 @@ const AccountPage = () => {
               <Button
                 icon={<Create />}
                 popup={'Click to create new problem'}
+                onClick={() => navigate('/problem-creator')}
               >
                 <Typography variant="button" style={{ textTransform: 'none' }}>
                   Add Problem
