@@ -83,6 +83,10 @@ public class Submission {
     Float time;
     Float memory;
 
+    @Column(name = "is_public", nullable = false)
+    @JsonIgnore()
+    private boolean isPublic = false;
+
     public Submission() {
         this.createdAt = ZonedDateTime.now();
     }

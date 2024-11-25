@@ -169,4 +169,17 @@ public class SubmissionsService {
         }
         return customSubmission;
     }
+
+    public Submission getSubmissionOrThrow(String submissionId) {
+        return this.submissionsRepository
+                .findById(submissionId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Problem with id '" + submissionId + "' not found"));
+    }
+
+    public void publishSubmission(Submission submission) {
+        logger.info("Publishing submission {}", submission.getSubmissionId());
+        submission.setPublic(true);
+        this.submissionsRepository.save(submission);
+    }
 }

@@ -6,7 +6,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.CrudRepository;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.Submission;
 
-public interface SubmissionsRepository extends CrudRepository<Submission, Long>, JpaSpecificationExecutor<Submission> {
+public interface SubmissionsRepository
+        extends CrudRepository<Submission, String>, JpaSpecificationExecutor<Submission> {
     @Override
     List<Submission> findAll();
 
