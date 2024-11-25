@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.time.ZonedDateTime;
-import java.util.UUID;
 import lombok.Data;
 import org.apache.commons.lang3.builder.HashCodeExclude;
 import pl.agh.edu.wi.informatyka.codequest.problem.model.Problem;
@@ -17,6 +16,7 @@ import pl.agh.edu.wi.informatyka.codequest.user.model.User;
 public class Submission {
     @Id
     @JsonProperty("submission_id")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String submissionId;
 
     @JsonProperty("user_code")
@@ -85,13 +85,6 @@ public class Submission {
 
     public Submission() {
         this.createdAt = ZonedDateTime.now();
-    }
-
-    @PrePersist
-    protected void onCreate() {
-        if (submissionId == null) {
-            submissionId = UUID.randomUUID().toString();
-        }
     }
 
     @Override
