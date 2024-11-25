@@ -1,6 +1,8 @@
 package pl.agh.edu.wi.informatyka.codequest.config;
 
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,6 +24,7 @@ import pl.agh.edu.wi.informatyka.codequest.user.model.Role;
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
+    private final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
@@ -38,18 +41,38 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
         http.authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.PUT, "/submissions/webhook")
+                        // TODO judge0 webhook permission
+                        .requestMatchers(HttpMethod.PUT, "/judge0/webhook")
                         .permitAll()
-                        .requestMatchers(HttpMethod.POST, "/problems")
+
+                        // submission
+                        .requestMatchers(HttpMethod.DELETE, "/submissions/**")
                         .hasRole(Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.POST, "/**")
-                        .hasAnyRole(Role.USER.name(), Role.ADMIN.name())
-                        .requestMatchers("/submissions/**", "/user/**")
-                        .hasAnyRole(Role.USER.name(), Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.DELETE, "/problems")
+                        .requestMatchers("/submissions/**")
+                        .hasRole(Role.USER.name())
+
+                        // comments
+                        .requestMatchers("/problems/*/comments", "/problems/*/comments/**")
+                        .hasRole(Role.USER.name())
+
+                        // problem
+                        .requestMatchers(HttpMethod.POST, "/problems/**")
+                        .hasRole(Role.MODERATOR.name())
+                        .requestMatchers(HttpMethod.DELETE, "/problems/**")
                         .hasRole(Role.ADMIN.name())
-                        .anyRequest()
+                        .requestMatchers(HttpMethod.GET, "/problems")
+                        .permitAll()
+
+                        // user
+                        .requestMatchers("/user/**")
+                        .hasAnyRole(Role.USER.name())
+
+                        // without login
+                        .requestMatchers("/auth/**")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.GET, "**")
                         .permitAll())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
@@ -69,6 +92,14 @@ public class SecurityConfig {
     @Bean
     public AuthenticationEntryPoint unauthorizedEntryPoint() {
         return (request, response, authException) -> {
+            String clientIp = request.getRemoteAddr();
+
+            logger.warn(
+                    "Unauthorized access attempt to: {} {}, from IP: {}",
+                    request.getMethod(),
+                    request.getRequestURI(),
+                    clientIp);
+
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("{\"error\":\"Unauthorized\"}");
