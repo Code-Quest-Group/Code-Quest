@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 import { createContext, ReactNode, useContext, useState } from 'react'
 import { Problem } from '../../types'
@@ -12,20 +13,21 @@ type CodeEnvironmentContextType = {
     code: string
     currentLanguage: string
     testCases: string
-    failingTests: boolean[]
     currentTestIndex: number
-    submissionId: number
+    submissionId: string
     resetValue: boolean
-    receivedOutput: (string | number)[][]
+    receivedOutput: (string | number)[]
+    inputFormat: string
+    expectedResults: (string | number)[]
     setCurrentProblem: (problem: Problem) => void
     setCurrentLanguage: (language: string) => void
     setCode: (code: string) => void
     setTestCases: (testCases: string) => void
-    setFailingTests: (failingTests: boolean[]) => void
     setCurrentTestIndex: (index: number) => void
-    setSubmissionId: (id: number) => void
-    setReceivedOutput: (output: (string | number)[][]) => void
+    setSubmissionId: (id: string) => void
+    setReceivedOutput: (output: (string | number)[]) => void
     resetEnvironment: (resetValue: boolean) => void
+    setExpectedResults: (results: (string | number)[]) => void
 }
 
 const CodeEnvironmentContext = createContext<CodeEnvironmentContextType>({
@@ -33,20 +35,21 @@ const CodeEnvironmentContext = createContext<CodeEnvironmentContextType>({
   code: '',
   currentLanguage: '',
   testCases: '',
-  failingTests: [],
   currentTestIndex: 1,
-  submissionId: 0,
+  submissionId: '',
   resetValue: false,
   receivedOutput: [],
+  inputFormat: '',
+  expectedResults: [],
   setCurrentProblem: () => {},
   setCurrentLanguage: () => {},
   setCode: () => {},
   setTestCases: () => {},
-  setFailingTests: () => {},
   setCurrentTestIndex: () => {},
   setSubmissionId: () => {},
   setReceivedOutput: () => {},
   resetEnvironment: () => {},
+  setExpectedResults: () => {},
 })
 
 export const useCodeEnvironment = () => {
@@ -57,12 +60,13 @@ export const CodeEnvironmentProvider = ({ children, problem }: CodeEnvironmentPr
   const [currentProblem, setCurrentProblem] = useState<Problem>(problem)
   const [currentLanguage, setCurrentLanguage] = useState('PYTHON')
   const [code, setCode] = useState(problem.codeTemplate ? `\n${problem.codeTemplate}` : '')
-  const [testCases, setTestCases] = useState(problem.testCases)
-  const [failingTests, setFailingTests] = useState([true])
+  const [testCases, setTestCases] = useState(problem.exampleTestCases)
   const [currentTestIndex, setCurrentTestIndex] = useState(1)
-  const [submissionId, setSubmissionId] = useState(0)
-  const [receivedOutput, setReceivedOutput] = useState<(string | number)[][]>([])
+  const [submissionId, setSubmissionId] = useState('')
+  const [receivedOutput, setReceivedOutput] = useState<(string | number)[]>([])
+  const [expectedResults, setExpectedResults] = useState<(string | number)[]>([])
   const [resetValue, resetEnvironment] = useState(false)
+  const [inputFormat, _] = useState(problem.inputFormat)
 
   return (
     <CodeEnvironmentContext.Provider
@@ -71,20 +75,21 @@ export const CodeEnvironmentProvider = ({ children, problem }: CodeEnvironmentPr
         currentLanguage,
         code,
         testCases,
-        failingTests,
         currentTestIndex,
         submissionId,
         receivedOutput,
         resetValue,
+        inputFormat,
+        expectedResults,
         setCurrentProblem,
         setCurrentLanguage,
         setCode,
         setTestCases,
-        setFailingTests,
         setCurrentTestIndex,
         setSubmissionId,
         setReceivedOutput,
         resetEnvironment,
+        setExpectedResults,
       }}
     >
       {children}

@@ -1,54 +1,85 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-unused-vars */
 import CancelIcon from '@mui/icons-material/Cancel'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import { Button, Typography } from '@mui/material'
-import deepEqual from 'fast-deep-equal'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useCodeEnvironment } from '../../../providers'
+import { parseRawResults } from './problem-details.utils'
 
 type TestsSummaryProps = {
     className: string
-    formattedTests: (number | string)[][]
-    formattedExpectedResults: (number | string)[][]
 }
 
-export const TestsSummary = ({
-  className,
-  formattedTests,
-  formattedExpectedResults,
-}: TestsSummaryProps) => {
-  const { currentTestIndex, setCurrentTestIndex, failingTests, setFailingTests, receivedOutput } = useCodeEnvironment()
+export const TestsSummary = ({ className }: TestsSummaryProps) => {
+  const {
+    problem,
+    currentTestIndex,
+    setCurrentTestIndex,
+    receivedOutput,
+    testCases,
+    inputFormat,
+    expectedResults
+  } = useCodeEnvironment()
+
+  const [passingTests, setPassingTests] = useState<boolean[]>(
+    Array(problem.exampleExpectedResults.length).fill(false)
+  )
+  const [formattedTests, setFormattedTests] = useState<any[]>(() =>
+    parseRawResults(problem.exampleTestCases, inputFormat)
+  )
 
   useEffect(() => {
-    const failingTestsList = (receivedOutput.length === 0)
-      ? Array(formattedTests.length).fill(true)
-      : formattedTests.map((_, i) => !deepEqual(receivedOutput[i], formattedExpectedResults[i]))
+    const updatedTests = parseRawResults(testCases, inputFormat)
 
-    setFailingTests(failingTestsList)
+    setFormattedTests(updatedTests)
+  }, [testCases])
 
-  }, [receivedOutput])
+  useEffect(() => {
+    if (!expectedResults || !receivedOutput) return
+
+    const updatedFailingTests = expectedResults.map((expected, index) => {
+      return receivedOutput[index] === expected
+    })
+
+    setPassingTests(updatedFailingTests)
+  }, [expectedResults, receivedOutput])
 
   return (
-    <div className={className}>
+    <div className={className} key={receivedOutput.join()}>
       <ul>
         {formattedTests.map((_testCase, index) => (
           <li key={index}>
             <Button onClick={() => setCurrentTestIndex(index + 1)}>
-              <Typography variant="button" style={{ fontWeight: (index + 1 === currentTestIndex) ? 'bold' : 'normal' }}>
-                <p>Test</p>
-                {' '}
-                Case {index + 1}:
+              <Typography
+                variant="button"
+                style={{
+                  fontWeight: index + 1 === currentTestIndex ? 'bold' : 'normal',
+                }}
+              >
+                <p>Test</p> Case {index + 1}:
               </Typography>
-              {failingTests[index] ? <CancelIcon color='error' /> : <CheckCircleIcon color="success" />}
+              {passingTests[index] ? (
+                <CheckCircleIcon color="success" />
+              ) : (
+                <CancelIcon color="error" />
+              )}
             </Button>
           </li>
         ))}
       </ul>
-      <div className='inside-shadow'>
+      <div className="inside-shadow">
         <header>Test Case {currentTestIndex} Results:</header>
         <p>Input: {`${formattedTests[currentTestIndex - 1]}`}</p>
-        <p>Expected: {`${formattedExpectedResults[currentTestIndex - 1]}`}</p>
-        <p>Output: {`${receivedOutput[currentTestIndex - 1] ?? 'None'}`}</p>
+        <p>
+          Expected:{' '}
+          {
+            problem.exampleExpectedResults[currentTestIndex - 1] ||
+            expectedResults[currentTestIndex - 1] ||
+            'Not calculated yet'
+          }
+        </p>
+        <p>Output: {receivedOutput[currentTestIndex - 1] || 'None'}</p>
       </div>
     </div>
   )

@@ -3,8 +3,13 @@ import { Typography, Box, Popover, TextField, IconButton} from '@mui/material'
 import CommentIcon from '@mui/icons-material/Comment'
 import SendIcon from '@mui/icons-material/Send'
 import { Button } from '../../../utils'
+import { useCodeEnvironment, useUser } from '../../../../providers'
+import { toast } from 'react-toastify'
+import axios from 'axios'
 
 export const CommentButton = () => {
+  const { username } = useUser()
+  const { problem } = useCodeEnvironment()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [value, setValue] = useState<string>('')
 
@@ -16,7 +21,23 @@ export const CommentButton = () => {
     setAnchorEl(null)
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
+    if (!username) {
+      toast.warning('Please sign in to comment a problem')
+      return
+    }
+
+    if (value !== null) {
+      try {
+        await axios.post(`http://localhost:8080/problems/${problem.problemId}/comments`, {
+          content: value,
+        })
+
+        toast.success('Comment updated!')
+      } catch (error) {
+        console.error('Error updating comment:', error)
+      }
+    }
     setValue('')
     handleClose()
   }

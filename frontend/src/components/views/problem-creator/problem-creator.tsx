@@ -41,7 +41,6 @@ const ProblemCreator = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChange = (event: any) => {
     setLanguage(event.target.value as string)
-    console.log(`Selected language: ${event.target.value}`)
   }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -62,7 +61,6 @@ const ProblemCreator = () => {
     setErrors(newErrors)
 
     console.log('Submitting:', { title, description, constraints, example, testCases, expectedResults, selectedTags, language, hints })
-    // Submit logic here
   }
 
   return (

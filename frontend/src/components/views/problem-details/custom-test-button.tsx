@@ -4,8 +4,10 @@ import EditNoteIcon from '@mui/icons-material/EditNote'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import { Button } from '../../utils'
 import { toast } from 'react-toastify'
+import { useCodeEnvironment } from '../../../providers'
 
 export const CustomTestButton = () => {
+  const { testCases, setTestCases, inputFormat } = useCodeEnvironment()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [value, setValue] = useState<string>('')
 
@@ -18,7 +20,27 @@ export const CustomTestButton = () => {
   }
 
   const handleSubmit = () => {
-    toast.info('Custom case submitted (thats a lie)')
+    const isValidFormat = () => {
+      const formatParts = inputFormat.split(' ')
+      const inputParts = value.trim().split('\n')
+
+      if (inputParts.length !== formatParts.length) return false
+
+      return inputParts.every((part, index) => {
+        if (formatParts[index] === 'int') {
+          return /^\d+$/.test(part)
+        }
+        return false
+      })
+    }
+
+    if (!isValidFormat()) {
+      toast.error('Invalid input format')
+      return
+    }
+
+    toast.info('Added new custom test case')
+    setTestCases(testCases.trimEnd() + '\n' + value)
     setValue('')
     handleClose()
   }
@@ -54,7 +76,7 @@ export const CustomTestButton = () => {
           display: 'flex',
           alignItems: 'center',
           gap: 1,
-          width: 300,
+          width: 200,
         }}>
           <TextField
             fullWidth

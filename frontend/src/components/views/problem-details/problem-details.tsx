@@ -9,7 +9,6 @@ import { Problem } from '../../../types'
 import { Seperator } from '../../utils'
 import { CodeEditor } from './code-editor'
 import classes from './problem-details.module.scss'
-import { parseRawResults } from './problem-details.utils'
 import { SubmitButtonGroup } from './submit-group'
 import { TestsSummary } from './tests-summary'
 import { LeftSection } from './problem-details-left-section/problem-details-left-section'
@@ -76,11 +75,7 @@ const ProblemDetails = () => {
                 })}
               />
             </FullScreen>
-            <TestsSummary
-              formattedTests={parseRawResults(problem.testCases, problem.inputFormat)}
-              formattedExpectedResults={parseRawResults(problem.expectedResult, 'int')}
-              className={classes.testsSummary}
-            />
+            <TestsSummary className={classes.testsSummary} />
             <Seperator isHorizontal />
             <SubmitButtonGroup className={classes.buttonGroup} />
           </div>

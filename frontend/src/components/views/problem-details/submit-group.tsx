@@ -5,20 +5,17 @@ import { toast } from 'react-toastify'
 import { useCodeEnvironment, useUser } from '../../../providers'
 import { SubmissionResponse } from '../../../types'
 import { Button } from '../../utils'
-import { parseRawResults } from './problem-details.utils'
 import PlayCircleFilledWhiteIcon from '@mui/icons-material/PlayCircleFilledWhite'
-import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import { CustomTestButton } from './custom-test-button'
+import { RunTestCasesButton } from './run-test-cases-button'
 
 type SubmitButtonGroupProps = {
     className: string
 }
 
 export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
-  const { code, problem, submissionId, setSubmissionId, setReceivedOutput } = useCodeEnvironment()
+  const { code, problem, submissionId, setSubmissionId } = useCodeEnvironment()
   const { username } = useUser()
-
-  const inputFormat = problem?.inputFormat.includes('int') ? 'int' : 'string'
 
   const handleSubmit = async() => {
     if (username === '') {
@@ -46,7 +43,7 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
   }
 
   useEffect(() => {
-    if (!submissionId) return
+    if (submissionId === '' || submissionId.includes('custom')) return
 
     let attempts = 0
 
@@ -58,6 +55,7 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
           clearInterval(pollInterval)
           toast.error('Failed to get back submission results')
           console.warn('Polling stopped after 30 attempts')
+          setSubmissionId('')
           return
         }
 
@@ -84,13 +82,7 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
 
           if (payload.status !== 'PROCESSING') {
             clearInterval(pollInterval)
-            setSubmissionId(0)
-
-            const receivedOutput = payload.stdout
-              ? parseRawResults(payload.stdout, inputFormat)
-              : Array(problem?.testCases.length).fill(null)
-
-            setReceivedOutput(receivedOutput)
+            setSubmissionId('')
           }
         }
       } catch (error) {
@@ -104,21 +96,13 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
   return (
     <div className={className}>
       <CustomTestButton />
-      <Button
-        onClick={() => window.alert('Not implemened 😇')}
-        icon={<PlayArrowIcon />}
-        popup={'Click to run test case'}
-      >
-        <Typography variant="button" style={{ textTransform: 'none' }}>
-            Run Test Case
-        </Typography>
-      </Button>
+      <RunTestCasesButton />
       <Button
         onClick={handleSubmit}
         disabled={Boolean(submissionId)}
         style={{ position: 'relative', width: '8rem' }}
         popup={'Click to submit solution'}
-        icon={submissionId ?
+        icon={submissionId !== '' ?
           <CircularProgress size={20} style={{color: 'white'}}/>
           : <PlayCircleFilledWhiteIcon />
         }

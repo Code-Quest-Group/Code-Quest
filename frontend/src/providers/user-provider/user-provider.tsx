@@ -7,9 +7,11 @@ const UserContext = createContext({
   username: '',
   userId: '',
   token: '',
+  isAdmin: false,
   setUsername: (_name: string) => {},
   setToken: (_token: string) => {},
   setUserId: (_userId: string) => {},
+  setIsAdmin: (_isAdmin: boolean) => {},
 })
 
 type UserProviderProps = {
@@ -22,6 +24,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
   const [username, setUsername] = useState(localStorage.getItem('username') || '')
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const [userId, setUserId] = useState(localStorage.getItem('userId') || '')
+  const [isAdmin, setIsAdmin] = useState(localStorage.getItem('isAdmin') === 'true')
 
   useEffect(() => {
     if (token && username && userId) {
@@ -49,10 +52,11 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     localStorage.setItem('username', username)
     localStorage.setItem('token', token)
     localStorage.setItem('userId', userId)
-  }, [username, token, userId])
+    localStorage.setItem('isAdmin', isAdmin.toString())
+  }, [username, token, userId, isAdmin])
 
   return (
-    <UserContext.Provider value={{ username, token, userId, setUsername, setToken, setUserId }}>
+    <UserContext.Provider value={{ username, token, userId, setUsername, setToken, setUserId, isAdmin, setIsAdmin }}>
       {children}
     </UserContext.Provider>
   )

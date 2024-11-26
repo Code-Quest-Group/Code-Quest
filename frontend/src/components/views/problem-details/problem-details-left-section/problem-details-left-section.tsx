@@ -46,7 +46,7 @@ const SectionHandler = ({currentSection, classes}: SectionHandlerProps) => {
   if (currentSection === 'pseudoCode') {
     return (
       <div className={classes.whiteBackgroundDescription}>
-        <p>{problem.pseudocode || 'This problem has no pseudo code available at this time'}</p>
+        <p>This will fetch your submissions idk</p>
       </div>
     )
   }

@@ -9,14 +9,13 @@ export type Problem = {
   supportedLanguages: string[];
   inputFormat: string;
   codeTemplate: string;
-  testCases: string;
-  expectedResult: string;
-  tags: Tags[]; // Brakuje
+  tags: Tags[];
   example: string; // Brakuje
   constraints: string; // Brakuje
-  hints?: string; // Brakuje
-  pseudocode?: string; // Brakuje
+  hints: string[];
+  exampleTestCases: string
+  exampleExpectedResults: string[]
   userSolutions?: Solution[]; // Brakuje
-  rating?: number; // Brakuje
+  rating?: number;
   comments?: Comment[] // Brakuje
 }

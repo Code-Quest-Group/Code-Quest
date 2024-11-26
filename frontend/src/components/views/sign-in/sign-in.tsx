@@ -11,7 +11,7 @@ import {
 } from '@mui/material'
 import axios from 'axios'
 import clsx from 'clsx'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { useUser } from '../../../providers'
 import { Button, Seperator } from '../../utils'
@@ -23,7 +23,7 @@ type SignInModalProps = {
 }
 
 export const SignInModal = ({ open, onClose }: SignInModalProps) => {
-  const { setToken, setUsername } = useUser()
+  const { setToken, setUsername, setIsAdmin, token } = useUser()
 
   const [activeTab, setActiveTab] = useState<'signIn' | 'register'>('signIn')
   const [showPassword, setShowPassword] = useState(false)
@@ -67,7 +67,6 @@ export const SignInModal = ({ open, onClose }: SignInModalProps) => {
     try {
       const response = await axios.post('http://localhost:8080/auth/login', payload)
       const token = response.data.data.token
-      setUsername(username)
       setToken(token)
       toast.info('Logged in')
       onClose()
@@ -76,6 +75,24 @@ export const SignInModal = ({ open, onClose }: SignInModalProps) => {
       console.log(error)
     }
   }
+
+  useEffect(() => {
+    if (token) {
+      axios.get('http://localhost:8080/user', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then((userData) => {
+          setUsername(userData.data.username)
+          setIsAdmin(userData.data.userRole === 'ADMIN')
+        })
+        .catch((error) => {
+          toast.error('Error fetching user data')
+          console.log(error)
+        })
+    }
+  }, [token])
 
   return (
     <Dialog open={open} onClose={onClose} sx={{ marginTop: '3rem'}}>

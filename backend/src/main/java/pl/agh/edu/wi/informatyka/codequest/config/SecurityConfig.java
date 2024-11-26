@@ -53,6 +53,10 @@ public class SecurityConfig {
                         .requestMatchers("/submissions/**")
                         .hasRole(Role.USER.name())
 
+                        // ratings
+                        .requestMatchers(HttpMethod.POST, "/problems/*/ratings")
+                        .hasRole(Role.USER.name())
+
                         // comments
                         .requestMatchers("/problems/*/comments", "/problems/*/comments/**")
                         .hasRole(Role.USER.name())

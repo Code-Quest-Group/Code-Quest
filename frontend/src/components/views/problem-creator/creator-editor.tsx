@@ -26,7 +26,6 @@ export const CreatorEditorButton = ({ title, handleChange, icon, language, saved
 
   const handleEditorMount: OnMount = (editor, monaco) => {
     editorRef.current = editor
-    console.log(language.toLowerCase())
     const model = editor.getModel()
     if (model) {
       monaco.editor.setModelLanguage(model, language.toLowerCase() || 'plaintext')

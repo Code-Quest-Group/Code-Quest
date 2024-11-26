@@ -72,7 +72,7 @@ const tmpSubmissions = [
 
 const AccountPage = () => {
   const [openAdminPanel, setOpenAdminPanel] = useState(false)
-  const { username } = useUser()
+  const { username, isAdmin } = useUser()
   const { showNavbar } = useLayout()
   const navigate = useNavigate()
 
@@ -189,6 +189,7 @@ const AccountPage = () => {
                 </Typography>
               </Button>
               <Button
+                className={clsx({ 'hidden': !isAdmin })}
                 icon={<AdminPanelSettingsIcon />}
                 popup={'Click to open Admin Panel'}
                 onClick={handleOpenAdminModal}

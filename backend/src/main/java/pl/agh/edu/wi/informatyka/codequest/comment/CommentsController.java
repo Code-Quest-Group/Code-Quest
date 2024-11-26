@@ -24,6 +24,7 @@ public class CommentsController {
     }
 
     @GetMapping
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     List<Comment> getComments(@PathVariable @Parameter(example = "add-two-numbers") String problemId) {
         return commentsService.getComments(problemId);
     }
