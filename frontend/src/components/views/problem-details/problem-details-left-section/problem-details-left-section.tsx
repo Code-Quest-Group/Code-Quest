@@ -3,6 +3,8 @@ import { Problem } from '../../../../types'
 import { ProblemOptionsSelector } from './problem-options-selector'
 import { ProblemDetailsDescription } from './problem-details-description'
 import { useCodeEnvironment } from '../../../../providers'
+import { CommentsSection } from './comments-section'
+import { PublishedSubmissionsSection } from './published-submissions-sections'
 
 type LeftSectionProps = {
     classes: CSSModuleClasses
@@ -36,43 +38,35 @@ const SectionHandler = ({currentSection, classes}: SectionHandlerProps) => {
   const { problem } = useCodeEnvironment()
 
   if (currentSection === 'hints') {
+    const hints = problem.hints
+
     return (
-      <div className={classes.whiteBackgroundDescription}>
-        <p>{problem.hints || 'This problem has no hints available at this time'}</p>
+      <div className='scrollable'>
+        <header className='header'> Hints </header>
+
+        {hints && hints.length > 0 ? (
+          <>
+            {hints.map((hint, index) => (
+              <div className={classes.whiteBackgroundDescription} key={index}>
+                <p>{hint}</p>
+              </div>
+            ))}
+          </>
+        ) : (
+          <p>This problem has no hints available at this time</p>
+        )}
       </div>
     )
   }
 
   if (currentSection === 'pseudoCode') {
-    return (
-      <div className={classes.whiteBackgroundDescription}>
-        <p>This will fetch your submissions idk</p>
-      </div>
-    )
+    // Despite being named pseudocode, this is the comment section
+    return <CommentsSection commentClassName={classes.whiteBackgroundDescription}/>
   }
 
   if (currentSection === 'description') {
     return <ProblemDetailsDescription classes={classes} />
   }
 
-  return (
-    problem.userSolutions ? (
-      <ul>
-        {problem.userSolutions.map((solution, index) => (
-          <li key={index}>
-            <header>
-              {solution.userName} | Completed in {solution.time}
-            </header>
-            <div className={classes.whiteBackgroundDescription}>
-              <p>{solution.code}</p>
-            </div>
-          </li>
-        ))}
-      </ul>
-    ) : (
-      <div className={classes.whiteBackgroundDescription}>
-        <p>This problem has no user solutions available at this time</p>
-      </div>
-    )
-  )
+  return <PublishedSubmissionsSection />
 }

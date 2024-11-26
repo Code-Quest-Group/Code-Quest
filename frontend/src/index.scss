@@ -49,6 +49,18 @@
     justify-content: center;
     row-gap: 1rem;
   }
+
+  .scrollable {
+    overflow-y: auto;
+    max-height: calc(100% - 5rem);
+    width: 100%;
+  }
+
+  .header {
+    font-weight: 400;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
 }
 
 html,

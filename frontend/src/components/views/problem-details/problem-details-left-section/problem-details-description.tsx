@@ -1,5 +1,6 @@
 import { useCodeEnvironment } from '../../../../providers'
 import { TagsList } from '../../../utils/tags-list/tags-list'
+import { parseRawResults } from '../problem-details.utils'
 import { RateButtonGroup } from './rate-group'
 
 type ProblemDetailsDescriptionProps = {
@@ -7,7 +8,10 @@ type ProblemDetailsDescriptionProps = {
 }
 
 export const ProblemDetailsDescription = ({ classes }: ProblemDetailsDescriptionProps) => {
-  const { problem } = useCodeEnvironment()
+  const { problem, inputFormat } = useCodeEnvironment()
+
+  const exampleFirstLine = parseRawResults(problem.exampleTestCases, inputFormat)[0]
+  const example = `Input: ${exampleFirstLine} ->  Output: ${problem.exampleExpectedResults[0]}`
 
   return (
     <>
@@ -22,11 +26,11 @@ export const ProblemDetailsDescription = ({ classes }: ProblemDetailsDescription
       </div>
       <header>Example</header>
       <div className={classes.whiteBackgroundDescription}>
-        <p>{problem.example}</p>
+        <p>{example}</p>
       </div>
       <header>Constraints</header>
       <div className={classes.whiteBackgroundDescription}>
-        <p>{problem.constraints}</p>
+        <p>{problem.constraints || 'Please add constraints'}</p>
       </div>
 
       <RateButtonGroup className={classes.buttonGroup} />

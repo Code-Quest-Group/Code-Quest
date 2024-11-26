@@ -35,7 +35,7 @@ export const CustomTestButton = () => {
     }
 
     if (!isValidFormat()) {
-      toast.error('Invalid input format')
+      toast.error('Invalid input format, make sure all data is followed with an EOL')
       return
     }
 

@@ -1,6 +1,6 @@
-import { CircularProgress, Typography } from '@mui/material'
+import { Box, CircularProgress, Modal, Typography } from '@mui/material'
 import axios from 'axios'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { useCodeEnvironment, useUser } from '../../../providers'
 import { SubmissionResponse } from '../../../types'
@@ -8,6 +8,7 @@ import { Button } from '../../utils'
 import PlayCircleFilledWhiteIcon from '@mui/icons-material/PlayCircleFilledWhite'
 import { CustomTestButton } from './custom-test-button'
 import { RunTestCasesButton } from './run-test-cases-button'
+import { AddTask, DoNotDisturb } from '@mui/icons-material'
 
 type SubmitButtonGroupProps = {
     className: string
@@ -16,6 +17,9 @@ type SubmitButtonGroupProps = {
 export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
   const { code, problem, submissionId, setSubmissionId } = useCodeEnvironment()
   const { username } = useUser()
+  const [openModal, setOpenModal] = useState(false)
+  const [time, setTime] = useState(0)
+  const [memory, setMemory] = useState(0)
 
   const handleSubmit = async() => {
     if (username === '') {
@@ -39,6 +43,32 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
       }
     } catch (error) {
       console.error('Error submitting:', error)
+    }
+  }
+
+  const handleCloseModal = () => {
+    setOpenModal(false)
+    setSubmissionId('')
+  }
+
+  const handlePublishSubmission = async() => {
+    try {
+      if (!submissionId) {
+        toast.error('Submission ID is missing.')
+        return
+      }
+
+      const response = await axios.put(`http://localhost:8080/submissions/${submissionId}/publish`)
+
+      if (response.status === 200) {
+        toast.success('Solution published successfully!')
+        handleCloseModal()
+      } else {
+        toast.error('Failed to publish the solution.')
+      }
+    } catch (error) {
+      console.error('Error publishing solution:', error)
+      toast.error('An error occurred while publishing the solution.')
     }
   }
 
@@ -74,15 +104,22 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
 
           if (payload.status === 'ACCEPTED') {
             toast.success(`Passed test cases ${payload.correct_testcases} / ${payload.total_testcases}`)
+            setMemory(payload.time)
+            setTime(payload.time)
+            setOpenModal(true)
           } else if (payload.status === 'WRONG_ANSWER') {
             toast.warning(`Passed test cases ${payload.correct_testcases} / ${payload.total_testcases}`)
-          } else if (payload.status === 'RUNTIME_ERROR_NZEC') {
-            toast.error(`Runtime error! ${payload.stderr}`, { autoClose: false })
+            toast.error(`Wrong asnwer! Failed at ${payload.error_message}`, { autoClose: false })
+          } else if (payload.status === 'TIME_LIMIT_EXCEEDED') {
+            toast.error(`Runtime error! Single test case took ${payload.time} seconds!`, { autoClose: false })
+          } else if (payload.status !== 'PROCESSING') {
+            toast.error(`Unexpected error! ${payload.error_message}`, { autoClose: false })
           }
 
           if (payload.status !== 'PROCESSING') {
             clearInterval(pollInterval)
-            setSubmissionId('')
+
+            if (payload.status !== 'ACCEPTED') setSubmissionId('')
           }
         }
       } catch (error) {
@@ -111,6 +148,44 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
         Submit
         </Typography>
       </Button>
+      <Modal open={openModal} onClose={handleCloseModal} >
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 400,
+            bgcolor: 'background.paper',
+            boxShadow: 24,
+            p: 4,
+            textAlign: 'center',
+            borderRadius: 1,
+          }}
+        >
+          <Typography variant="h5" component="h2">
+            Submission Accepted
+          </Typography>
+          <Typography sx={{ mt: 2 }}>
+            Time: {time}s {' '} Memory: {memory}
+          </Typography>
+          <Typography sx={{ mt: 2, marginBottom: '2rem' }}>
+            Do you wish to publish your solution?
+          </Typography>
+          <div className='container'>
+            <Button icon={<AddTask />} onClick={handlePublishSubmission}>
+              <Typography variant="button" style={{ textTransform: 'none' }}>
+                  Yes
+              </Typography>
+            </Button>
+            <Button seriousButton icon={<DoNotDisturb />} onClick={handleCloseModal}>
+              <Typography variant="button" style={{ textTransform: 'none' }}>
+                  No
+              </Typography>
+            </Button>
+          </div>
+        </Box>
+      </Modal>
     </div>
   )
 }
