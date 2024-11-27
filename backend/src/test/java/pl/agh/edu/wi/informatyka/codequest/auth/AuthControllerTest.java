@@ -33,7 +33,7 @@ class AuthControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registerUserDTO)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.status").value("ok"))
                 .andExpect(jsonPath("$.message").value("User registered successfully"))
                 .andExpect(jsonPath("$.data.user_id").exists());
     }
@@ -50,7 +50,7 @@ class AuthControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registerUserDTO)))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.status").value("error"))
                 .andExpect(jsonPath("$.message").value("User already exists: Email already exists."));
     }
 
@@ -68,7 +68,7 @@ class AuthControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginUserDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.status").value("ok"))
                 .andExpect(jsonPath("$.data.token").exists());
     }
 
@@ -80,7 +80,7 @@ class AuthControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginUserDTO)))
                 .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.status").value("error"))
                 .andExpect(jsonPath("$.message").value("Invalid credentials"));
     }
 
@@ -100,7 +100,7 @@ class AuthControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginUserDTO)))
                 .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.status").value("error"))
                 .andExpect(jsonPath("$.message").value("Invalid credentials"));
     }
 }
