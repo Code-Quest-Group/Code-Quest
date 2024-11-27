@@ -151,7 +151,7 @@ class AuthServiceTest {
     @Test
     void generateJWTToken_shouldReturnToken() {
         String token = "jwt-token";
-        when(jwtUtil.generateToken(user.getUserId())).thenReturn(token);
+        when(jwtUtil.generateToken(user)).thenReturn(token);
 
         String generatedToken = authService.generateJWTToken(user);
 

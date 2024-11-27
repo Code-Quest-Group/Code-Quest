@@ -8,6 +8,11 @@ import org.springframework.web.bind.annotation.*;
 import pl.agh.edu.wi.informatyka.codequest.auth.model.AuthResponseDTO;
 import pl.agh.edu.wi.informatyka.codequest.auth.model.LoginUserDTO;
 import pl.agh.edu.wi.informatyka.codequest.auth.model.RegisterUserDTO;
+import pl.agh.edu.wi.informatyka.codequest.auth.refreshtoken.RefreshTokenService;
+import pl.agh.edu.wi.informatyka.codequest.auth.refreshtoken.dto.TokenRefreshRequest;
+import pl.agh.edu.wi.informatyka.codequest.auth.refreshtoken.dto.TokenRefreshResponse;
+import pl.agh.edu.wi.informatyka.codequest.auth.refreshtoken.exception.TokenRefreshException;
+import pl.agh.edu.wi.informatyka.codequest.auth.refreshtoken.model.RefreshToken;
 import pl.agh.edu.wi.informatyka.codequest.user.model.User;
 import pl.agh.edu.wi.informatyka.codequest.util.GenericResponse;
 import pl.agh.edu.wi.informatyka.codequest.util.ResponseStatus;
@@ -16,9 +21,11 @@ import pl.agh.edu.wi.informatyka.codequest.util.ResponseStatus;
 @RequestMapping("/auth")
 public class AuthController {
     private final AuthService authService;
+    private final RefreshTokenService refreshTokenService;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, RefreshTokenService refreshTokenService) {
         this.authService = authService;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @PostMapping("/register")
@@ -38,9 +45,9 @@ public class AuthController {
         try {
             User user = authService.authenticate(loginUserDTO);
 
-            String token = authService.generateJWTToken(user);
+            AuthResponseDTO authResponse = authService.getAuthResponse(user);
             return ResponseEntity.ok(GenericResponse.<AuthResponseDTO>builder()
-                    .data(new AuthResponseDTO(token))
+                    .data(authResponse)
                     .status(ResponseStatus.OK)
                     .build());
         } catch (Exception e) {
@@ -50,6 +57,21 @@ public class AuthController {
                             .message(e.getMessage())
                             .build());
         }
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<TokenRefreshResponse> refreshToken(
+            @Valid @RequestBody TokenRefreshRequest tokenRefreshRequest) {
+        return refreshTokenService
+                .findByToken(tokenRefreshRequest.getRefreshToken())
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String token = authService.generateJWTToken(user);
+                    return ResponseEntity.ok(new TokenRefreshResponse(token, tokenRefreshRequest.getRefreshToken()));
+                })
+                .orElseThrow(() ->
+                        new TokenRefreshException(tokenRefreshRequest.getRefreshToken(), "Refresh token not found"));
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)

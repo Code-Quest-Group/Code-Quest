@@ -6,19 +6,23 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import java.util.Date;
 import org.springframework.stereotype.Component;
+import pl.agh.edu.wi.informatyka.codequest.user.model.User;
 
 @Component
 public class JwtUtil {
+    private final JwtProperties jwtProperties;
 
-    private final String SECRET_KEY = "secret_key";
-    private final long EXPIRATION_TIME = 1000 * 60 * 60;
+    public JwtUtil(JwtProperties jwtProperties) {
+        this.jwtProperties = jwtProperties;
+    }
 
-    public String generateToken(String userId) {
+    public String generateToken(User user) {
         return JWT.create()
-                .withSubject(userId)
+                .withSubject(user.getUserId())
+                .withClaim("USER_ROLE", user.getUserRole().name())
                 .withIssuedAt(new Date())
-                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .sign(Algorithm.HMAC256(SECRET_KEY));
+                .withExpiresAt(new Date(System.currentTimeMillis() + jwtProperties.getAccessTokenExpiration()))
+                .sign(Algorithm.HMAC256(jwtProperties.getSecret()));
     }
 
     public String extractUsername(String token) {
@@ -32,7 +36,8 @@ public class JwtUtil {
     }
 
     private DecodedJWT verifyToken(String token) {
-        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(SECRET_KEY)).build();
+        JWTVerifier verifier =
+                JWT.require(Algorithm.HMAC256(jwtProperties.getSecret())).build();
         return verifier.verify(token);
     }
 }

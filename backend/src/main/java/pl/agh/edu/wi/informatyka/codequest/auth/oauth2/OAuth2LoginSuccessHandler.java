@@ -37,10 +37,9 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         oAuth2User.getAttributes();
 
         User user = authService.loginOrRegisterGoogleUser(userId, email, name);
-        String token = authService.generateJWTToken(user);
 
         GenericResponse<AuthResponseDTO> genericResponse = GenericResponse.<AuthResponseDTO>builder()
-                .data(new AuthResponseDTO(token))
+                .data(authService.getAuthResponse(user))
                 .status(ResponseStatus.OK)
                 .build();
 

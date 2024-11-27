@@ -60,6 +60,8 @@ public class SecurityConfig {
                         // comments
                         .requestMatchers("/problems/*/comments", "/problems/*/comments/**")
                         .hasRole(Role.USER.name())
+                        .requestMatchers(HttpMethod.POST, "/problems/*/ratings")
+                        .hasRole(Role.USER.name())
 
                         // problem
                         .requestMatchers(HttpMethod.POST, "/problems/**")
@@ -76,14 +78,17 @@ public class SecurityConfig {
                         // without login
                         .requestMatchers("/auth/**")
                         .permitAll()
+                        .requestMatchers("/error")
+                        .permitAll()
                         .requestMatchers(HttpMethod.GET, "**")
                         .permitAll())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(
                         exceptionHandling -> exceptionHandling.authenticationEntryPoint(unauthorizedEntryPoint()))
-                .oauth2Login(oauth2 ->
-                        oauth2.successHandler(oAuth2LoginSuccessHandler).failureHandler(oAuth2LoginFailureHandler))
+                //                .oauth2Login(oauth2 ->
+                //
+                // oauth2.successHandler(oAuth2LoginSuccessHandler).failureHandler(oAuth2LoginFailureHandler))
                 .logout(logout -> logout.logoutSuccessUrl("/api")
                         .invalidateHttpSession(false)
                         .clearAuthentication(true)
@@ -104,6 +109,7 @@ public class SecurityConfig {
                     request.getRequestURI(),
                     clientIp);
 
+            logger.error(">>>", authException);
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("{\"error\":\"Unauthorized\"}");

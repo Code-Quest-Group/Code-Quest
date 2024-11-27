@@ -7,8 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.agh.edu.wi.informatyka.codequest.auth.jwt.JwtUtil;
+import pl.agh.edu.wi.informatyka.codequest.auth.model.AuthResponseDTO;
 import pl.agh.edu.wi.informatyka.codequest.auth.model.LoginUserDTO;
 import pl.agh.edu.wi.informatyka.codequest.auth.model.RegisterUserDTO;
+import pl.agh.edu.wi.informatyka.codequest.auth.refreshtoken.RefreshTokenService;
+import pl.agh.edu.wi.informatyka.codequest.auth.refreshtoken.model.RefreshToken;
 import pl.agh.edu.wi.informatyka.codequest.user.UserRepository;
 import pl.agh.edu.wi.informatyka.codequest.user.model.User;
 
@@ -21,11 +24,18 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final BCryptPasswordEncoder passwordEncoder;
 
+    private final RefreshTokenService refreshTokenService;
+
     @Autowired
-    public AuthService(UserRepository userRepository, JwtUtil jwtUtil, BCryptPasswordEncoder passwordEncoder) {
+    public AuthService(
+            UserRepository userRepository,
+            JwtUtil jwtUtil,
+            BCryptPasswordEncoder passwordEncoder,
+            RefreshTokenService refreshTokenService) {
         this.userRepository = userRepository;
         this.jwtUtil = jwtUtil;
         this.passwordEncoder = passwordEncoder;
+        this.refreshTokenService = refreshTokenService;
     }
 
     public User registerUser(RegisterUserDTO registerUserDTO) {
@@ -87,6 +97,21 @@ public class AuthService {
     }
 
     public String generateJWTToken(User user) {
-        return jwtUtil.generateToken(user.getUserId());
+        return jwtUtil.generateToken(user);
+    }
+
+    public AuthResponseDTO getAuthResponse(User user) {
+        AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+        authResponseDTO.setUsername(user.getUsername());
+        authResponseDTO.setUserId(user.getUserId());
+        authResponseDTO.setRole(user.getUserRole().name());
+
+        String token = jwtUtil.generateToken(user);
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
+
+        authResponseDTO.setToken(token);
+        authResponseDTO.setRefreshToken(refreshToken.getToken());
+
+        return authResponseDTO;
     }
 }

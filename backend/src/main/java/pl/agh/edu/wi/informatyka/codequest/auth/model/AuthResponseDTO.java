@@ -1,10 +1,18 @@
 package pl.agh.edu.wi.informatyka.codequest.auth.model;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
 public class AuthResponseDTO {
     private String token;
+
+    @JsonProperty("refresh_token")
+    private String refreshToken;
+
+    private String userId;
+
+    private String username;
+
+    private String role;
 }
