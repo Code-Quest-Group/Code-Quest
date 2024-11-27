@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import pl.agh.edu.wi.informatyka.codequest.problem.dto.CreateProblemDTO;
@@ -52,8 +53,12 @@ public class ProblemsController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping()
-    @Operation(security = @SecurityRequirement(name = "adminBearerAuth"))
+    @Operation(
+            summary = "Create new Problem",
+            description = "This endpoint is accessible only by ADMIN role.",
+            security = @SecurityRequirement(name = "adminBearerAuth"))
     public ResponseEntity<GenericResponse<CreateProblemResponse>> createCodeTemplate(
             @Valid @RequestBody CreateProblemDTO createProblemDTO, @AuthenticationPrincipal User user) {
         Problem problem = this.problemsService.createProblem(createProblemDTO);

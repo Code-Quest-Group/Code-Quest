@@ -18,11 +18,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import pl.agh.edu.wi.informatyka.codequest.auth.jwt.JwtAuthenticationFilter;
 import pl.agh.edu.wi.informatyka.codequest.auth.oauth2.OAuth2LoginFailureHandler;
 import pl.agh.edu.wi.informatyka.codequest.auth.oauth2.OAuth2LoginSuccessHandler;
-import pl.agh.edu.wi.informatyka.codequest.user.model.Role;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(securedEnabled = true)
+@EnableMethodSecurity
 public class SecurityConfig {
     private final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
@@ -43,47 +42,16 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.authorizeHttpRequests(authorize -> authorize
-                        // TODO judge0 webhook permission
                         .requestMatchers(HttpMethod.PUT, "/judge0/webhook")
                         .permitAll()
-
-                        // submission
-                        .requestMatchers(HttpMethod.DELETE, "/submissions/**")
-                        .hasRole(Role.ADMIN.name())
-                        .requestMatchers("/submissions/**")
-                        .hasRole(Role.USER.name())
-
-                        // ratings
-                        .requestMatchers(HttpMethod.POST, "/problems/*/ratings")
-                        .hasRole(Role.USER.name())
-
-                        // comments
-                        .requestMatchers(HttpMethod.POST, "/problems/*/comments/**")
-                        .hasRole(Role.USER.name())
-                        .requestMatchers(HttpMethod.GET, "/problems/*/comments")
+                        .requestMatchers("/auth/**", "/error", "/swagger-ui/**", "/v3/api-docs*/**")
                         .permitAll()
-                        .requestMatchers(HttpMethod.POST, "/problems/*/ratings")
-                        .hasRole(Role.USER.name())
-
-                        // problem
-                        .requestMatchers(HttpMethod.POST, "/problems/**")
-                        .hasRole(Role.MODERATOR.name())
-                        .requestMatchers(HttpMethod.DELETE, "/problems/**")
-                        .hasRole(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET, "/problems/**")
+                        .permitAll()
                         .requestMatchers(HttpMethod.GET, "/problems")
                         .permitAll()
-
-                        // user
-                        .requestMatchers("/user/**")
-                        .hasAnyRole(Role.USER.name())
-
-                        // without login
-                        .requestMatchers("/auth/**")
-                        .permitAll()
-                        .requestMatchers("/error")
-                        .permitAll()
-                        .requestMatchers(HttpMethod.GET, "**")
-                        .permitAll())
+                        .anyRequest()
+                        .authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(

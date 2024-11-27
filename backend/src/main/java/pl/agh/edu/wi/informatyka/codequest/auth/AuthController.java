@@ -1,5 +1,6 @@
 package pl.agh.edu.wi.informatyka.codequest.auth;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import pl.agh.edu.wi.informatyka.codequest.util.ResponseStatus;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Authorization")
 public class AuthController {
     private final AuthService authService;
     private final RefreshTokenService refreshTokenService;

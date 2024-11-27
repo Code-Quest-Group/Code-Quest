@@ -3,11 +3,11 @@ package pl.agh.edu.wi.informatyka.codequest.comment;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import pl.agh.edu.wi.informatyka.codequest.comment.dto.CreateCommentDTO;
@@ -16,6 +16,7 @@ import pl.agh.edu.wi.informatyka.codequest.user.model.User;
 
 @RestController()
 @RequestMapping("/problems/{problemId}/comments")
+@Tag(name = "Comments")
 public class CommentsController {
     private final CommentsService commentsService;
 
@@ -29,7 +30,6 @@ public class CommentsController {
         return commentsService.getComments(problemId);
     }
 
-    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PostMapping
     @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     ResponseEntity<?> createComment(
@@ -42,9 +42,10 @@ public class CommentsController {
         return ResponseEntity.ok(Collections.singletonMap("comment_id", comment.getCommentId()));
     }
 
-    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @DeleteMapping("{commentId}")
-    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(
+            description = "Delete a comment, MODERATOR or ADMIN can delete other user comments",
+            security = @SecurityRequirement(name = "bearerAuth"))
     ResponseEntity<?> deleteComment(
             @PathVariable @Parameter(example = "add-two-numbers") String problemId,
             @PathVariable String commentId,

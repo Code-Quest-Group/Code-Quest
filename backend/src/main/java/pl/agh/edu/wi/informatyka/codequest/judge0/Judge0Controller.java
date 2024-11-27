@@ -1,12 +1,14 @@
 package pl.agh.edu.wi.informatyka.codequest.judge0;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import pl.agh.edu.wi.informatyka.codequest.submission.dto.Judge0SubmissionResultDTO;
 
 @RestController
+@Tag(name = "Judge0")
 public class Judge0Controller {
 
     private final Judge0Service judge0Service;
