@@ -1,20 +1,36 @@
 package pl.agh.edu.wi.informatyka.codequest.problem;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.agh.edu.wi.informatyka.codequest.codetemplate.CodeTemplatesRepository;
 import pl.agh.edu.wi.informatyka.codequest.problem.dto.CreateProblemDTO;
 import pl.agh.edu.wi.informatyka.codequest.problem.model.Problem;
+import pl.agh.edu.wi.informatyka.codequest.problemrating.ProblemRatingsService;
+import pl.agh.edu.wi.informatyka.codequest.problemrating.model.ProblemRating;
+import pl.agh.edu.wi.informatyka.codequest.user.model.User;
+import pl.agh.edu.wi.informatyka.codequest.user.model.UserProblemDetails;
+import pl.agh.edu.wi.informatyka.codequest.userproblemattempt.UserProblemAttemptsService;
+import pl.agh.edu.wi.informatyka.codequest.userproblemattempt.model.UserProblemAttempt;
 
 @Service
 public class ProblemsService {
 
     private final ProblemsRepository problemsRepository;
+    private final ProblemRatingsService problemRatingsService;
+    private final UserProblemAttemptsService userProblemAttemptsService;
 
-    public ProblemsService(ProblemsRepository problemsRepository, CodeTemplatesRepository codeTemplatesRepository) {
+    public ProblemsService(
+            ProblemsRepository problemsRepository,
+            CodeTemplatesRepository codeTemplatesRepository,
+            ProblemRatingsService problemRatingsService,
+            UserProblemAttemptsService userProblemAttemptsService) {
         this.problemsRepository = problemsRepository;
+        this.problemRatingsService = problemRatingsService;
+        this.userProblemAttemptsService = userProblemAttemptsService;
     }
 
     public Optional<Problem> getProblem(String problemId) {
@@ -47,6 +63,58 @@ public class ProblemsService {
         problem.setCodeTemplate("");
 
         problem = this.problemsRepository.save(problem);
+        return problem;
+    }
+
+    public List<Problem> getAllProblemsWithUserDetails(User user) {
+        Map<String, UserProblemAttempt> attemptsMap =
+                this.userProblemAttemptsService.getAllUserAttempts(user.getUserId()).stream()
+                        .collect(Collectors.toMap(UserProblemAttempt::getProblemId, Function.identity()));
+        Map<String, ProblemRating> problemRatingsMap =
+                this.problemRatingsService.getAllUserRatings(user.getUserId()).stream()
+                        .collect(Collectors.toMap(pr -> pr.getId().getProblemId(), Function.identity()));
+
+        return this.getAllProblems().stream()
+                .map(problem -> {
+                    UserProblemDetails userProblemDetails = new UserProblemDetails();
+                    UserProblemAttempt attempt = attemptsMap.get(problem.getProblemId());
+                    if (attempt != null) {
+                        userProblemDetails.setLastSubmissionTime(
+                                attempt.getLastSubmissionTime().toInstant());
+                        userProblemDetails.setSubmissionCount(attempt.getSubmissionCount());
+                        userProblemDetails.setStatus(attempt.getStatus());
+                    }
+
+                    ProblemRating problemRating = problemRatingsMap.get(problem.getProblemId());
+                    if (problemRating != null) {
+                        userProblemDetails.setRating(problemRating.getRating());
+                    }
+
+                    problem.setUserProblemDetails(userProblemDetails);
+
+                    return problem;
+                })
+                .toList();
+    }
+
+    public Problem getProblemWithUserDetails(String problemId, User user) {
+        Problem problem = this.getProblemOrThrow(problemId);
+        UserProblemDetails details = new UserProblemDetails();
+
+        this.userProblemAttemptsService
+                .getUserAttempt(problemId, user.getUserId())
+                .ifPresent(attempt -> {
+                    details.setLastSubmissionTime(
+                            attempt.getLastSubmissionTime().toInstant());
+                    details.setSubmissionCount(attempt.getSubmissionCount());
+                    details.setStatus(attempt.getStatus());
+                });
+
+        this.problemRatingsService
+                .getUserProblemRanking(problemId, user.getUserId())
+                .ifPresent(problemRating -> details.setRating(problemRating.getRating()));
+
+        problem.setUserProblemDetails(details);
         return problem;
     }
 }

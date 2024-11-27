@@ -1,5 +1,7 @@
 package pl.agh.edu.wi.informatyka.codequest.problemrating;
 
+import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -7,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.agh.edu.wi.informatyka.codequest.problem.ProblemsRepository;
+import pl.agh.edu.wi.informatyka.codequest.problemrating.model.ProblemRating;
+import pl.agh.edu.wi.informatyka.codequest.problemrating.model.ProblemRatingId;
 
 @Service
 public class ProblemRatingsService {
@@ -32,5 +36,13 @@ public class ProblemRatingsService {
         } catch (DataAccessException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
+    }
+
+    public List<ProblemRating> getAllUserRatings(String userId) {
+        return this.problemRatingsRepository.findByUserId(userId);
+    }
+
+    public Optional<ProblemRating> getUserProblemRanking(String problemId, String userId) {
+        return this.problemRatingsRepository.findById(new ProblemRatingId(userId, problemId));
     }
 }

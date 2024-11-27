@@ -32,13 +32,24 @@ public class ProblemsController {
     }
 
     @GetMapping("/{problemId}")
-    public Problem getProblems(@PathVariable @Parameter(example = "add-two-numbers") String problemId) {
-        return problemsService.getProblemOrThrow(problemId);
+    public Problem getProblems(
+            @PathVariable @Parameter(example = "add-two-numbers") String problemId,
+            @AuthenticationPrincipal User user) {
+        if (user != null) {
+            return problemsService.getProblemWithUserDetails(problemId, user);
+        } else {
+            return problemsService.getProblemOrThrow(problemId);
+        }
     }
 
     @GetMapping()
-    public List<Problem> getAllProblems() {
-        return problemsService.getAllProblems();
+    public List<Problem> getAllProblems(@AuthenticationPrincipal User user) {
+        if (user != null) {
+            return problemsService.getAllProblemsWithUserDetails(user);
+
+        } else {
+            return problemsService.getAllProblems();
+        }
     }
 
     @PostMapping()

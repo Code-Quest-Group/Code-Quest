@@ -1,6 +1,7 @@
 package pl.agh.edu.wi.informatyka.codequest.problemrating;
 
 import jakarta.transaction.Transactional;
+import java.util.List;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -22,4 +23,7 @@ public interface ProblemRatingsRepository extends CrudRepository<ProblemRating, 
 
     @Query(value = "SELECT AVG(r.rating) FROM ProblemRating r WHERE r.id.problemId = :problemId")
     Double getAverageRatingForProblem(String problemId);
+
+    @Query("SELECT pr FROM ProblemRating pr WHERE pr.id.userId = :userId")
+    List<ProblemRating> findByUserId(String userId);
 }

@@ -58,8 +58,10 @@ public class SecurityConfig {
                         .hasRole(Role.USER.name())
 
                         // comments
-                        .requestMatchers("/problems/*/comments", "/problems/*/comments/**")
+                        .requestMatchers(HttpMethod.POST, "/problems/*/comments/**")
                         .hasRole(Role.USER.name())
+                        .requestMatchers(HttpMethod.GET, "/problems/*/comments")
+                        .permitAll()
                         .requestMatchers(HttpMethod.POST, "/problems/*/ratings")
                         .hasRole(Role.USER.name())
 

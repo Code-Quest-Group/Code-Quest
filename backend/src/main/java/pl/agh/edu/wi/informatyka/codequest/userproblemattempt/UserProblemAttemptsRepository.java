@@ -1,6 +1,7 @@
 package pl.agh.edu.wi.informatyka.codequest.userproblemattempt;
 
 import jakarta.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -9,6 +10,8 @@ import pl.agh.edu.wi.informatyka.codequest.userproblemattempt.model.UserProblemA
 
 public interface UserProblemAttemptsRepository extends JpaRepository<UserProblemAttempt, Long> {
     Optional<UserProblemAttempt> findByUserIdAndProblemId(String userId, String problemId);
+
+    List<UserProblemAttempt> findByUserId(String userId);
 
     @Modifying
     @Transactional

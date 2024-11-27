@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.agh.edu.wi.informatyka.codequest.sourcecode.Language;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.Submission;
+import pl.agh.edu.wi.informatyka.codequest.user.model.UserProblemDetails;
 import pl.agh.edu.wi.informatyka.codequest.util.converter.LanguageListConverter;
 import pl.agh.edu.wi.informatyka.codequest.util.converter.ListToJsonConverter;
 
@@ -73,6 +74,10 @@ public class Problem {
     @Column(name = "example_expected_result", columnDefinition = "text")
     @Convert(converter = ListToJsonConverter.class)
     List<String> exampleExpectedResult;
+
+    @Transient
+    @JsonProperty("user_problem_details")
+    UserProblemDetails userProblemDetails;
 
     @Override
     public String toString() {

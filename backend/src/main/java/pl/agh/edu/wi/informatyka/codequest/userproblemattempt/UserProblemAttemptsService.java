@@ -1,5 +1,7 @@
 package pl.agh.edu.wi.informatyka.codequest.userproblemattempt;
 
+import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
@@ -26,11 +28,19 @@ public class UserProblemAttemptsService {
         // If previously user successfully submitted the solution don't overwrite it with ATTEMPTED
         userProblemAttemptsRepository
                 .findByUserIdAndProblemId(currentAttempt.getUserId(), currentAttempt.getProblemId())
-                .ifPresent((at) -> {
+                .ifPresent(at -> {
                     if (currentAttempt.getStatus() == UserProblemStatus.ATTEMPTED) {
                         currentAttempt.setStatus(at.getStatus());
                     }
                 });
         this.userProblemAttemptsRepository.incrementSubmissionCountAndUpdateTime(currentAttempt);
+    }
+
+    public List<UserProblemAttempt> getAllUserAttempts(String userId) {
+        return this.userProblemAttemptsRepository.findByUserId(userId);
+    }
+
+    public Optional<UserProblemAttempt> getUserAttempt(String problemId, String userId) {
+        return this.userProblemAttemptsRepository.findByUserIdAndProblemId(userId, problemId);
     }
 }
