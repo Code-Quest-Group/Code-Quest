@@ -129,7 +129,6 @@ public class SubmissionsService {
             CustomSubmission customSubmission = this.customSubmissions.get(submissionId);
             submissionMapper.updateEntityFromDto(customSubmission, result);
             this.submissionVerifierService.judgeCustomSubmissionResults(customSubmission, result);
-            System.out.println(customSubmission);
             logger.info(
                     "Submission {} finished judging, result: {} / {}",
                     result.getToken(),

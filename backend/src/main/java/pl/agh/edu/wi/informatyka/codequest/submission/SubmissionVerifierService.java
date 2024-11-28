@@ -109,10 +109,11 @@ public class SubmissionVerifierService {
         if (status != SubmissionStatus.ACCEPTED) {
             logger.info("raw judge0SubmissionResult {}", judge0SubmissionResult);
             logger.warn(
-                    "Submission {} failed with status {} and message {}",
+                    "Submission {} failed with status {} and message {} and stderr {}",
                     customSubmission.getToken(),
                     customSubmission.getStatus().name(),
-                    customSubmission.getErrorMessage());
+                    customSubmission.getErrorMessage(),
+                    customSubmission.getStderr());
             return;
         }
 
