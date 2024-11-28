@@ -8,7 +8,7 @@ import { toast } from 'react-toastify'
 
 export const RatingButton = () => {
   const { username } = useUser()
-  const { problem } = useCodeEnvironment()
+  const { problem, isPreview } = useCodeEnvironment()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [value, setValue] = useState<number | null>(2)
 
@@ -44,10 +44,11 @@ export const RatingButton = () => {
   return (
     <>
       <Button
+        disabled={isPreview}
         aria-describedby='open-rate-problem-button'
         onClick={handleClick}
         icon={<ThumbsUpDownIcon />}
-        popup={'Click to rate this problem'}
+        popup={isPreview ? 'Cannot rate preview' : 'Click to rate this problem'}
       >
         <Typography variant="button" style={{ textTransform: 'none' }}>
           Rate

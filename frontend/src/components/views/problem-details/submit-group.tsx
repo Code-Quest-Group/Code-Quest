@@ -15,7 +15,7 @@ type SubmitButtonGroupProps = {
 }
 
 export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
-  const { code, problem, submissionId, setSubmissionId } = useCodeEnvironment()
+  const { code, problem, submissionId, setSubmissionId, isPreview } = useCodeEnvironment()
   const { username } = useUser()
   const [openModal, setOpenModal] = useState(false)
   const [time, setTime] = useState(0)
@@ -138,9 +138,13 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
       <RunTestCasesButton />
       <Button
         onClick={handleSubmit}
-        disabled={Boolean(submissionId)}
+        disabled={Boolean(submissionId) || isPreview}
         style={{ position: 'relative', width: '8rem' }}
-        popup={'Click to submit solution'}
+        popup={
+          isPreview
+            ? 'Submitting problem can be done only within problem creator'
+            : 'Click to submit solution'
+        }
         icon={submissionId !== '' ?
           <CircularProgress size={20} style={{color: 'white'}}/>
           : <PlayCircleFilledWhiteIcon />

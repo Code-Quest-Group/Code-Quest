@@ -11,7 +11,13 @@ type CreatorEditorButtonProps = {
     savedCode: string
 }
 
-export const CreatorEditorButton = ({ title, handleChange, icon, language, savedCode }: CreatorEditorButtonProps) => {
+export const CreatorEditorButton = ({
+  title,
+  handleChange,
+  icon,
+  language,
+  savedCode
+}: CreatorEditorButtonProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const editorRef = useRef<any>(null)

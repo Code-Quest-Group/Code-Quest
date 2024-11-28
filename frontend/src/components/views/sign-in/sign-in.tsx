@@ -67,7 +67,6 @@ export const SignInModal = ({ open, onClose }: SignInModalProps) => {
     try {
       const response = await axios.post('http://localhost:8080/auth/login', payload)
       const userData = response.data.data
-      console.log(userData)
       setToken(userData.token)
       setUsername(userData.username)
       setIsAdmin(userData.role === 'ADMIN')

@@ -1,5 +1,6 @@
 import clsx from 'clsx'
 import { Seperator } from '../../../utils'
+import { useCodeEnvironment } from '../../../../providers'
 
 type ProblemOptionsSelectorProps = {
     className?: string
@@ -15,6 +16,8 @@ export const ProblemOptionsSelector = ({
   currentSelection,
   handleSelection
 }: ProblemOptionsSelectorProps) => {
+  const { isPreview } = useCodeEnvironment()
+
   return (
     <div className={className}>
       <button
@@ -32,6 +35,7 @@ export const ProblemOptionsSelector = ({
       </button>
       <Seperator />
       <button
+        disabled={isPreview}
         className={clsx({[selectedClassName]: currentSelection === 'pseudoCode'})}
         onClick={() => handleSelection('pseudoCode')}
       >
@@ -39,6 +43,7 @@ export const ProblemOptionsSelector = ({
       </button>
       <Seperator />
       <button
+        disabled={isPreview}
         className={clsx({[selectedClassName]: currentSelection === 'solutions'})}
         onClick={() => handleSelection('solutions')}>
             Solutions

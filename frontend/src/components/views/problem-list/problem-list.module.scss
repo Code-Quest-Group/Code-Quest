@@ -23,7 +23,7 @@
             align-items: center;
             height: 100%;
 
-            >button {
+            >span {
                 margin: 0 1rem;
             }
 
@@ -42,7 +42,7 @@
             }
 
             @include breakpoints.for-phones {
-                >button {
+                >span {
                     margin-left: 0.75rem;
                     margin-right: 0;
 
@@ -177,7 +177,7 @@
             align-items: center;
             height: 100%;
 
-            >button {
+            >span {
                 margin: 0 1rem;
 
                 @include breakpoints.for-phones {

@@ -89,6 +89,17 @@ function App() {
                   }
                 />
                 <Route
+                  path="/problem-creator/preview"
+                  element={
+                    <>
+                      <Helmet>
+                        <meta name="description" content="Preview your problem" />
+                      </Helmet>
+                      <ProblemDetails isPreview/>
+                    </>
+                  }
+                />
+                <Route
                   path="*"
                   element={
                     <>

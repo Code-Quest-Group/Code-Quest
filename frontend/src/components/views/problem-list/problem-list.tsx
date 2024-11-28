@@ -40,7 +40,7 @@ const ProblemList = () => {
     fetchProblems()
   }, [])
 
-  const truncateName = (str: string) => str.length > 20 ? str.slice(0, 20) + '...' : str
+  const truncateName = (str: string) => str.length > 40 ? str.slice(0, 40) + '...' : str
 
   const pickRandomProblem = () => {
     if (problems.length === 0) {

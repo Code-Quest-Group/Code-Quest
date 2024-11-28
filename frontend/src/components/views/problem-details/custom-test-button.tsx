@@ -7,7 +7,7 @@ import { toast } from 'react-toastify'
 import { useCodeEnvironment } from '../../../providers'
 
 export const CustomTestButton = () => {
-  const { testCases, setTestCases, inputFormat } = useCodeEnvironment()
+  const { testCases, setTestCases, inputFormat, isPreview } = useCodeEnvironment()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [value, setValue] = useState<string>('')
 
@@ -48,10 +48,11 @@ export const CustomTestButton = () => {
   return (
     <>
       <Button
+        disabled={isPreview}
         aria-describedby='open-custom-case-field'
         onClick={handleClick}
         icon={<EditNoteIcon />}
-        popup={'Click write a custom case'}
+        popup={isPreview ? 'Cannot add a custom case to preview' : 'Click write a custom case'}
       >
         <Typography variant="button" style={{ textTransform: 'none' }}>
             Custom Test Case

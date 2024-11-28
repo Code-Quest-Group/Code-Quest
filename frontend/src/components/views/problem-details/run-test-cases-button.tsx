@@ -15,7 +15,8 @@ export const RunTestCasesButton = () => {
     setSubmissionId,
     submissionId,
     setExpectedResults,
-    setReceivedOutput
+    setReceivedOutput,
+    isPreview
   } = useCodeEnvironment()
   const { username } = useUser()
 
@@ -104,7 +105,7 @@ export const RunTestCasesButton = () => {
         <CircularProgress size={20} style={{color: 'white'}}/>
         : <PlayArrow />
       }
-      popup={'Click to run test case'}
+      popup={isPreview ? 'Click to confirm correctness of provided test cases' : 'Click to run test case'}
     >
       <Typography variant="button" style={{ textTransform: 'none' }}>
         Run Test Cases

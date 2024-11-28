@@ -9,7 +9,7 @@ import axios from 'axios'
 
 export const CommentButton = () => {
   const { username } = useUser()
-  const { problem } = useCodeEnvironment()
+  const { problem, isPreview } = useCodeEnvironment()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [value, setValue] = useState<string>('')
 
@@ -45,10 +45,11 @@ export const CommentButton = () => {
   return (
     <>
       <Button
+        disabled={isPreview}
         aria-describedby='open-comment-problem-button'
         onClick={handleClick}
         icon={<CommentIcon />}
-        popup={'Click to comment this problem'}
+        popup={isPreview ? 'Cannot comment preview' : 'Click to comment this problem'}
       >
         <Typography variant="button" style={{ textTransform: 'none' }}>
           Comment

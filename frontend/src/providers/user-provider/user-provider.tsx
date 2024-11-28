@@ -2,6 +2,7 @@
 /* eslint-disable no-unused-vars */
 import axios from 'axios'
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react'
+import { Problem } from '../../types'
 
 const UserContext = createContext({
   username: '',
@@ -9,16 +10,18 @@ const UserContext = createContext({
   token: '',
   isAdmin: false,
   refreshToken: '',
+  userProblem: undefined as Problem | undefined,
   setUsername: (_name: string) => {},
   setToken: (_token: string) => {},
   setUserId: (_userId: string) => {},
   setIsAdmin: (_isAdmin: boolean) => {},
   setRefreshToken: (_refreshToken: string) => {},
+  setUserProblem: (_userProblem: Problem | undefined) => {},
 })
 
 type UserProviderProps = {
-  children: ReactNode
-}
+  children: ReactNode;
+};
 
 export const useUser = () => useContext(UserContext)
 
@@ -28,6 +31,10 @@ export const UserProvider = ({ children }: UserProviderProps) => {
   const [userId, setUserId] = useState(localStorage.getItem('userId') || '')
   const [isAdmin, setIsAdmin] = useState(localStorage.getItem('isAdmin') === 'true')
   const [refreshToken, setRefreshToken] = useState(localStorage.getItem('refreshToken') || '')
+  const [userProblem, setUserProblem] = useState<Problem | undefined>(() => {
+    const savedProblem = localStorage.getItem('userProblem')
+    return savedProblem ? JSON.parse(savedProblem) : undefined
+  })
 
   useEffect(() => {
     if (token && username && userId) {
@@ -81,21 +88,30 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     localStorage.setItem('userId', userId)
     localStorage.setItem('isAdmin', isAdmin.toString())
     localStorage.setItem('refreshToken', refreshToken)
-  }, [username, token, userId, isAdmin])
+    if (userProblem) {
+      localStorage.setItem('userProblem', JSON.stringify(userProblem))
+    } else {
+      localStorage.removeItem('userProblem')
+    }
+  }, [username, token, userId, isAdmin, refreshToken, userProblem])
 
   return (
-    <UserContext.Provider value={{
-      username,
-      token,
-      userId,
-      refreshToken,
-      setUsername,
-      setToken,
-      setUserId,
-      isAdmin,
-      setIsAdmin,
-      setRefreshToken,
-    }}>
+    <UserContext.Provider
+      value={{
+        username,
+        token,
+        userId,
+        refreshToken,
+        userProblem,
+        setUsername,
+        setToken,
+        setUserId,
+        isAdmin,
+        setIsAdmin,
+        setRefreshToken,
+        setUserProblem,
+      }}
+    >
       {children}
     </UserContext.Provider>
   )

@@ -4,31 +4,33 @@ import { createContext, ReactNode, useContext, useEffect, useState } from 'react
 import { Problem } from '../../types'
 
 type CodeEnvironmentProviderProps = {
-  children: ReactNode;
-  problem: Problem;
-};
+  children: ReactNode
+  problem: Problem
+  isPreview?: boolean
+}
 
 type CodeEnvironmentContextType = {
-  problem: Problem;
-  code: string;
-  currentLanguage: string;
-  testCases: string;
-  currentTestIndex: number;
+  problem: Problem
+  code: string
+  currentLanguage: string
+  testCases: string
+  currentTestIndex: number
   submissionId: string;
-  receivedOutput: (string | number)[];
-  inputFormat: string;
-  expectedResults: (string | number)[];
-  setCurrentProblem: (problem: Problem) => void;
-  setCurrentLanguage: (language: string) => void;
-  setCode: (code: string) => void;
-  setTestCases: (testCases: string) => void;
-  setCurrentTestIndex: (index: number) => void;
-  setSubmissionId: (id: string) => void;
-  setReceivedOutput: (output: (string | number)[]) => void;
-  setExpectedResults: (results: (string | number)[]) => void;
-  fetchSavedCode: () => string | null;
-  resetCodeToTemplate: () => void;
-};
+  receivedOutput: (string | number)[]
+  inputFormat: string
+  isPreview: boolean;
+  expectedResults: (string | number)[]
+  setCurrentProblem: (problem: Problem) => void
+  setCurrentLanguage: (language: string) => void
+  setCode: (code: string) => void
+  setTestCases: (testCases: string) => void
+  setCurrentTestIndex: (index: number) => void
+  setSubmissionId: (id: string) => void
+  setReceivedOutput: (output: (string | number)[]) => void
+  setExpectedResults: (results: (string | number)[]) => void
+  fetchSavedCode: () => string | null
+  resetCodeToTemplate: () => void
+}
 
 const CodeEnvironmentContext = createContext<CodeEnvironmentContextType>({
   problem: {} as Problem,
@@ -40,6 +42,7 @@ const CodeEnvironmentContext = createContext<CodeEnvironmentContextType>({
   receivedOutput: [],
   inputFormat: '',
   expectedResults: [],
+  isPreview: false,
   setCurrentProblem: () => {},
   setCurrentLanguage: () => {},
   setCode: () => {},
@@ -56,7 +59,7 @@ export const useCodeEnvironment = () => {
   return useContext(CodeEnvironmentContext)
 }
 
-export const CodeEnvironmentProvider = ({ children, problem }: CodeEnvironmentProviderProps) => {
+export const CodeEnvironmentProvider = ({ children, problem, isPreview = false }: CodeEnvironmentProviderProps) => {
   const [currentProblem, setCurrentProblem] = useState<Problem>(problem)
   const [currentLanguage, setCurrentLanguage] = useState('PYTHON')
   const [code, setCode] = useState(() => {
@@ -71,13 +74,13 @@ export const CodeEnvironmentProvider = ({ children, problem }: CodeEnvironmentPr
   const [inputFormat, _] = useState(problem.inputFormat)
 
   useEffect(() => {
-    if (problem?.problemId) {
+    if (problem?.problemId && problem.problemId !== 'preview-problem') {
       localStorage.setItem(`savedCode${problem.problemId}`, code)
     }
   }, [code, problem?.problemId])
 
   const fetchSavedCode = () => {
-    if (problem?.problemId) {
+    if (problem?.problemId && problem.problemId !== 'preview-problem') {
       return localStorage.getItem(`savedCode${problem.problemId}`)
     }
     return null
@@ -102,6 +105,7 @@ export const CodeEnvironmentProvider = ({ children, problem }: CodeEnvironmentPr
         submissionId,
         receivedOutput,
         inputFormat,
+        isPreview,
         expectedResults,
         setCurrentProblem,
         setCurrentLanguage,
