@@ -60,6 +60,9 @@ public class Problem {
     @Convert(converter = ListToJsonConverter.class)
     List<String> tags;
 
+    @Column(columnDefinition = "text")
+    String constraints;
+
     @Column(name = "hints", columnDefinition = "text")
     @Convert(converter = ListToJsonConverter.class)
     List<String> hints;
