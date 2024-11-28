@@ -1,34 +1,34 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
-import { createContext, ReactNode, useContext, useState } from 'react'
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 import { Problem } from '../../types'
 
 type CodeEnvironmentProviderProps = {
-    children: ReactNode
-    problem: Problem
-}
+  children: ReactNode;
+  problem: Problem;
+};
 
 type CodeEnvironmentContextType = {
-    problem: Problem
-    code: string
-    currentLanguage: string
-    testCases: string
-    currentTestIndex: number
-    submissionId: string
-    resetValue: boolean
-    receivedOutput: (string | number)[]
-    inputFormat: string
-    expectedResults: (string | number)[]
-    setCurrentProblem: (problem: Problem) => void
-    setCurrentLanguage: (language: string) => void
-    setCode: (code: string) => void
-    setTestCases: (testCases: string) => void
-    setCurrentTestIndex: (index: number) => void
-    setSubmissionId: (id: string) => void
-    setReceivedOutput: (output: (string | number)[]) => void
-    resetEnvironment: (resetValue: boolean) => void
-    setExpectedResults: (results: (string | number)[]) => void
-}
+  problem: Problem;
+  code: string;
+  currentLanguage: string;
+  testCases: string;
+  currentTestIndex: number;
+  submissionId: string;
+  receivedOutput: (string | number)[];
+  inputFormat: string;
+  expectedResults: (string | number)[];
+  setCurrentProblem: (problem: Problem) => void;
+  setCurrentLanguage: (language: string) => void;
+  setCode: (code: string) => void;
+  setTestCases: (testCases: string) => void;
+  setCurrentTestIndex: (index: number) => void;
+  setSubmissionId: (id: string) => void;
+  setReceivedOutput: (output: (string | number)[]) => void;
+  setExpectedResults: (results: (string | number)[]) => void;
+  fetchSavedCode: () => string | null;
+  resetCodeToTemplate: () => void;
+};
 
 const CodeEnvironmentContext = createContext<CodeEnvironmentContextType>({
   problem: {} as Problem,
@@ -37,7 +37,6 @@ const CodeEnvironmentContext = createContext<CodeEnvironmentContextType>({
   testCases: '',
   currentTestIndex: 1,
   submissionId: '',
-  resetValue: false,
   receivedOutput: [],
   inputFormat: '',
   expectedResults: [],
@@ -48,8 +47,9 @@ const CodeEnvironmentContext = createContext<CodeEnvironmentContextType>({
   setCurrentTestIndex: () => {},
   setSubmissionId: () => {},
   setReceivedOutput: () => {},
-  resetEnvironment: () => {},
   setExpectedResults: () => {},
+  fetchSavedCode: () => null,
+  resetCodeToTemplate: () => {},
 })
 
 export const useCodeEnvironment = () => {
@@ -59,14 +59,37 @@ export const useCodeEnvironment = () => {
 export const CodeEnvironmentProvider = ({ children, problem }: CodeEnvironmentProviderProps) => {
   const [currentProblem, setCurrentProblem] = useState<Problem>(problem)
   const [currentLanguage, setCurrentLanguage] = useState('PYTHON')
-  const [code, setCode] = useState(problem.codeTemplate ? `\n${problem.codeTemplate}` : '')
+  const [code, setCode] = useState(() => {
+    const savedCode = localStorage.getItem(`savedCode${problem.problemId}`)
+    return savedCode || (problem.codeTemplate ? `\n${problem.codeTemplate}` : '')
+  })
   const [testCases, setTestCases] = useState(problem.exampleTestCases)
   const [currentTestIndex, setCurrentTestIndex] = useState(1)
   const [submissionId, setSubmissionId] = useState('')
   const [receivedOutput, setReceivedOutput] = useState<(string | number)[]>([])
   const [expectedResults, setExpectedResults] = useState<(string | number)[]>([])
-  const [resetValue, resetEnvironment] = useState(false)
   const [inputFormat, _] = useState(problem.inputFormat)
+
+  useEffect(() => {
+    if (problem?.problemId) {
+      localStorage.setItem(`savedCode${problem.problemId}`, code)
+    }
+  }, [code, problem?.problemId])
+
+  const fetchSavedCode = () => {
+    if (problem?.problemId) {
+      return localStorage.getItem(`savedCode${problem.problemId}`)
+    }
+    return null
+  }
+
+  const resetCodeToTemplate = () => {
+    if (problem?.codeTemplate) {
+      setCode(`\n${problem.codeTemplate}`)
+    } else {
+      setCode('')
+    }
+  }
 
   return (
     <CodeEnvironmentContext.Provider
@@ -78,7 +101,6 @@ export const CodeEnvironmentProvider = ({ children, problem }: CodeEnvironmentPr
         currentTestIndex,
         submissionId,
         receivedOutput,
-        resetValue,
         inputFormat,
         expectedResults,
         setCurrentProblem,
@@ -88,8 +110,9 @@ export const CodeEnvironmentProvider = ({ children, problem }: CodeEnvironmentPr
         setCurrentTestIndex,
         setSubmissionId,
         setReceivedOutput,
-        resetEnvironment,
         setExpectedResults,
+        fetchSavedCode,
+        resetCodeToTemplate, // Provide the reset function
       }}
     >
       {children}

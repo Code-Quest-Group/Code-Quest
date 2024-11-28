@@ -4,7 +4,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import { useCodeEnvironment } from '../../../providers'
 
 export const LanguageDropdown = () => {
-  const { currentLanguage, setCurrentLanguage, problem, resetEnvironment, resetValue } = useCodeEnvironment()
+  const { currentLanguage, setCurrentLanguage, problem, resetCodeToTemplate } = useCodeEnvironment()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -48,7 +48,7 @@ export const LanguageDropdown = () => {
           </MenuItem>
         ))}
       </Menu>
-      <Button onClick={() => resetEnvironment(!resetValue)}>
+      <Button onClick={() => resetCodeToTemplate()}>
         <Typography variant="button" style={{ textTransform: 'none', marginLeft: '0.5rem' }}>
           Reset Environment
         </Typography>

@@ -9,7 +9,7 @@ type CodeEditorProps = {
 }
 
 export const CodeEditor = ({ className, isFullscreen }: CodeEditorProps) => {
-  const { code, setCode, currentLanguage, resetValue, problem } = useCodeEnvironment()
+  const { code, setCode, currentLanguage } = useCodeEnvironment()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const editorRef = useRef<any>(null)
 
@@ -31,10 +31,6 @@ export const CodeEditor = ({ className, isFullscreen }: CodeEditorProps) => {
       monaco.editor.setTheme(isFullscreen ? 'dark' : 'light')
     })
   }, [isFullscreen, currentLanguage])
-
-  useEffect(() => {
-    setCode(problem.codeTemplate ? `\n${problem.codeTemplate}` : '')
-  }, [resetValue])
 
   return (
     <div>

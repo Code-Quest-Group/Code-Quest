@@ -112,6 +112,8 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
             toast.error(`Wrong asnwer! Failed at ${payload.error_message}`, { autoClose: false })
           } else if (payload.status === 'TIME_LIMIT_EXCEEDED') {
             toast.error(`Runtime error! Single test case took ${payload.time} seconds!`, { autoClose: false })
+          } else if (payload.status === 'RUNTIME_ERROR_NZEC') {
+            toast.error(`Unexpected error! ${payload.stderr}`, { autoClose: false })
           } else if (payload.status !== 'PROCESSING') {
             toast.error(`Unexpected error! ${payload.error_message}`, { autoClose: false })
           }
