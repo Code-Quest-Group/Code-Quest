@@ -8,17 +8,22 @@ import pl.agh.edu.wi.informatyka.codequest.codetemplate.model.CodeTemplate;
 public class PythonSourceCodePreprocessor implements SourceCodePreprocessor {
     private final String parserCode;
 
+    private static final String IMPORTS = """
+from typing import *
+
+""";
+
     public PythonSourceCodePreprocessor(String resourcesPath) throws IOException {
         parserCode = Files.readString(Path.of(resourcesPath, "python", "parser.py"));
     }
 
     @Override
     public String assembleSourceCode(String code) {
-        return code + "\n\n" + parserCode;
+        return IMPORTS + code + "\n\n" + parserCode;
     }
 
     @Override
     public String assembleSourceCode(String sourceCode, CodeTemplate codeTemplate) {
-        return codeTemplate.getCode() + "\n\n" + sourceCode + "\n\n" + parserCode;
+        return IMPORTS + codeTemplate.getCode() + "\n\n" + sourceCode + "\n\n" + parserCode;
     }
 }
