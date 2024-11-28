@@ -35,7 +35,7 @@ export const ProblemOptionsSelector = ({
         className={clsx({[selectedClassName]: currentSelection === 'pseudoCode'})}
         onClick={() => handleSelection('pseudoCode')}
       >
-        Submissions
+        Comments
       </button>
       <Seperator />
       <button

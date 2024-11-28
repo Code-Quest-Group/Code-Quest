@@ -1,7 +1,7 @@
 import { CircularProgress, Typography } from '@mui/material'
 import { Button } from '../../utils'
 import { PlayArrow } from '@mui/icons-material'
-import { useCodeEnvironment } from '../../../providers'
+import { useCodeEnvironment, useUser } from '../../../providers'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { useEffect } from 'react'
@@ -17,8 +17,14 @@ export const RunTestCasesButton = () => {
     setExpectedResults,
     setReceivedOutput
   } = useCodeEnvironment()
+  const { username } = useUser()
 
   const handleRunTestCases = async() => {
+    if (username === '') {
+      toast.warning('Please log in to submit')
+      return
+    }
+
     try {
       const response = await axios.post('http://localhost:8080/submissions/custom', {
         language: currentLanguage,
@@ -67,6 +73,11 @@ export const RunTestCasesButton = () => {
             toast.warning(`Passed test cases ${payload.correct_testcases} / ${payload.total_testcases}`)
           } else if (payload.status !== 'PROCESSING') {
             toast.error(`Error! ${payload.status}`, { autoClose: false })
+            if (payload.status === 'RUNTIME_ERROR_NZEC') {
+              clearInterval(pollInterval)
+              setSubmissionId('')
+              return
+            }
           }
 
           if (payload.status !== 'PROCESSING') {

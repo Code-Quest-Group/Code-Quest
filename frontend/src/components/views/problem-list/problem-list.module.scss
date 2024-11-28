@@ -56,7 +56,7 @@
 
     .middleSection {
         border-top: 0.25rem solid var(--secondary-white);
-        min-height: 44rem;
+        min-height: calc(100% - 12rem);
         overflow-y: hidden;
         background-image: linear-gradient(0deg,
                 var(--tertiary-white) 25%,

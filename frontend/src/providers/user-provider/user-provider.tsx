@@ -8,10 +8,12 @@ const UserContext = createContext({
   userId: '',
   token: '',
   isAdmin: false,
+  refreshToken: '',
   setUsername: (_name: string) => {},
   setToken: (_token: string) => {},
   setUserId: (_userId: string) => {},
   setIsAdmin: (_isAdmin: boolean) => {},
+  setRefreshToken: (_refreshToken: string) => {},
 })
 
 type UserProviderProps = {
@@ -25,13 +27,14 @@ export const UserProvider = ({ children }: UserProviderProps) => {
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const [userId, setUserId] = useState(localStorage.getItem('userId') || '')
   const [isAdmin, setIsAdmin] = useState(localStorage.getItem('isAdmin') === 'true')
+  const [refreshToken, setRefreshToken] = useState(localStorage.getItem('refreshToken') || '')
 
   useEffect(() => {
     if (token && username && userId) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
     }
 
-    const interceptor = axios.interceptors.request.use(
+    const requestInterceptor = axios.interceptors.request.use(
       (config) => {
         if (token) {
           config.headers['Authorization'] = `Bearer ${token}`
@@ -43,8 +46,32 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       }
     )
 
+    const responseInterceptor = axios.interceptors.response.use(
+      (response) => {
+        return response
+      },
+      async(error) => {
+        if (error.response?.status === 500 && error.response?.data?.message?.includes('The Token has expired')) {
+          try {
+            const axiosInstance = axios.create()
+            const refreshResponse = await axiosInstance.post('http://localhost:8080/auth/refresh-token', { refreshToken })
+
+            if (refreshResponse.data) {
+              setToken(refreshResponse.data.access_token)
+              setRefreshToken(refreshResponse.data.refresh_token)
+              window.location.reload()
+            }
+          } catch (refreshError) {
+            console.error('Error refreshing token:', refreshError)
+          }
+        }
+        return Promise.reject(error)
+      }
+    )
+
     return () => {
-      axios.interceptors.request.eject(interceptor)
+      axios.interceptors.request.eject(requestInterceptor)
+      axios.interceptors.response.eject(responseInterceptor)
     }
   }, [token])
 
@@ -53,10 +80,22 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     localStorage.setItem('token', token)
     localStorage.setItem('userId', userId)
     localStorage.setItem('isAdmin', isAdmin.toString())
+    localStorage.setItem('refreshToken', refreshToken)
   }, [username, token, userId, isAdmin])
 
   return (
-    <UserContext.Provider value={{ username, token, userId, setUsername, setToken, setUserId, isAdmin, setIsAdmin }}>
+    <UserContext.Provider value={{
+      username,
+      token,
+      userId,
+      refreshToken,
+      setUsername,
+      setToken,
+      setUserId,
+      isAdmin,
+      setIsAdmin,
+      setRefreshToken,
+    }}>
       {children}
     </UserContext.Provider>
   )
