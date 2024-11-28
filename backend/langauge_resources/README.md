@@ -11,13 +11,13 @@
 
 ## Argument types and it's mapping
 
-| Type      | Python    | C++              | Java     | Javascript |
-|-----------|-----------|------------------|----------|------------|
-| int       | `int`     | `int`            | `int`    | `number`   |
-| long      | `int`     | `long long`      | `long`   | `number`   |
-| double    | `int`     | `double`         | `double` | `number`   |
-| string    | `str`     | `std::string`    | `String` | `string`   |
-| array\<T> | `List[T]` | `std::vector<T>` | `T[]`    | `Array`    |
+| Type     | Python    | C++              | Java     | Javascript |
+|----------|-----------|------------------|----------|------------|
+| int      | `int`     | `int`            | `int`    | `number`   |
+| long     | `int`     | `long long`      | `long`   | `number`   |
+| double   | `int`     | `double`         | `double` | `number`   |
+| string   | `str`     | `std::string`    | `String` | `string`   |
+| array[T] | `List[T]` | `std::vector<T>` | `T[]`    | `Array`    |
 
 Arrays can be nested
 

@@ -19,8 +19,8 @@ class Parser:
         self.args = arguments
 
     def validate_arg_type_name(self, arg: str):
-            if arg.startswith('list<') and arg.endswith('>'):
-                self.validate_arg_type_name(args[5:-1])
+            if arg.startswith('list[') and arg.endswith(']'):
+                return self.validate_arg_type_name(arg[5:-1])
             if arg not in self.valid_types:
                 raise ValueError(f'Argument {arg} is not a valid type. Valid types are {",".join(self.valid_types)} + list<T>')
 
@@ -53,7 +53,7 @@ class Parser:
             if arg_type == 'string':
                 return
         elif isinstance(arg, list):
-            if arg_type.startswith('list<') and arg_type.endswith('>'):
+            if arg_type.startswith('list[') and arg_type.endswith(']'):
                 inner_type = arg_type[5:-1]
                 for inner_arg in arg:
                     self.validate_arg_type(inner_arg, inner_type)
