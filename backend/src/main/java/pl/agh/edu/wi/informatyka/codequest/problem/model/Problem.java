@@ -45,11 +45,11 @@ public class Problem {
     String codeTemplate;
 
     @JsonIgnore()
-    @Column(name = "test_cases", nullable = false, columnDefinition = "text")
+    @Column(name = "test_cases", nullable = false, columnDefinition = "mediumtext")
     String testCases;
 
     @JsonIgnore()
-    @Column(name = "expected_result", nullable = false, columnDefinition = "text")
+    @Column(name = "expected_result", nullable = false, columnDefinition = "mediumtext")
     String expectedResult;
 
     @JsonIgnore()
