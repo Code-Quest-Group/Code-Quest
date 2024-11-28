@@ -8,12 +8,13 @@ type CodeQuestButtonProps = ButtonProps & {
   icon?: ReactNode
   popup?: string
   leftIcon?: boolean
+  className?: string
 } & (
   | { leftIcon: true; icon: ReactNode }
   | { leftIcon?: never; icon?: ReactNode }
 )
 
-export const Button = ({ seriousButton, icon, popup, leftIcon, ...props }: CodeQuestButtonProps) => {
+export const Button = ({ seriousButton, icon, popup, leftIcon, className, ...props }: CodeQuestButtonProps) => {
   return (
     <Tooltip title={popup} arrow placement="top">
       <MuiButton
@@ -21,7 +22,8 @@ export const Button = ({ seriousButton, icon, popup, leftIcon, ...props }: CodeQ
           {
             [classes.seriousButton]: seriousButton,
             [classes.hasIcon]: icon,
-          }
+          },
+          className
         )}
         startIcon={leftIcon ? icon : undefined}
         endIcon={leftIcon ? undefined : icon}

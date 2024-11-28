@@ -1,6 +1,6 @@
 .solutionsContainer {
     width: 100%;
-    max-height: 100%;
+    max-height: calc(100% - 4rem);
     overflow-y: auto;
 
 
@@ -27,9 +27,11 @@
     }
 
     pre {
+        max-width: calc(100% - 2rem);
         padding: 1rem;
         width: fit-content;
         background-color: var(--tertiary-white);
         font-size: 1rem;
+        overflow-x: auto;
     }
 }

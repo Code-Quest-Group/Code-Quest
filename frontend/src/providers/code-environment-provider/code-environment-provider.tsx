@@ -112,7 +112,7 @@ export const CodeEnvironmentProvider = ({ children, problem }: CodeEnvironmentPr
         setReceivedOutput,
         setExpectedResults,
         fetchSavedCode,
-        resetCodeToTemplate, // Provide the reset function
+        resetCodeToTemplate,
       }}
     >
       {children}
