@@ -14,6 +14,7 @@ import pl.agh.edu.wi.informatyka.codequest.auth.refreshtoken.RefreshTokenService
 import pl.agh.edu.wi.informatyka.codequest.auth.refreshtoken.model.RefreshToken;
 import pl.agh.edu.wi.informatyka.codequest.user.UserRepository;
 import pl.agh.edu.wi.informatyka.codequest.user.model.User;
+import pl.agh.edu.wi.informatyka.codequest.user.model.UserPreferences;
 
 @Service
 public class AuthService {
@@ -53,6 +54,7 @@ public class AuthService {
         user.setEmail(registerUserDTO.getEmail());
         user.setUsername(registerUserDTO.getUsername());
         user.setPasswordHash(passwordHash);
+        user.setPreferences(new UserPreferences());
         user = userRepository.save(user);
         logger.info("New user created user_id: {}, email: {}", user.getUsername(), user.getEmail());
         return user;

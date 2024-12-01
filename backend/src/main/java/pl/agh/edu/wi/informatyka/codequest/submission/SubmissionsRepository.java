@@ -1,5 +1,6 @@
 package pl.agh.edu.wi.informatyka.codequest.submission;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -16,4 +17,6 @@ public interface SubmissionsRepository
 
     @Query("SELECT s FROM Submission s WHERE s.problemId = :problemId AND s.isPublic = true")
     List<Submission> getPublicByProblemId(String problemId);
+
+    List<Submission> findAllByUserIdAndCreatedAtAfter(String userId, ZonedDateTime createdAt);
 }

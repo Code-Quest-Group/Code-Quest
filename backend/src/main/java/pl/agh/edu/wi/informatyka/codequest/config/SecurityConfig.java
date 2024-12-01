@@ -44,7 +44,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.PUT, "/judge0/webhook")
                         .permitAll()
-                        .requestMatchers("/auth/**", "/error", "/swagger-ui/**", "/v3/api-docs*/**")
+                        .requestMatchers("/auth/**", "/error", "/swagger-ui/**", "/v3/api-docs*/**", "/api")
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/problems/**")
                         .permitAll()

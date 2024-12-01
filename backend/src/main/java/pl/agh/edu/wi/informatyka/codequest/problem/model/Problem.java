@@ -42,10 +42,12 @@ public class Problem {
 
     @JsonProperty("code_template")
     @Column(name = "code_template", nullable = false, columnDefinition = "text")
+    @Basic(fetch = FetchType.LAZY)
     String codeTemplate;
 
     @JsonIgnore()
     @Column(name = "test_cases", nullable = false, columnDefinition = "mediumtext")
+    @Basic(fetch = FetchType.LAZY)
     String testCases;
 
     @JsonIgnore()
