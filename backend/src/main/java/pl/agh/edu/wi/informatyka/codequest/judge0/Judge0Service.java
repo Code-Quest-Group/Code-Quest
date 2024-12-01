@@ -33,6 +33,7 @@ public class Judge0Service {
     private final ApplicationEventPublisher eventPublisher;
 
     private final String judgingServiceUrl;
+    private final String judgingCallbackUrl;
 
     private final Map<String, Judge0SubmissionResultDTO> judgeResults = new HashMap<>();
     private final ObjectMapper objectMapper;
@@ -40,10 +41,12 @@ public class Judge0Service {
     public Judge0Service(
             ApplicationEventPublisher eventPublisher,
             @Value("${judge0.service.url}") String judgingServiceUrl,
+            @Value("${judge0.callback.url}") String judgingCallbackUrl,
             ObjectMapper objectMapper) {
         this.eventPublisher = eventPublisher;
 
         this.judgingServiceUrl = judgingServiceUrl;
+        this.judgingCallbackUrl = judgingCallbackUrl;
         this.objectMapper = objectMapper;
         logger.info("Judge 0 service url: {}", judgingServiceUrl);
     }
@@ -121,7 +124,7 @@ public class Judge0Service {
         map.put("language_id", createSubmissionDTO.getLanguage().getLanguageId());
         map.put("command_line_arguments", commandLineArgs);
         map.put("stdin", currentProblem.getTestCases());
-        map.put("callback_url", "http://host.docker.internal:8080/judge0/webhook");
+        map.put("callback_url", judgingCallbackUrl);
         return map;
     }
 
@@ -134,7 +137,7 @@ public class Judge0Service {
         map.put("language_id", createCustomSubmissionDTO.getLanguage().getLanguageId());
         map.put("command_line_arguments", commandLineArgs);
         map.put("stdin", createCustomSubmissionDTO.getCustomTestcases());
-        map.put("callback_url", "http://host.docker.internal:8080/judge0/webhook");
+        map.put("callback_url", judgingCallbackUrl);
         return map;
     }
 }
