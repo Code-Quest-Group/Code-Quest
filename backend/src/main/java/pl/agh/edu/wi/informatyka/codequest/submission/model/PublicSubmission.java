@@ -1,7 +1,7 @@
 package pl.agh.edu.wi.informatyka.codequest.submission.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import pl.agh.edu.wi.informatyka.codequest.sourcecode.Language;
@@ -21,7 +21,7 @@ public class PublicSubmission {
 
     Language language;
 
-    ZonedDateTime date;
+    Instant date;
 
     Float time;
     Float memory;

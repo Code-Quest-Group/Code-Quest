@@ -3,7 +3,7 @@ package pl.agh.edu.wi.informatyka.codequest.userproblemattempt.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import lombok.Data;
 import pl.agh.edu.wi.informatyka.codequest.problem.model.Problem;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.Submission;
@@ -50,7 +50,7 @@ public class UserProblemAttempt {
 
     @JsonProperty("last_submission_time")
     @Column(name = "last_submission_time")
-    private ZonedDateTime lastSubmissionTime;
+    private Instant lastSubmissionTime;
 
     public static UserProblemAttempt fromSubmission(Submission submission) {
         UserProblemAttempt userProblemAttempt = new UserProblemAttempt();

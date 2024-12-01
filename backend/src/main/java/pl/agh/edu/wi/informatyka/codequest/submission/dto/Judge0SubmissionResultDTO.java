@@ -2,7 +2,7 @@ package pl.agh.edu.wi.informatyka.codequest.submission.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -28,10 +28,10 @@ public class Judge0SubmissionResultDTO {
     Judge0Status judge0Status;
 
     @JsonProperty("created_at")
-    ZonedDateTime createdAt;
+    Instant createdAt;
 
     @JsonProperty("finished_at")
-    ZonedDateTime finishedAt;
+    Instant finishedAt;
 
     String token;
     Float time;

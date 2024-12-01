@@ -209,8 +209,7 @@ public class SubmissionsService {
         Instant now = Instant.now();
         submissionList.stream()
                 .filter(submission -> submission.getStatus() == SubmissionStatus.PROCESSING
-                        && now.plus(10, ChronoUnit.SECONDS)
-                                .isAfter(submission.getCreatedAt().toInstant()))
+                        && now.plus(10, ChronoUnit.SECONDS).isAfter(submission.getUpdatedAt()))
                 .forEach(this::fetchSubmissionFromJudge0);
     }
 

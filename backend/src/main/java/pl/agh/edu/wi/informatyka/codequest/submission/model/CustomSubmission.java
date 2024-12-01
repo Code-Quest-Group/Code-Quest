@@ -2,8 +2,7 @@ package pl.agh.edu.wi.informatyka.codequest.submission.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
-import jakarta.persistence.*;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.UUID;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,7 +27,7 @@ public class CustomSubmission extends Submission {
     JsonNode[] expectedAnswers;
 
     public CustomSubmission() {
-        this.createdAt = ZonedDateTime.now();
+        this.createdAt = Instant.now();
         submissionId = "custom_submission_" + UUID.randomUUID();
     }
 }

@@ -1,6 +1,8 @@
 package pl.agh.edu.wi.informatyka.codequest.user;
 
-import java.time.ZonedDateTime;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -48,13 +50,16 @@ public class UserService {
 
     public UserStatisticsDTO getUserStatistics(String userId) {
 
-        ZonedDateTime oneYearAgo = ZonedDateTime.now().minusDays(365);
+        Instant oneYearAgo = Instant.now().minus(365, ChronoUnit.DAYS);
 
         Map<String, Long> submissionsFrequency =
                 submissionsRepository.findAllByUserIdAndCreatedAtAfter(userId, oneYearAgo).stream()
                         .collect(Collectors.groupingBy(
-                                submission ->
-                                        submission.getCreatedAt().toLocalDate().toString(),
+                                submission -> submission
+                                        .getCreatedAt()
+                                        .atZone(ZoneOffset.UTC)
+                                        .toLocalDate()
+                                        .toString(),
                                 Collectors.counting()));
         List<UserProblemAttempt> userProblemAttempts = userProblemAttemptsRepository.findByUserId(userId);
 

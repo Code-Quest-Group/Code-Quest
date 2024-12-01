@@ -79,8 +79,7 @@ public class ProblemsService {
                     UserProblemDetails userProblemDetails = new UserProblemDetails();
                     UserProblemAttempt attempt = attemptsMap.get(problem.getProblemId());
                     if (attempt != null) {
-                        userProblemDetails.setLastSubmissionTime(
-                                attempt.getLastSubmissionTime().toInstant());
+                        userProblemDetails.setLastSubmissionTime(attempt.getLastSubmissionTime());
                         userProblemDetails.setSubmissionCount(attempt.getSubmissionCount());
                         userProblemDetails.setStatus(attempt.getStatus());
                     }
@@ -104,8 +103,7 @@ public class ProblemsService {
         this.userProblemAttemptsService
                 .getUserAttempt(problemId, user.getUserId())
                 .ifPresent(attempt -> {
-                    details.setLastSubmissionTime(
-                            attempt.getLastSubmissionTime().toInstant());
+                    details.setLastSubmissionTime(attempt.getLastSubmissionTime());
                     details.setSubmissionCount(attempt.getSubmissionCount());
                     details.setStatus(attempt.getStatus());
                 });

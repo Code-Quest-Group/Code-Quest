@@ -3,7 +3,7 @@ package pl.agh.edu.wi.informatyka.codequest.submission.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import lombok.Data;
 import org.apache.commons.lang3.builder.HashCodeExclude;
 import pl.agh.edu.wi.informatyka.codequest.problem.model.Problem;
@@ -67,11 +67,15 @@ public class Submission {
 
     @JsonProperty("created_at")
     @Column(name = "created_at", updatable = false)
-    ZonedDateTime createdAt;
+    Instant createdAt;
+
+    @JsonProperty("updated_at")
+    @Column(name = "updated_at")
+    Instant updatedAt;
 
     @JsonProperty("finished_at")
     @Column(name = "finished_at")
-    ZonedDateTime finishedAt;
+    Instant finishedAt;
 
     @JsonIgnore
     @Column(columnDefinition = "MEDIUMTEXT")
@@ -88,7 +92,13 @@ public class Submission {
     private boolean isPublic = false;
 
     public Submission() {
-        this.createdAt = ZonedDateTime.now();
+        this.createdAt = Instant.now();
+        this.updatedAt = Instant.now();
+    }
+
+    @PreUpdate
+    public void updateTimestamp() {
+        this.updatedAt = Instant.now();
     }
 
     @Override

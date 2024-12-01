@@ -1,5 +1,6 @@
 package pl.agh.edu.wi.informatyka.codequest.submission.model;
 
+import java.time.Instant;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
 import pl.agh.edu.wi.informatyka.codequest.problem.ProblemsRepository;
@@ -56,5 +57,6 @@ public class SubmissionMapper {
         entity.setMemory(dto.getMemory());
         entity.setStatus(SubmissionStatus.fromId(dto.getJudge0Status().getId()));
         entity.setStderr(dto.getStderr());
+        entity.setUpdatedAt(Instant.now());
     }
 }
