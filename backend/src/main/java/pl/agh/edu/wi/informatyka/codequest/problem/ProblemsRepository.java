@@ -2,6 +2,7 @@ package pl.agh.edu.wi.informatyka.codequest.problem;
 
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Set;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -15,4 +16,6 @@ public interface ProblemsRepository extends CrudRepository<Problem, String> {
     @Transactional
     @Query("UPDATE Problem p SET p.rating = :averageRating WHERE p.problemId = :problemId")
     void updateRating(String problemId, Double averageRating);
+
+    List<Problem> findByProblemIdIn(Set<String> problemIds);
 }

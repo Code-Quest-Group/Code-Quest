@@ -52,6 +52,9 @@ public class User {
     @JsonIgnore()
     private List<Submission> submissions;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private UserPreferences preferences;
+
     public User() {
         this.createdAt = LocalDateTime.now();
         this.enabled = false;
