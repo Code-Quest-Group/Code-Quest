@@ -42,9 +42,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/actuator/**")
+                        .permitAll()
                         .requestMatchers(HttpMethod.PUT, "/judge0/webhook")
                         .permitAll()
-                        .requestMatchers("/auth/**", "/error", "/swagger-ui/**", "/v3/api-docs*/**", "/api")
+                        .requestMatchers(
+                                "/auth/**", "/error", "/swagger-ui/**", "/v3/api-docs*/**", "/api", "/favicon.ico")
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/problems/**")
                         .permitAll()
@@ -79,7 +82,7 @@ public class SecurityConfig {
                     request.getRequestURI(),
                     clientIp);
 
-            logger.error(">>>", authException);
+            logger.error(">>> {}", authException.getMessage());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("{\"error\":\"Unauthorized\"}");
