@@ -54,7 +54,9 @@ public class AuthService {
         user.setEmail(registerUserDTO.getEmail());
         user.setUsername(registerUserDTO.getUsername());
         user.setPasswordHash(passwordHash);
-        user.setPreferences(new UserPreferences());
+        UserPreferences userPreferences = new UserPreferences();
+        userPreferences.setUser(user);
+        user.setPreferences(userPreferences);
         user = userRepository.save(user);
         logger.info("New user created user_id: {}, email: {}", user.getUsername(), user.getEmail());
         return user;
