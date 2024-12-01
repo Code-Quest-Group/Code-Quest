@@ -1,23 +1,23 @@
-INSERT INTO `ADMIN_DB`.code_templates (problem_id, language, template_type, code) VALUES ( 'add-two-numbers', 'PYTHON', 'DEFAULT_DEFINITION', 'class Problem:
+INSERT INTO code_templates (problem_id, language, template_type, code) VALUES ( 'add-two-numbers', 'PYTHON', 'DEFAULT_DEFINITION', 'class Problem:
     
     def solve(self, a: int, b: int):
         pass
 ') as ct
 ON DUPLICATE KEY UPDATE code = ct.code;
-INSERT INTO `ADMIN_DB`.code_templates (problem_id, language, template_type, code) VALUES ( 'add-two-numbers', 'PYTHON', 'REFERENCE_SOLUTION', 'class InternalProblem:
+INSERT INTO code_templates (problem_id, language, template_type, code) VALUES ( 'add-two-numbers', 'PYTHON', 'REFERENCE_SOLUTION', 'class InternalProblem:
     
     def solve(self, a: int, b: int):
         return a + b
 ') as ct
 ON DUPLICATE KEY UPDATE code = ct.code;
 
-INSERT INTO `ADMIN_DB`.code_templates (problem_id, language, template_type, code) VALUES ( 'count-divisors', 'PYTHON', 'DEFAULT_DEFINITION', 'class Problem:
+INSERT INTO code_templates (problem_id, language, template_type, code) VALUES ( 'count-divisors', 'PYTHON', 'DEFAULT_DEFINITION', 'class Problem:
 
     def solve(self, n; int, k: int):
         pass
 ') as ct
 ON DUPLICATE KEY UPDATE code = ct.code;
-INSERT INTO `ADMIN_DB`.code_templates (problem_id, language, template_type, code) VALUES ( 'count-divisors', 'PYTHON', 'REFERENCE_SOLUTION', 'class InternalProblem:
+INSERT INTO code_templates (problem_id, language, template_type, code) VALUES ( 'count-divisors', 'PYTHON', 'REFERENCE_SOLUTION', 'class InternalProblem:
 
     def solve(self, n: int, k:int):
         ans = 0
@@ -28,13 +28,13 @@ INSERT INTO `ADMIN_DB`.code_templates (problem_id, language, template_type, code
 ') as ct
 ON DUPLICATE KEY UPDATE code = ct.code;
 
-INSERT INTO `ADMIN_DB`.code_templates (problem_id, language, template_type, code) VALUES ( 'nth-fibonacci-number', 'PYTHON', 'DEFAULT_DEFINITION', 'class Problem:
+INSERT INTO code_templates (problem_id, language, template_type, code) VALUES ( 'nth-fibonacci-number', 'PYTHON', 'DEFAULT_DEFINITION', 'class Problem:
 
     def solve(self, n; int):
         pass
 ') as ct
 ON DUPLICATE KEY UPDATE code = ct.code;
-INSERT INTO `ADMIN_DB`.code_templates (problem_id, language, template_type, code) VALUES ( 'nth-fibonacci-number', 'PYTHON', 'REFERENCE_SOLUTION', 'class InternalProblem:
+INSERT INTO code_templates (problem_id, language, template_type, code) VALUES ( 'nth-fibonacci-number', 'PYTHON', 'REFERENCE_SOLUTION', 'class InternalProblem:
 
     def solve(self, n: int):
         if n <= 1:
