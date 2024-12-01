@@ -11,10 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
@@ -63,16 +60,9 @@ public class Judge0Service {
         }
         judgeResults.put(submissionResultDTO.getToken(), submissionResultDTO);
 
-        URI uri = UriComponentsBuilder.fromHttpUrl(judgingServiceUrl)
-                .pathSegment("submissions", submissionResultDTO.getToken())
-                .queryParam("fields", "*")
-                .build()
-                .toUri();
-
         // this retrieves data for the same token, because the Judge0 webhook returns only a subset of data and a Base64
         // encoded stdout
-        final Judge0SubmissionResultDTO fullSubmissionResultDTO =
-                new RestTemplate().getForObject(uri, Judge0SubmissionResultDTO.class);
+        final Judge0SubmissionResultDTO fullSubmissionResultDTO = this.fetchSubmission(submissionResultDTO.getToken());
 
         if (fullSubmissionResultDTO == null) {
             logger.error("Submission {} not found in judge0.", submissionResultDTO.getToken());
@@ -114,6 +104,18 @@ public class Judge0Service {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR, "Failed to post submission to judge0: " + e.getMessage());
         }
+    }
+
+    public Judge0SubmissionResultDTO fetchSubmission(String token) {
+        URI uri = UriComponentsBuilder.fromHttpUrl(judgingServiceUrl)
+                .pathSegment("submissions", token)
+                .queryParam("fields", "*")
+                .build()
+                .toUri();
+
+        // this retrieves data for the same token, because the Judge0 webhook returns only a subset of data and a Base64
+        // encoded stdout
+        return new RestTemplate().getForObject(uri, Judge0SubmissionResultDTO.class);
     }
 
     public Map<String, String> assembleSubmissionArgs(

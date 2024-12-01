@@ -1,6 +1,8 @@
 package pl.agh.edu.wi.informatyka.codequest.submission;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
@@ -117,7 +119,9 @@ public class SubmissionsService {
 
     public List<Submission> getSubmissions(SubmissionQueryDTO submissionQueryDTO) {
         Specification<Submission> spec = SubmissionSpecification.buildSpecification(submissionQueryDTO);
-        return submissionsRepository.findAll(spec);
+        List<Submission> submissionList = submissionsRepository.findAll(spec);
+        this.checkForSubmissionsThatMightNeedFetching(submissionList);
+        return submissionList;
     }
 
     @EventListener
@@ -166,6 +170,7 @@ public class SubmissionsService {
                     HttpStatus.NOT_FOUND,
                     "Custom submission with id '" + customSubmissionQueryDTO.getSubmissionId() + "' not found");
         }
+        this.checkForSubmissionsThatMightNeedFetching(List.of(customSubmission));
         return customSubmission;
     }
 
@@ -197,5 +202,31 @@ public class SubmissionsService {
                         submission.getTime(),
                         submission.getMemory()))
                 .toList();
+    }
+
+    // if there are submissions that are still processing after 10 seconds that can mean judge0 webhook was lost.
+    private void checkForSubmissionsThatMightNeedFetching(List<Submission> submissionList) {
+        Instant now = Instant.now();
+        submissionList.stream()
+                .filter(submission -> submission.getStatus() == SubmissionStatus.PROCESSING
+                        && now.plus(10, ChronoUnit.SECONDS)
+                                .isAfter(submission.getCreatedAt().toInstant()))
+                .forEach(this::fetchSubmissionFromJudge0);
+    }
+
+    public void fetchSubmissionFromJudge0(Submission submission) {
+        this.logger.warn("Manually fetching submission {}", submission.getToken());
+        Judge0SubmissionResultDTO result = judge0Service.fetchSubmission(submission.getToken());
+        if (result != null) {
+            SubmissionStatus status =
+                    SubmissionStatus.fromId(result.getJudge0Status().getId());
+            if (status == SubmissionStatus.PROCESSING) {
+                this.logger.info("Submission {} is still processing!", submission.getToken());
+                return;
+            }
+            this.eventPublisher.publishEvent(new SubmissionExecutionCompletedEvent(this, result));
+        } else {
+            logger.error("Submission {} not found in judge0.", submission.getToken());
+        }
     }
 }
