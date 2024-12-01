@@ -185,6 +185,19 @@
                     margin-right: 0;
                 }
             }
+
+            >div {
+                width: 14.25rem;
+
+                &:last-child {
+                    width: 10.875;
+                    margin-left: 0.25rem;
+                }
+
+                @include breakpoints.for-tablets {
+                    width: 4rem;
+                }
+            }
         }
     }
 

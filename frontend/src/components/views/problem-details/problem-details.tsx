@@ -34,7 +34,6 @@ const ProblemDetails = ({ isPreview }: ProblemDetailsProps) => {
         setError(null)
         try {
           const fetchedProblem = await ProblemService.getProblem(problemId!)
-          console.log(fetchedProblem)
           setProblem(fetchedProblem)
         } catch (error) {
           setError('Failed to fetch problem data ' + error)
@@ -78,7 +77,7 @@ const ProblemDetails = ({ isPreview }: ProblemDetailsProps) => {
                 disableRipple
               >
                 <FullscreenIcon />
-                <Typography style={{ marginLeft: '0.5rem' }}>Fullscreen Mode</Typography>
+                <Typography style={{ marginLeft: '0.5rem', color: 'black' }}>Fullscreen Mode</Typography>
               </IconButton>
             </section>
             <FullScreen handle={fullScreenHandle}>

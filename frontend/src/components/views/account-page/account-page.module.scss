@@ -127,8 +127,7 @@
                 padding: 0;
                 overflow-y: scroll;
 
-                >a {
-                    color: var(--font-primary-color);
+                >li {
                     transition: background-color 0.25s ease-out;
                     -webkit-transition: background-color 0.25s ease-out;
                     -moz-transition: background-color 0.25s ease-out;
@@ -146,6 +145,10 @@
                     &:focus-visible {
                         background-color: #b4b4b6;
                         outline: none;
+                    }
+
+                    >a {
+                        color: var(--font-primary-color);
                     }
                 }
             }
@@ -189,8 +192,9 @@
                         -o-transition: background-color 0.25s ease-out;
 
                         >span {
-                            padding: 0.25rem 0.5rem;
+                            padding: 0.5rem 1rem;
                             width: 4.25rem;
+                            font-size: 1.25rem;
                             display: flex;
                             align-items: center;
                             justify-content: center;

@@ -43,7 +43,6 @@ const getProblem = async(problemId: string) => {
       exampleExpectedResults: raw.example_expected_result,
       tags: raw.tags,
       constraints: '', // TODO
-      example: '', // TODO
     }
 
     return problem

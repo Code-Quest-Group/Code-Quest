@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import classes from './account-page.module.scss'
 import { useLayout, useUser } from '../../../providers'
-import { Avatar, List, ListItem, ListItemText, Button as MuiButton, Typography } from '@mui/material'
+import { Avatar, List, ListItem, ListItemText, Typography } from '@mui/material'
 import ActivityCalendar from 'react-activity-calendar'
 import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer, Tooltip } from 'recharts'
 import { Button, Seperator } from '../../utils'
@@ -10,6 +10,7 @@ import { Create, Refresh } from '@mui/icons-material'
 import { useState } from 'react'
 import { AdminPanel } from './admin-panel'
 import { useNavigate } from 'react-router-dom'
+import { SettingsButton } from './settings-button'
 
 const data = [
   {
@@ -126,13 +127,7 @@ const AccountPage = () => {
                 sx={{ width: 60, height: 60, fontSize: '2rem' }}
               />
               <header>{username}</header>
-              <MuiButton
-                onClick={() => window.alert('Not implemened 😇')}
-              >
-                <Typography variant="button" style={{ textTransform: 'none' }}>
-                  Settings
-                </Typography>
-              </MuiButton>
+              <SettingsButton currentUsername={''}/>
             </div>
             <div className={classes.problemTypeChart}>
               <ResponsiveContainer minWidth={'20rem'}>
@@ -166,9 +161,11 @@ const AccountPage = () => {
             <header>Completed problems</header>
             <List>
               {tmpProblems.map((problem, index) => (
-                <ListItem key={index} component="a" href={problem.href}>
-                  <ListItemText primary={problem.name} />
-                </ListItem>
+                <li key={index}>
+                  <ListItem component="a" href={problem.href}>
+                    <ListItemText primary={problem.name} />
+                  </ListItem>
+                </li>
               ))}
             </List>
           </div>
@@ -178,12 +175,13 @@ const AccountPage = () => {
                 icon={<Create />}
                 popup={'Click to create new problem'}
                 onClick={() => navigate('/problem-creator')}
+                aria-label='problem-creator'
               >
                 <Typography variant="button" style={{ textTransform: 'none' }}>
                   Add Problem
                 </Typography>
               </Button>
-              <Button icon={<Refresh />} popup={'Click to refresh submissions'}>
+              <Button icon={<Refresh />} popup={'Click to refresh submissions'} aria-label='refresh-submissions'>
                 <Typography variant="button" style={{ textTransform: 'none' }}>
                   Refresh
                 </Typography>
@@ -193,6 +191,7 @@ const AccountPage = () => {
                 icon={<AdminPanelSettingsIcon />}
                 popup={'Click to open Admin Panel'}
                 onClick={handleOpenAdminModal}
+                aria-label='admin-panel'
               >
                 <Typography variant="button" style={{ textTransform: 'none' }}>
                   Admin

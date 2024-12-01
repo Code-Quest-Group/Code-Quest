@@ -48,22 +48,44 @@ export const Navbar = () => {
         <nav className={classes.navbar}>
           <section>
             <CodeQuestLogo />
-            <a href="/problems" className={classes.navbarLinks} tabIndex={tabIndex}>Problem List</a>
+            <a
+              href="/problems"
+              className={classes.navbarLinks}
+              tabIndex={tabIndex}
+              aria-label='Problem List'
+            >
+              Problem List
+            </a>
           </section>
           <section>
             {username === '' ? (
-              <button className={classes.navbarLinks} tabIndex={tabIndex} onClick={handleOpenModal}>
+              <button
+                className={classes.navbarLinks}
+                tabIndex={tabIndex}
+                onClick={handleOpenModal}
+                aria-label='Sign in'
+              >
                 <p>Sign in</p>
                 <LoginIcon fontSize="large"/>
               </button>
             ) : (
               <>
-                <a className={classes.navbarLinks} href={`/account/${username}`} tabIndex={tabIndex}>
+                <a
+                  className={classes.navbarLinks}
+                  href={`/account/${username}`}
+                  tabIndex={tabIndex}
+                  aria-label='account'
+                >
                   <p>{username}</p>
                   <AccountCircleIcon fontSize="large"/>
                 </a>
                 <Seperator hasMargins/>
-                <button className={classes.navbarLinks} onClick={handleLogout} tabIndex={tabIndex}>
+                <button
+                  className={classes.navbarLinks}
+                  onClick={handleLogout}
+                  tabIndex={tabIndex}
+                  aria-label='Log out'
+                >
                   <p>Log out</p>
                   <LogoutIcon fontSize="large"/>
                 </button>

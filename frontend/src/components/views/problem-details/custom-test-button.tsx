@@ -27,9 +27,24 @@ export const CustomTestButton = () => {
       if (inputParts.length !== formatParts.length) return false
 
       return inputParts.every((part, index) => {
-        if (formatParts[index] === 'int') {
-          return /^\d+$/.test(part)
+        const format = formatParts[index]
+
+        if (format === 'int') {
+          return /^-?\d+$/.test(part)
         }
+
+        if (format === 'string') {
+          return typeof part === 'string'
+        }
+
+        if (format === 'list[int]') {
+          return /^\[(-?\d+(,\s*-?\d+)*)?\]$/.test(part)
+        }
+
+        if (format === 'list[string]') {
+          return /^\[".*?"(,\s*".*?")*\]$/.test(part)
+        }
+
         return false
       })
     }
@@ -55,7 +70,7 @@ export const CustomTestButton = () => {
         popup={isPreview ? 'Cannot add a custom case to preview' : 'Click write a custom case'}
       >
         <Typography variant="button" style={{ textTransform: 'none' }}>
-            Custom Test Case
+          Custom Test Case
         </Typography>
       </Button>
 

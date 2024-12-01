@@ -36,7 +36,7 @@ export const FiltersButton = ({ onFiltersChange, title, icon, topPosition }: Fil
   return (
     <>
       <Button
-        aria-describedby='open-filters-button'
+        aria-label='open-filters-button'
         onClick={handleClick}
         icon={icon ?? <FilterAltIcon />}
         popup={'Click to open filters selector'}

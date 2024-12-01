@@ -16,7 +16,7 @@ export const CreatorEditorButton = ({
   handleChange,
   icon,
   language,
-  savedCode
+  savedCode,
 }: CreatorEditorButtonProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -41,7 +41,7 @@ export const CreatorEditorButton = ({
   return (
     <>
       <Button
-        aria-describedby='open-template-editor'
+        aria-label='open-code-editor'
         onClick={handleClick}
         popup={'Click open code editor'}
         icon={icon}

@@ -70,7 +70,7 @@ export const TestsSummary = ({ className }: TestsSummaryProps) => {
       </ul>
       <div className="inside-shadow">
         <header>Test Case {currentTestIndex} Results:</header>
-        <p>Input: {`${formattedTests[currentTestIndex - 1]}`}</p>
+        <p>Input: {String(formattedTests[currentTestIndex - 1]).replace(/,/g, ', ')}</p>
         <p>
           Expected:{' '}
           {
@@ -79,7 +79,7 @@ export const TestsSummary = ({ className }: TestsSummaryProps) => {
             'Not calculated yet'
           }
         </p>
-        <p>Output: {receivedOutput[currentTestIndex - 1] || 'None'}</p>
+        <p>Output: {String(receivedOutput[currentTestIndex - 1]).replace(/,/g, ', ') || 'None'}</p>
       </div>
     </div>
   )

@@ -12,17 +12,17 @@ import { CreatorEditorButton } from './creator-editor'
 import { Problem } from '../../../types'
 import { toast } from 'react-toastify'
 import { v4 as uuidv4 } from 'uuid'
-import axios from 'axios'
 
 const ProblemCreator = () => {
   const { showNavbar } = useLayout()
-  const { setUserProblem, isAdmin, userProblem } = useUser()
+  const { setUserProblem, isAdmin } = useUser()
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [constraints, setConstraints] = useState('')
   const [testCases, setTestCases] = useState('')
-  const [expectedResults, setExpectedResults] = useState('')
+  const [exampleTestCases, setExampleTestCases] = useState('')
+  const [exampleExpectedResults, setExampleExpectedResults] = useState('')
   const [selectedTags, setSelectedTags] = useState<Tags[]>([])
   const [language, setLanguage] = useState('PYTHON')
   const [hints, setHints] = useState('')
@@ -35,7 +35,8 @@ const ProblemCreator = () => {
     description: false,
     constraints: false,
     testCases: false,
-    expectedResults: false,
+    exampleTestCases: false,
+    exampleExpectedResults: false,
     selectedTags: false,
     template: false,
     solution: false,
@@ -47,13 +48,15 @@ const ProblemCreator = () => {
       title: title.trim() === '',
       description: description.trim() === '',
       constraints: constraints.trim() === '',
-      testCases: testCases.trim() === '',
-      expectedResults: expectedResults.trim() === '',
+      exampleTestCases: exampleTestCases.trim() === '',
+      exampleExpectedResults: exampleExpectedResults.trim() === '',
       selectedTags: selectedTags.length === 0,
       template: template.length === 0,
       solution: solution.length === 0,
       inputFormat: inputFormat.trim() === '',
+      testCases: testCases.trim() === '',
     }
+
     setErrors(newErrors)
     if (errors.solution || errors.template) toast.warning('Make sure that code templates are finished')
 
@@ -75,8 +78,8 @@ const ProblemCreator = () => {
       codeTemplate: template,
       tags: [...selectedTags],
       hints: hints.trim().split('\n'),
-      exampleTestCases: testCases,
-      exampleExpectedResults: expectedResults.trim().split('\n'),
+      exampleTestCases: exampleTestCases,
+      exampleExpectedResults: exampleExpectedResults.trim().split('\n'),
       rating: 5
     }
 
@@ -90,20 +93,22 @@ const ProblemCreator = () => {
   const handleSubmit = async(event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    if (!isAdmin) toast.error('you need to be an admin duh')
+    if (!isAdmin) toast.error('you need to be an admin for now duh')
     if (checkErrors()) return
-
-    console.log(userProblem)
 
     const payload = {
       problemId: `custom-problem-${uuidv4()}`,
       name: title,
-      description,
-      supportedLanguages: [language],
-      inputFormat,
-      testCases,
-      expectedResult: expectedResults,
-      selectedTags,
+      description: description,
+      supported_languages: [language],
+      input_format: inputFormat,
+      code_template: template,
+      test_cases: testCases,
+      hints: hints,
+      tags: selectedTags,
+      example_testcases: exampleTestCases,
+      example_expected_result: exampleExpectedResults,
+      constraints: constraints,
     }
 
     console.log(payload)
@@ -162,39 +167,49 @@ const ProblemCreator = () => {
               />
             </section>
             <section>
-
               <TextField
                 label="Example Test Cases"
                 variant="outlined"
                 multiline
                 rows={3}
-                value={testCases}
-                onChange={(e) => setTestCases(e.target.value)}
+                value={exampleTestCases}
+                onChange={(e) => setExampleTestCases(e.target.value)}
                 margin="normal"
-                error={errors.testCases}
-                helperText={errors.testCases ? 'Example is required' : ''}
+                error={errors.exampleTestCases}
+                helperText={errors.exampleTestCases ? 'Example test cases are required' : ''}
               />
               <TextField
                 label="Expected Results"
                 variant="outlined"
                 multiline
                 rows={3}
-                value={expectedResults}
-                onChange={(e) => setExpectedResults(e.target.value)}
+                value={exampleExpectedResults}
+                onChange={(e) => setExampleExpectedResults(e.target.value)}
                 margin="normal"
-                error={errors.expectedResults}
-                helperText={errors.expectedResults ? 'Expected results are required' : ''}
+                error={errors.exampleExpectedResults}
+                helperText={errors.exampleExpectedResults ? 'Expected results are required' : ''}
               />
             </section>
-            <TextField
-              label="Constraints"
-              variant="outlined"
-              value={constraints}
-              onChange={(e) => setConstraints(e.target.value)}
-              margin="normal"
-              error={errors.constraints}
-              helperText={errors.constraints ? 'Constraints are required' : ''}
-            />
+            <section>
+              <TextField
+                label="Test Cases"
+                variant="outlined"
+                value={constraints}
+                onChange={(e) => setTestCases(e.target.value)}
+                margin="normal"
+                error={errors.testCases}
+                helperText={errors.testCases ? 'Test cases are required' : ''}
+              />
+              <TextField
+                label="Constraints"
+                variant="outlined"
+                value={constraints}
+                onChange={(e) => setConstraints(e.target.value)}
+                margin="normal"
+                error={errors.constraints}
+                helperText={errors.constraints ? 'Constraints are required' : ''}
+              />
+            </section>
             <section>
               <FormControl>
                 <InputLabel id="language-select-label">Language</InputLabel>
@@ -227,6 +242,7 @@ const ProblemCreator = () => {
                 handleChange={setTemplate}
                 language={language}
                 savedCode={template}
+                aria-label='template-editor'
               />
               <CreatorEditorButton
                 icon={<EditNote />}
@@ -234,13 +250,14 @@ const ProblemCreator = () => {
                 handleChange={setSolution}
                 language={language}
                 savedCode={solution}
+                aria-label='solution-editor'
               />
-              <Button icon={<Visibility />} onClick={handlePreview}>
+              <Button icon={<Visibility />} onClick={handlePreview} aria-label='preview-problem'>
                 <Typography variant="button" style={{ textTransform: 'none' }}>
                   Preview
                 </Typography>
               </Button>
-              <Button type="submit" icon={<Publish />}>
+              <Button type="submit" icon={<Publish />} aria-label='submit-problem'>
                 <Typography variant="button" style={{ textTransform: 'none' }}>
                   Submit
                 </Typography>

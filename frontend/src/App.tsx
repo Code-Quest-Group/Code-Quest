@@ -8,11 +8,34 @@ import { UserProvider } from './providers/user-provider/user-provider'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import NotFoundPage from './components/views/not-found-page/not-found-page'
 import { LoadingPage } from './components/views/loading-page/loading-page'
+import { WebApplication } from 'schema-dts'
 
 const ProblemList = React.lazy(() => import('./components/views/problem-list/problem-list'))
 const ProblemDetails = React.lazy(() => import('./components/views/problem-details/problem-details'))
 const AccountPage = React.lazy(() => import('./components/views/account-page/account-page'))
 const ProblemCreator = React.lazy(() => import('./components/views/problem-creator/problem-creator'))
+
+const WebApplicationSchema = () => {
+  const schema: WebApplication = {
+    '@type': 'WebApplication',
+    'name': 'Online Code Editor',
+    'description': 'A powerful webapp allowing for learning through solving problems',
+    'url': 'https://code-quest-pro.com',
+    'operatingSystem': 'Web',
+    'applicationCategory': 'Programming',
+    'softwareVersion': '1.0',
+    'mainEntityOfPage': 'https://code-quest-pro.com',
+    'isAccessibleForFree': true
+  }
+
+  return (
+    <Helmet>
+      <script type="application/ld+json">
+        {JSON.stringify(schema)}
+      </script>
+    </Helmet>
+  )
+}
 
 function App() {
   return (
@@ -37,6 +60,7 @@ function App() {
                   path="/"
                   element={
                     <>
+                      <WebApplicationSchema />
                       <Helmet>
                         <meta name="description" content="Browse a list of problems on Code Quest" />
                       </Helmet>
@@ -48,6 +72,7 @@ function App() {
                   path="/problems"
                   element={
                     <>
+                      <WebApplicationSchema />
                       <Helmet>
                         <meta name="description" content="Browse a list of problems on Code Quest" />
                       </Helmet>
@@ -59,6 +84,7 @@ function App() {
                   path="/problems/:problemId"
                   element={
                     <>
+                      <WebApplicationSchema />
                       <Helmet>
                         <meta name="description" content="Detailed view of a specific problem on Code Quest" />
                       </Helmet>
@@ -70,6 +96,7 @@ function App() {
                   path="/account/:username"
                   element={
                     <>
+                      <WebApplicationSchema />
                       <Helmet>
                         <meta name="description" content="Users account page" />
                       </Helmet>
@@ -81,6 +108,7 @@ function App() {
                   path="/problem-creator"
                   element={
                     <>
+                      <WebApplicationSchema />
                       <Helmet>
                         <meta name="description" content="Create your own problem" />
                       </Helmet>
@@ -92,6 +120,7 @@ function App() {
                   path="/problem-creator/preview"
                   element={
                     <>
+                      <WebApplicationSchema />
                       <Helmet>
                         <meta name="description" content="Preview your problem" />
                       </Helmet>
@@ -103,6 +132,7 @@ function App() {
                   path="*"
                   element={
                     <>
+                      <WebApplicationSchema />
                       <Helmet>
                         <meta name="description" content="Page not found" />
                       </Helmet>

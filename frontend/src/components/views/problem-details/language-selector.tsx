@@ -49,7 +49,7 @@ export const LanguageDropdown = () => {
         ))}
       </Menu>
       <Button onClick={() => resetCodeToTemplate()}>
-        <Typography variant="button" style={{ textTransform: 'none', marginLeft: '0.5rem' }}>
+        <Typography variant="button" style={{ textTransform: 'none', marginLeft: '0.5rem', color: '#125497' }}>
           Reset Environment
         </Typography>
       </Button>
