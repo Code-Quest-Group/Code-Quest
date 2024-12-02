@@ -17,7 +17,7 @@ import { SignInModal } from '../../views/sign-in'
 
 export const Navbar = () => {
   const { showNavbar, toggleNavbar } = useLayout()
-  const { username, setToken, setUserId, setUsername } = useUser()
+  const { username, setToken, setUserId, setUsername, userId } = useUser()
   const navigate = useNavigate()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isFirefox, setIsFirefox] = useState(false)
@@ -72,7 +72,7 @@ export const Navbar = () => {
               <>
                 <a
                   className={classes.navbarLinks}
-                  href={`/account/${username}`}
+                  href={`/account/${userId}`}
                   tabIndex={tabIndex}
                   aria-label='account'
                 >

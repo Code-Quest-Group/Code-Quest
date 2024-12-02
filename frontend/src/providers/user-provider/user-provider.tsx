@@ -3,6 +3,7 @@
 import axios from 'axios'
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 import { Problem } from '../../types'
+import { toast } from 'react-toastify'
 
 const UserContext = createContext({
   username: '',
@@ -69,7 +70,12 @@ export const UserProvider = ({ children }: UserProviderProps) => {
               window.location.reload()
             }
           } catch (refreshError) {
+            setUserId('')
+            setToken('')
+            setUsername('')
+            toast.info('Session timed out')
             console.error('Error refreshing token:', refreshError)
+            window.location.reload()
           }
         }
         return Promise.reject(error)

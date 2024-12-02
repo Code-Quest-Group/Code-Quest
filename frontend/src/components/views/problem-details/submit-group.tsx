@@ -114,11 +114,11 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
             toast.error(`Runtime error! Single test case took ${payload.time} seconds!`, { autoClose: false })
           } else if (payload.status === 'RUNTIME_ERROR_NZEC') {
             toast.error(`Unexpected error! ${payload.stderr}`, { autoClose: false })
-          } else if (payload.status !== 'PROCESSING') {
+          } else if (!['PROCESSING', 'IN_QUEUE'].includes(payload.status)) {
             toast.error(`Unexpected error! ${payload.error_message}`, { autoClose: false })
           }
 
-          if (payload.status !== 'PROCESSING') {
+          if (!['PROCESSING', 'IN_QUEUE'].includes(payload.status)) {
             clearInterval(pollInterval)
 
             if (payload.status !== 'ACCEPTED') setSubmissionId('')

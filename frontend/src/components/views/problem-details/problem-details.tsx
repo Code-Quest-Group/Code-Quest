@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { CodeEnvironmentProvider, useLayout, useUser } from '../../../providers'
 import { ProblemService } from '../../../services/problem-service'
 import { Problem } from '../../../types'
-import { Seperator } from '../../utils'
+import { FallbackComponent, Seperator } from '../../utils'
 import { CodeEditor } from './code-editor'
 import classes from './problem-details.module.scss'
 import { SubmitButtonGroup } from './submit-group'
@@ -14,6 +14,7 @@ import { TestsSummary } from './tests-summary'
 import { LeftSection } from './problem-details-left-section/problem-details-left-section'
 import { FullScreen, useFullScreenHandle } from 'react-full-screen'
 import { LanguageDropdown } from './language-selector'
+import { ErrorBoundary } from 'react-error-boundary'
 
 type ProblemDetailsProps = {
   isPreview?: boolean
@@ -88,7 +89,9 @@ const ProblemDetails = ({ isPreview }: ProblemDetailsProps) => {
                 })}
               />
             </FullScreen>
-            <TestsSummary className={classes.testsSummary} />
+            <ErrorBoundary FallbackComponent={FallbackComponent}>
+              <TestsSummary className={classes.testsSummary} />
+            </ErrorBoundary>
             <Seperator isHorizontal />
             <SubmitButtonGroup className={classes.buttonGroup} />
           </div>

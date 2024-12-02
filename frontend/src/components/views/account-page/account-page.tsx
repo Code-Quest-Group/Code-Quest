@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import clsx from 'clsx'
 import classes from './account-page.module.scss'
 import { useLayout, useUser } from '../../../providers'
@@ -7,33 +8,12 @@ import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer, Tool
 import { Button, Seperator } from '../../utils'
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings'
 import { Create, Refresh } from '@mui/icons-material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AdminPanel } from './admin-panel'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { SettingsButton } from './settings-button'
-
-const data = [
-  {
-    date:'2024-01-01',
-    count: 3,
-    level: 2
-  },
-  {
-    date: '2024-06-23',
-    count: 2,
-    level: 1,
-  },
-  {
-    date: '2024-08-02',
-    count: 16,
-    level: 4,
-  },
-  {
-    date: '2024-11-29',
-    count: 11,
-    level: 3,
-  },
-]
+import { UserService } from '../../../services/user-service'
+import { ProfileUserData, UserStatistics } from '../../../types'
 
 const tmpProblems = [
   { name: 'Add two numbers', href: '/problems/add-two-numbers' },
@@ -71,49 +51,97 @@ const tmpSubmissions = [
   { name: 'Someones proposal 10', status: 'Approved' },
 ]
 
+enum ProblemType {
+  BinarySearch = 'Binary Search',
+  LinkedLists = 'Linked Lists',
+  Recursion = 'Recursion',
+  DynamicProgramming = 'Dynamic Programming',
+  Graphs = 'Graphs',
+  Sorting = 'Sorting',
+}
+
+const determineLevel = (count: number, maxCount: number) => {
+  const percentage = (count / maxCount) * 100
+
+  if (percentage <= 25) return 1
+  if (percentage <= 50) return 2
+  if (percentage <= 75) return 3
+  return 4
+}
+
+const getYearRange = (date: Date) => {
+  const firstDayOfYear = new Date(date.getFullYear(), 0, 2)
+  const lastDayOfYear = new Date(date.getFullYear(), 11, 32)
+
+  return {
+    firstDayOfYear: firstDayOfYear.toISOString().split('T')[0],
+    lastDayOfYear: lastDayOfYear.toISOString().split('T')[0],
+  }
+}
+
 const AccountPage = () => {
-  const [openAdminPanel, setOpenAdminPanel] = useState(false)
-  const { username, isAdmin } = useUser()
+  const { userId } = useParams<{ userId: string }>()
+  const { userId: currentUserId, isAdmin } = useUser()
   const { showNavbar } = useLayout()
   const navigate = useNavigate()
+  const [user, setUser] = useState<ProfileUserData>()
+  const [userStatistics, setUserStatistics] = useState<UserStatistics>()
+  const [openAdminPanel, setOpenAdminPanel] = useState(false)
+  const [isOwnAccountPage, setIsOwnAccountPage] = useState(false)
+
+  useEffect(() => {
+    const fetchUser = async() => {
+      try {
+        const userData = await UserService.getUserData(userId!)
+        const userStatisticsData = await UserService.getUserStatistics(userId!)
+
+        setUser(userData)
+        setUserStatistics(userStatisticsData)
+
+        console.log(userData)
+        console.log(userStatisticsData)
+      } catch(err) {
+        console.log(err)
+      }
+    }
+
+    setIsOwnAccountPage(userId === currentUserId)
+    fetchUser()
+  }, [userId])
+
+  if (!user || !userStatistics) return <div className='container'>No user found</div>
 
   const handleOpenAdminModal = () => setOpenAdminPanel(true)
   const handleCloseAdminModal = () => setOpenAdminPanel(false)
 
-  const TOTAL_PROBLEMS_SOLVED = 150
+  const totalProblemsSolved = Object
+    .values(userStatistics.user_problem_tags_count)
+    .reduce((acc, curr) => acc + curr, 0)
 
-  const chartData = [
-    {
-      problemType: 'Binary Search',
-      amount: 120,
-      fullMark: TOTAL_PROBLEMS_SOLVED,
-    },
-    {
-      problemType: 'Linked Lists',
-      amount: 98,
-      fullMark: TOTAL_PROBLEMS_SOLVED,
-    },
-    {
-      problemType: 'Recursion',
-      amount: 10,
-      fullMark: TOTAL_PROBLEMS_SOLVED,
-    },
-    {
-      problemType: 'Dynamic Programming',
-      amount: 99,
-      fullMark: TOTAL_PROBLEMS_SOLVED,
-    },
-    {
-      problemType: 'Graphs',
-      amount: 85,
-      fullMark: TOTAL_PROBLEMS_SOLVED,
-    },
-    {
-      problemType: 'Sorting',
-      amount: 65,
-      fullMark: TOTAL_PROBLEMS_SOLVED,
-    },
-  ]
+  const chartData = Object
+    .values(ProblemType)
+    .map(problemType => ({
+      problemType,
+      amount: userStatistics.user_problem_tags_count[problemType] || 0,
+      fullMark: totalProblemsSolved,
+    }))
+
+  const maxActivity = Math.max(...Object.values(userStatistics.submissions_frequency))
+  const { firstDayOfYear, lastDayOfYear } = getYearRange(new Date())
+
+  const activityData = Object
+    .entries(userStatistics.submissions_frequency)
+    .map(([date, count]) => ({
+      date,
+      count,
+      level: determineLevel(count, maxActivity),
+    }))
+    .concat([
+      { date: firstDayOfYear, count: 0, level: 0 },
+      { date: lastDayOfYear, count: 0, level: 0 },
+    ])
+    .filter((item, index, self) => self.findIndex(i => i.date === item.date) === index)
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 
   return (
     <main className={clsx({'full-height': !showNavbar})}>
@@ -122,12 +150,12 @@ const AccountPage = () => {
           <div className={classes.topGrouping}>
             <div className={classes.userCard}>
               <Avatar
-                alt={username}
+                alt={user.username}
                 src="path... maybe"
                 sx={{ width: 60, height: 60, fontSize: '2rem' }}
               />
-              <header>{username}</header>
-              <SettingsButton currentUsername={''}/>
+              <header>{user.username}</header>
+              <SettingsButton hideButton={!isOwnAccountPage}/>
             </div>
             <div className={classes.problemTypeChart}>
               <ResponsiveContainer minWidth={'20rem'}>
@@ -148,7 +176,7 @@ const AccountPage = () => {
           </div>
           <div className={classes.activityChart}>
             <ActivityCalendar
-              data={data}
+              data={activityData}
               theme={{ dark: ['#bbb8e3', '#0b03fc']}}
               showWeekdayLabels
               blockRadius={20}
@@ -187,7 +215,7 @@ const AccountPage = () => {
                 </Typography>
               </Button>
               <Button
-                className={clsx({ 'hidden': !isAdmin })}
+                className={clsx({ ['hidden']: !isAdmin || !isOwnAccountPage })}
                 icon={<AdminPanelSettingsIcon />}
                 popup={'Click to open Admin Panel'}
                 onClick={handleOpenAdminModal}

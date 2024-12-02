@@ -72,7 +72,7 @@ export const RunTestCasesButton = () => {
             toast.success(`Passed test cases ${payload.correct_testcases} / ${payload.total_testcases}`)
           } else if (payload.status === 'WRONG_ANSWER') {
             toast.warning(`Passed test cases ${payload.correct_testcases} / ${payload.total_testcases}`)
-          } else if (payload.status !== 'PROCESSING') {
+          } else if (!['PROCESSING', 'IN_QUEUE'].includes(payload.status)) {
             if (['RUNTIME_ERROR_NZEC', 'INTERNAL_ERROR'].includes(payload.status)) {
               toast.error(`Unexpected error! ${payload.stderr ?? payload.error_message}`, { autoClose: false })
               clearInterval(pollInterval)
@@ -82,7 +82,7 @@ export const RunTestCasesButton = () => {
             toast.error(`Error! ${payload.status}`, { autoClose: false })
           }
 
-          if (payload.status !== 'PROCESSING') {
+          if (!['PROCESSING', 'IN_QUEUE'].includes(payload.status)) {
             setExpectedResults(payload.expected_answer)
             setReceivedOutput(payload.user_answer)
             clearInterval(pollInterval)

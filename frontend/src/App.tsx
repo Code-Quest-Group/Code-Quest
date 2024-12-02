@@ -93,7 +93,7 @@ function App() {
                   }
                 />
                 <Route
-                  path="/account/:username"
+                  path="/account/:userId"
                   element={
                     <>
                       <WebApplicationSchema />

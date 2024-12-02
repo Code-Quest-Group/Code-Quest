@@ -23,7 +23,7 @@ type SignInModalProps = {
 }
 
 export const SignInModal = ({ open, onClose }: SignInModalProps) => {
-  const { setToken, setUsername, setIsAdmin, setRefreshToken } = useUser()
+  const { setToken, setUsername, setIsAdmin, setRefreshToken, setUserId } = useUser()
 
   const [activeTab, setActiveTab] = useState<'signIn' | 'register'>('signIn')
   const [showPassword, setShowPassword] = useState(false)
@@ -67,7 +67,9 @@ export const SignInModal = ({ open, onClose }: SignInModalProps) => {
     try {
       const response = await axios.post('http://localhost:8080/auth/login', payload)
       const userData = response.data.data
+
       setToken(userData.token)
+      setUserId(userData.userId)
       setUsername(userData.username)
       setIsAdmin(userData.role === 'ADMIN')
       setRefreshToken(userData.refresh_token)

@@ -1,14 +1,12 @@
 import { Box, Button, Popover, Switch, Typography } from '@mui/material'
 import { ChangeEvent, useState } from 'react'
-import { useUser } from '../../../providers'
 import clsx from 'clsx'
 
 type SettingsButtonProps = {
-    currentUsername: string
+  hideButton?: boolean
 }
 
-export const SettingsButton = ({ currentUsername }: SettingsButtonProps) => {
-  const { username } = useUser()
+export const SettingsButton = ({ hideButton }: SettingsButtonProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [checked, setChecked] = useState(false)
 
@@ -27,7 +25,7 @@ export const SettingsButton = ({ currentUsername }: SettingsButtonProps) => {
   return (
     <>
       <Button
-        className={clsx({['hidden']: currentUsername === username})}
+        className={clsx({['hidden']: hideButton})}
         aria-describedby='open-settings-button'
         onClick={handleClick}
       >
