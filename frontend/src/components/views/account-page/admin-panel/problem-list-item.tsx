@@ -62,9 +62,7 @@ export const ProblemListItem = ({ key, problem }: ProblemListItemProps) => {
               sx={{ width: '10rem', marginTop: '1rem'}}
               popup='Click to edit problem'
             >
-              <Typography variant="button" style={{ textTransform: 'none' }}>
-                Update
-              </Typography>
+              Update
             </Button>
             <Button
               icon={<Block />}
@@ -72,9 +70,7 @@ export const ProblemListItem = ({ key, problem }: ProblemListItemProps) => {
               sx={{ width: '10rem'}}
               popup='Click to permamently remove this problem'
             >
-              <Typography variant="button" style={{ textTransform: 'none' }}>
-                Remove
-              </Typography>
+              Remove
             </Button>
           </div>
         </Box>

@@ -1,4 +1,4 @@
-import { CircularProgress, Typography } from '@mui/material'
+import { CircularProgress } from '@mui/material'
 import { Button } from '../../utils'
 import { PlayArrow } from '@mui/icons-material'
 import { useCodeEnvironment, useUser } from '../../../providers'
@@ -107,9 +107,7 @@ export const RunTestCasesButton = () => {
       }
       popup={isPreview ? 'Click to confirm correctness of provided test cases' : 'Click to run test case'}
     >
-      <Typography variant="button" style={{ textTransform: 'none' }}>
-        Run Test Cases
-      </Typography>
+      Run Test Cases
     </Button>
   )
 }

@@ -76,6 +76,7 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
     if (submissionId === '' || submissionId.includes('custom')) return
 
     let attempts = 0
+    let lock = false // There was some very obscure glitch with sending 3 GET requests at once
 
     const pollInterval = setInterval(async() => {
       try {
@@ -97,10 +98,13 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
           }
         }
 
+        if (lock) return
+        lock = true
         const response = await axios.get('http://localhost:8080/submissions', params)
 
         if (response.status === 200 && response.data) {
           const payload: SubmissionResponse = response.data[0]
+          lock = false
 
           if (payload.status === 'ACCEPTED') {
             toast.success(`Passed test cases ${payload.correct_testcases} / ${payload.total_testcases}`)
@@ -150,9 +154,7 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
           : <PlayCircleFilledWhiteIcon />
         }
       >
-        <Typography variant="button" style={{ textTransform: 'none' }}>
         Submit
-        </Typography>
       </Button>
       <Modal open={openModal} onClose={handleCloseModal} >
         <Box
@@ -180,14 +182,10 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
           </Typography>
           <div className='container'>
             <Button icon={<AddTask />} onClick={handlePublishSubmission}>
-              <Typography variant="button" style={{ textTransform: 'none' }}>
-                  Yes
-              </Typography>
+              Yes
             </Button>
             <Button seriousButton icon={<DoNotDisturb />} onClick={handleCloseModal}>
-              <Typography variant="button" style={{ textTransform: 'none' }}>
-                  No
-              </Typography>
+              No
             </Button>
           </div>
         </Box>

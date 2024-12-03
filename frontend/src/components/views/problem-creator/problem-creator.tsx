@@ -253,14 +253,10 @@ const ProblemCreator = () => {
                 aria-label='solution-editor'
               />
               <Button icon={<Visibility />} onClick={handlePreview} aria-label='preview-problem'>
-                <Typography variant="button" style={{ textTransform: 'none' }}>
-                  Preview
-                </Typography>
+                Preview
               </Button>
               <Button type="submit" icon={<Publish />} aria-label='submit-problem'>
-                <Typography variant="button" style={{ textTransform: 'none' }}>
-                  Submit
-                </Typography>
+                Submit
               </Button>
             </section>
             {errors.selectedTags && <Typography color="error" className='container'>

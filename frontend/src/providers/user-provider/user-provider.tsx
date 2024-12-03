@@ -3,7 +3,7 @@
 import axios from 'axios'
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 import { Problem } from '../../types'
-import { toast } from 'react-toastify'
+import SessionTimeoutModal from './time-out-modal'
 
 const UserContext = createContext({
   username: '',
@@ -12,12 +12,14 @@ const UserContext = createContext({
   isAdmin: false,
   refreshToken: '',
   userProblem: undefined as Problem | undefined,
+  darkMode: false,
   setUsername: (_name: string) => {},
   setToken: (_token: string) => {},
   setUserId: (_userId: string) => {},
   setIsAdmin: (_isAdmin: boolean) => {},
   setRefreshToken: (_refreshToken: string) => {},
   setUserProblem: (_userProblem: Problem | undefined) => {},
+  setDarkMode: (_darkMode: boolean) => {},
 })
 
 type UserProviderProps = {
@@ -32,10 +34,12 @@ export const UserProvider = ({ children }: UserProviderProps) => {
   const [userId, setUserId] = useState(localStorage.getItem('userId') || '')
   const [isAdmin, setIsAdmin] = useState(localStorage.getItem('isAdmin') === 'true')
   const [refreshToken, setRefreshToken] = useState(localStorage.getItem('refreshToken') || '')
+  const [darkMode, setDarkMode] = useState(localStorage.getItem('darkMode') === 'true')
   const [userProblem, setUserProblem] = useState<Problem | undefined>(() => {
     const savedProblem = localStorage.getItem('userProblem')
     return savedProblem ? JSON.parse(savedProblem) : undefined
   })
+  const [isSessionTimeoutModalOpen, setIsSessionTimeoutModalOpen] = useState(false)
 
   useEffect(() => {
     if (token && username && userId) {
@@ -44,7 +48,9 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 
     const requestInterceptor = axios.interceptors.request.use(
       (config) => {
-        if (token) {
+        if (config.url === 'http://localhost:8080/auth/refresh-token') {
+          delete config.headers['Authorization']
+        } else if (token) {
           config.headers['Authorization'] = `Bearer ${token}`
         }
         return config
@@ -60,22 +66,22 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       },
       async(error) => {
         if (error.response?.status === 500 && error.response?.data?.message?.includes('The Token has expired')) {
+          setIsSessionTimeoutModalOpen(true)
           try {
-            const axiosInstance = axios.create()
-            const refreshResponse = await axiosInstance.post('http://localhost:8080/auth/refresh-token', { refreshToken })
+            const refreshResponse = await axios.post(
+              'http://localhost:8080/auth/refresh-token',
+              { refreshToken }
+            )
 
             if (refreshResponse.data) {
               setToken(refreshResponse.data.access_token)
               setRefreshToken(refreshResponse.data.refresh_token)
-              window.location.reload()
             }
           } catch (refreshError) {
+            console.error('Error refreshing token:', refreshError)
             setUserId('')
             setToken('')
             setUsername('')
-            toast.info('Session timed out')
-            console.error('Error refreshing token:', refreshError)
-            window.location.reload()
           }
         }
         return Promise.reject(error)
@@ -94,12 +100,13 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     localStorage.setItem('userId', userId)
     localStorage.setItem('isAdmin', isAdmin.toString())
     localStorage.setItem('refreshToken', refreshToken)
+    localStorage.setItem('darkMode', darkMode.toString())
     if (userProblem) {
       localStorage.setItem('userProblem', JSON.stringify(userProblem))
     } else {
       localStorage.removeItem('userProblem')
     }
-  }, [username, token, userId, isAdmin, refreshToken, userProblem])
+  }, [username, token, userId, isAdmin, refreshToken, userProblem, darkMode])
 
   return (
     <UserContext.Provider
@@ -109,6 +116,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
         userId,
         refreshToken,
         userProblem,
+        darkMode,
         setUsername,
         setToken,
         setUserId,
@@ -116,9 +124,17 @@ export const UserProvider = ({ children }: UserProviderProps) => {
         setIsAdmin,
         setRefreshToken,
         setUserProblem,
+        setDarkMode,
       }}
     >
       {children}
+      <SessionTimeoutModal
+        open={isSessionTimeoutModalOpen}
+        onClose={() => {
+          setIsSessionTimeoutModalOpen(false)
+          window.location.reload()
+        }}
+      />
     </UserContext.Provider>
   )
 }

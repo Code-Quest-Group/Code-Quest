@@ -2,7 +2,7 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen'
 import { IconButton, Typography } from '@mui/material'
 import clsx from 'clsx'
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { CodeEnvironmentProvider, useLayout, useUser } from '../../../providers'
 import { ProblemService } from '../../../services/problem-service'
 import { Problem } from '../../../types'
@@ -27,7 +27,6 @@ const ProblemDetails = ({ isPreview }: ProblemDetailsProps) => {
   const { userProblem } = useUser()
   const { showNavbar } = useLayout()
   const fullScreenHandle = useFullScreenHandle()
-  const navigate = useNavigate()
 
   useEffect(() => {
     if (!isPreview) {
@@ -48,8 +47,11 @@ const ProblemDetails = ({ isPreview }: ProblemDetailsProps) => {
   }, [problemId])
 
   if (error && !problem && !isPreview) {
-    navigate('/not-found')
-    return
+    return (
+      <div className='container'>
+        <h1>No problem with given name found</h1>
+      </div>
+    )
   }
 
   if (!problem) {
@@ -75,7 +77,7 @@ const ProblemDetails = ({ isPreview }: ProblemDetailsProps) => {
               <IconButton
                 aria-label="fullscreen mode"
                 onClick={fullScreenHandle.enter}
-                disableRipple
+                disableTouchRipple
               >
                 <FullscreenIcon />
                 <Typography style={{ marginLeft: '0.5rem', color: 'black' }}>Fullscreen Mode</Typography>

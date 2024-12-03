@@ -60,27 +60,21 @@ export const UserListItem = ({ key, user }: UserListItemProps) => {
               sx={{ width: '22rem', marginTop: '1rem'}}
               popup='Click to give this user Admin privileges'
             >
-              <Typography variant="button" style={{ textTransform: 'none' }}>
-                Give Admin Permissions
-              </Typography>
+              Give Admin Permissions
             </Button>
             <Button
               seriousButton
               sx={{ width: '22rem'}}
               popup='Click to ban this user'
             >
-              <Typography variant="button" style={{ textTransform: 'none' }}>
-                Ban User
-              </Typography>
+              Ban User
             </Button>
             <Button
               seriousButton
               sx={{ width: '22rem'}}
               popup='Click to permamently remove this user'
             >
-              <Typography variant="button" style={{ textTransform: 'none' }}>
-                Remove Permamently
-              </Typography>
+              Remove Permamently
             </Button>
           </div>
         </Box>

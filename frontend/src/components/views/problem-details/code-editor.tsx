@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import Editor, { loader, OnMount } from '@monaco-editor/react'
-import { useCodeEnvironment } from '../../../providers'
+import { useCodeEnvironment, useUser } from '../../../providers'
 import { Button, Seperator } from '../../utils'
-import { Box, Typography } from '@mui/material'
+import { Box } from '@mui/material'
 
 type CodeEditorProps = {
   className?: string
@@ -11,6 +11,7 @@ type CodeEditorProps = {
 
 export const CodeEditor = ({ className, isFullscreen }: CodeEditorProps) => {
   const { code, setCode, currentLanguage } = useCodeEnvironment()
+  const { darkMode } = useUser()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const editorRef = useRef<any>(null)
 
@@ -18,7 +19,17 @@ export const CodeEditor = ({ className, isFullscreen }: CodeEditorProps) => {
 
   const handleEditorMount: OnMount = (editor, monaco) => {
     editorRef.current = editor
-    monaco.editor.setTheme(isFullscreen ? 'vs-dark' : 'vs-light')
+    monaco.editor.setTheme(darkMode ? 'vs-dark' : 'vs-light')
+    const model = editor.getModel()
+    if (model) {
+      monaco.editor.setModelLanguage(model, currentLanguage.toLowerCase() || 'plaintext')
+    }
+
+    editor.addCommand(monaco.KeyCode.Escape, () => {
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur()
+      }
+    })
   }
 
   useEffect(() => {
@@ -31,9 +42,13 @@ export const CodeEditor = ({ className, isFullscreen }: CodeEditorProps) => {
         monaco.editor.setModelLanguage(model, currentLanguage.toLowerCase() || 'plaintext')
       }
 
-      monaco.editor.setTheme(isFullscreen ? 'vs-dark' : 'vs-light')
+      editor.addCommand(monaco.KeyCode.Escape, () => {
+        if (document.activeElement instanceof HTMLElement) {
+          document.activeElement.blur()
+        }
+      })
     })
-  }, [isFullscreen, currentLanguage])
+  }, [currentLanguage])
 
   return (
     <div>
@@ -70,9 +85,7 @@ export const CodeEditor = ({ className, isFullscreen }: CodeEditorProps) => {
           />
         ): (
           <Button onClick={() => setIsEditorVisible(true)}>
-            <Typography variant="button" style={{ textTransform: 'none' }}>
-              Start Editor
-            </Typography>
+            Start Editor
           </Button>
         )}
       </Box>

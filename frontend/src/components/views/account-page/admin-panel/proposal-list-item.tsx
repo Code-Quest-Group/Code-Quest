@@ -74,14 +74,10 @@ export const ProposalListItem = ({ key, problemProposal }: ProposalListItemProps
           <Seperator isHorizontal />
           <div className='container'>
             <Button icon={<CheckBox />} popup='Click to approve problem proposal'>
-              <Typography variant="button" style={{ textTransform: 'none' }}>
-                Approve
-              </Typography>
+              Approve
             </Button>
             <Button icon={<Block />} seriousButton popup='Click to decline problem proposal'>
-              <Typography variant="button" style={{ textTransform: 'none' }}>
-                Reject
-              </Typography>
+              Reject
             </Button>
           </div>
         </Box>

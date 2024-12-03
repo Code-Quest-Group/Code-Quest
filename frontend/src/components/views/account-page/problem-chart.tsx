@@ -1,0 +1,56 @@
+/* eslint-disable no-unused-vars */
+import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, Radar, Tooltip } from 'recharts'
+import { UserStatistics } from '../../../types'
+
+enum ProblemType {
+    BinarySearch = 'Binary Search',
+    LinkedLists = 'Linked Lists',
+    Recursion = 'Recursion',
+    DynamicProgramming = 'Dynamic Programming',
+    Graphs = 'Graphs',
+    Sorting = 'Sorting',
+}
+
+type ProblemChartProps = {
+    userStatistics?: UserStatistics
+}
+
+export const ProblemChart = ({ userStatistics }: ProblemChartProps) => {
+
+  if (!userStatistics) {
+    return (
+      <ResponsiveContainer minWidth={'20rem'}>
+        <h1> no data D: </h1>
+      </ResponsiveContainer>
+    )
+  }
+
+  const totalProblemsSolved = Object
+    .values(userStatistics.user_problem_tags_count)
+    .reduce((acc, curr) => acc + curr, 0)
+
+  const chartData = Object
+    .values(ProblemType)
+    .map(problemType => ({
+      problemType,
+      amount: userStatistics.user_problem_tags_count[problemType] || 0,
+      fullMark: totalProblemsSolved,
+    }))
+
+  return (
+    <ResponsiveContainer minWidth={'20rem'}>
+      <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
+        <PolarGrid />
+        <PolarAngleAxis dataKey="problemType" />
+        <Radar
+          name="Number of solved problems"
+          dataKey="amount"
+          stroke="#8884d8"
+          fill="#8884d8"
+          fillOpacity={0.6}
+        />
+        <Tooltip />
+      </RadarChart>
+    </ResponsiveContainer>
+  )
+}

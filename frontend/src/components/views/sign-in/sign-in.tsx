@@ -5,7 +5,6 @@ import {
   IconButton,
   InputAdornment,
   InputLabel,
-  Typography,
   Dialog,
   DialogContent
 } from '@mui/material'
@@ -159,9 +158,7 @@ export const SignInModal = ({ open, onClose }: SignInModalProps) => {
               </>
             )}
             <Button type="submit">
-              <Typography variant="button" style={{ textTransform: 'none' }}>
-                {activeTab === 'signIn' ? 'Sign In' : 'Register'}
-              </Typography>
+              {activeTab === 'signIn' ? 'Sign In' : 'Register'}
             </Button>
           </form>
         </DialogContent>

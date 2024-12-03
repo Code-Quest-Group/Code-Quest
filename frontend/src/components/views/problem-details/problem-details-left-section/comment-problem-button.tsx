@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Typography, Box, Popover, TextField, IconButton} from '@mui/material'
+import { Box, Popover, TextField, IconButton} from '@mui/material'
 import CommentIcon from '@mui/icons-material/Comment'
 import SendIcon from '@mui/icons-material/Send'
 import { Button } from '../../../utils'
@@ -51,9 +51,7 @@ export const CommentButton = () => {
         icon={<CommentIcon />}
         popup={isPreview ? 'Cannot comment preview' : 'Click to comment this problem'}
       >
-        <Typography variant="button" style={{ textTransform: 'none' }}>
-          Comment
-        </Typography>
+        Comment
       </Button>
 
       <Popover

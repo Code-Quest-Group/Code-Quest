@@ -1,5 +1,5 @@
 import { ReactNode, useState } from 'react'
-import { Typography, Box, Popover, Chip} from '@mui/material'
+import { Box, Popover, Chip} from '@mui/material'
 import FilterAltIcon from '@mui/icons-material/FilterAlt'
 import { Button } from '../../utils'
 import { Tags } from '../../../types/problem/tags.type'
@@ -41,9 +41,7 @@ export const FiltersButton = ({ onFiltersChange, title, icon, topPosition }: Fil
         icon={icon ?? <FilterAltIcon />}
         popup={'Click to open filters selector'}
       >
-        <Typography variant="button" style={{ textTransform: 'none' }}>
-          {title ?? 'Filters'}
-        </Typography>
+        {title ?? 'Filters'}
       </Button>
 
       <Popover

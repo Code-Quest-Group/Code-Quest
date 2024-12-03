@@ -85,11 +85,11 @@
                 min-width: 93.75rem;
 
                 @include breakpoints.for-tablets {
-                    min-width: 63.5rem;
+                    min-width: 65.25rem;
                 }
 
                 @include breakpoints.for-phones {
-                    min-width: 35rem;
+                    min-width: 37.75rem;
                 }
 
                 >a {
@@ -110,9 +110,25 @@
 
                     >span {
                         background-color: var(--primary-white);
+                        display: flex;
+                        justify-content: center;
                         padding: 0.5rem 1rem;
                         font-size: 1.25rem;
+                        font-weight: 700;
+                        min-width: 6rem;
+                        text-transform: capitalize;
+                        color: var(--font-primary-color);
                     }
+
+                    .attempted {
+                        color: var(--secondary-orange);
+                    }
+
+                    .accepted {
+                        color: var(--secondary-green);
+                    }
+
+
 
                     ul {
                         display: inline-flex;
@@ -134,8 +150,7 @@
                         }
 
                         >span {
-                            padding: 0.25rem 0.5rem;
-                            font-size: 1rem;
+                            padding: 0.25rem 0.75rem;
                         }
 
                         li {

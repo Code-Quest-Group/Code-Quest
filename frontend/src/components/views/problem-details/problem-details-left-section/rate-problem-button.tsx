@@ -1,5 +1,5 @@
 import { SyntheticEvent, useState } from 'react'
-import { Typography, Box, Popover, Rating } from '@mui/material'
+import { Box, Popover, Rating } from '@mui/material'
 import ThumbsUpDownIcon from '@mui/icons-material/ThumbsUpDown'
 import { Button } from '../../../utils'
 import axios from 'axios'
@@ -50,9 +50,7 @@ export const RatingButton = () => {
         icon={<ThumbsUpDownIcon />}
         popup={isPreview ? 'Cannot rate preview' : 'Click to rate this problem'}
       >
-        <Typography variant="button" style={{ textTransform: 'none' }}>
-          Rate
-        </Typography>
+        Rate
       </Button>
 
       <Popover

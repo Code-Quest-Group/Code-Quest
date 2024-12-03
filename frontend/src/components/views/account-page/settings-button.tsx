@@ -1,14 +1,30 @@
-import { Box, Button, Popover, Switch, Typography } from '@mui/material'
+import { Box, CircularProgress, Button as MuiButton, Popover, Switch, Typography } from '@mui/material'
 import { ChangeEvent, useState } from 'react'
+import { UserService } from '../../../services/user-service'
+import { useUser } from '../../../providers'
 import clsx from 'clsx'
+import { toast } from 'react-toastify'
+import { Button } from '../../utils'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+
+type Preferences = {
+  language: string,
+  timezone: string,
+  darkMode: boolean,
+  isProfilePublic: boolean
+}
 
 type SettingsButtonProps = {
   hideButton?: boolean
+  preferences?: Preferences
 }
 
-export const SettingsButton = ({ hideButton }: SettingsButtonProps) => {
+export const SettingsButton = ({ hideButton, preferences }: SettingsButtonProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
-  const [checked, setChecked] = useState(false)
+  const [isProfilePublic, setIsProfilePublic] = useState(preferences?.isProfilePublic ?? false)
+  const [isDarkMode, setIsDarkMode] = useState(preferences?.darkMode ?? false)
+  const [isLoading, setIsLoading] = useState(false)
+  const { userId, setDarkMode } = useUser()
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
@@ -18,21 +34,37 @@ export const SettingsButton = ({ hideButton }: SettingsButtonProps) => {
     setAnchorEl(null)
   }
 
-  // const handleChange = async() => {
-  //   // add reques tto update...
-  // }
+  const confirmChange = async() => {
+    setIsLoading(true)
+    try {
+      await UserService.setUserPreferences(userId, {
+        language: 'en',
+        timezone: 'UTC',
+        dark_mode: isDarkMode,
+        is_profile_public: isProfilePublic,
+      })
+
+      setDarkMode(isDarkMode)
+      handleClose()
+      toast.success('Updated preferences!')
+    } catch (error) {
+      toast.error('Failed to update preferences: ' + error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <>
-      <Button
+      <MuiButton
         className={clsx({['hidden']: hideButton})}
         aria-describedby='open-settings-button'
         onClick={handleClick}
       >
         <Typography variant="button" style={{ textTransform: 'none', color: '#125497' }}>
-            Settings
+          Settings
         </Typography>
-      </Button>
+      </MuiButton>
 
       <Popover
         open={Boolean(anchorEl)}
@@ -50,16 +82,46 @@ export const SettingsButton = ({ hideButton }: SettingsButtonProps) => {
         <Box sx={{
           p: 2,
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
           gap: 1,
           width: 200,
         }}>
-          <Typography>Private profile</Typography>
-          <Switch
-            checked={checked}
-            onChange={(event: ChangeEvent<HTMLInputElement>) => setChecked(event.target.checked)}
-          />
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%'}}>
+            <Typography>Public profile</Typography>
+            <Switch
+              checked={isProfilePublic}
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                setIsProfilePublic(event.target.checked)
+              }
+            />
+          </Box>
+          <Box sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '1rem',
+            width: '100%'
+          }}>
+            <Typography>Dark Mode</Typography>
+            <Switch
+              checked={isDarkMode}
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                setIsDarkMode(event.target.checked)
+              }
+            />
+          </Box>
+          <Button
+            onClick={confirmChange}
+            disabled={isLoading}
+            icon={isLoading ?
+              <CircularProgress size={20} style={{color: 'white'}}/>
+              : <CheckCircleIcon />
+            }
+          >
+            Confirm
+          </Button>
         </Box>
       </Popover>
     </>

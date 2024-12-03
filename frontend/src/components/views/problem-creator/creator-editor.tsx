@@ -1,6 +1,6 @@
 import { Editor, OnMount } from '@monaco-editor/react'
 import { Button } from '../../utils'
-import { Typography, Popover, Box } from '@mui/material'
+import { Popover, Box } from '@mui/material'
 import { Dispatch, ReactNode, SetStateAction, useRef, useState } from 'react'
 
 type CreatorEditorButtonProps = {
@@ -46,9 +46,7 @@ export const CreatorEditorButton = ({
         popup={'Click open code editor'}
         icon={icon}
       >
-        <Typography variant="button" style={{ textTransform: 'none' }}>
-          {title}
-        </Typography>
+        {title}
       </Button>
 
       <Popover

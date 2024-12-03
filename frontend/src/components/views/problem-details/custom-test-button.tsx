@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Typography, Box, Popover, TextField, IconButton} from '@mui/material'
+import { Box, Popover, TextField, IconButton} from '@mui/material'
 import EditNoteIcon from '@mui/icons-material/EditNote'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import { Button } from '../../utils'
@@ -69,9 +69,7 @@ export const CustomTestButton = () => {
         icon={<EditNoteIcon />}
         popup={isPreview ? 'Cannot add a custom case to preview' : 'Click write a custom case'}
       >
-        <Typography variant="button" style={{ textTransform: 'none' }}>
-          Custom Test Case
-        </Typography>
+        Custom Test Case
       </Button>
 
       <Popover

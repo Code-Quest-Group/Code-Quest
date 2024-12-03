@@ -1,12 +1,12 @@
 import clsx from 'clsx'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useLayout } from '../../../providers'
-import { ProblemService } from '../../../services/problem-service'
+import { useLayout, useUser } from '../../../providers'
+import { ProblemService, UserService } from '../../../services/problem-service'
 import { Problem } from '../../../types'
 import classes from './problem-list.module.scss'
 import { Button, Seperator } from '../../utils'
-import { TextField, Typography } from '@mui/material'
+import { TextField } from '@mui/material'
 import RecommendIcon from '@mui/icons-material/Recommend'
 import ShuffleOnIcon from '@mui/icons-material/ShuffleOn'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
@@ -16,25 +16,26 @@ import { FiltersButton } from './filters-button'
 import { Tags } from '../../../types/problem/tags.type'
 
 const MAXIMUM_PROBLEMS: number = 14
-const tmpTags = ['Linked Lists', 'Binary Search', 'Recursion']
+
+type UserProblemData = {
+  [problemId: string]: string
+}
 
 const ProblemList = () => {
   const [problems, setProblems] = useState<Problem[]>([])
   const [filteredProblems, setFilteredProblems] = useState<Problem[]>([])
   const [selectedFilters, setSelectedFilters] = useState<Tags[]>([])
+  const [userProblems, setUserProblems] = useState<UserProblemData>({})
   const [searchTerm, setSearchTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const { showNavbar } = useLayout()
   const navigate = useNavigate()
+  const { userId } = useUser()
 
   useEffect(() => {
     const fetchProblems = async() => {
       try {
         const data = await ProblemService.getProblems()
-        // const duplicatedData = Array(20).fill(data).flat()
-
-        // setProblems(duplicatedData)
-        // setFilteredProblems(duplicatedData)
 
         setProblems(data)
         setFilteredProblems(data)
@@ -46,6 +47,38 @@ const ProblemList = () => {
     fetchProblems()
   }, [])
 
+  useEffect(() => {
+    const fetchUserProblems = async() => {
+      if (!userId) return
+
+      try {
+        const data = await UserService.getUserProblems(userId)
+        setUserProblems(data)
+      } catch (error) {
+        console.log('Error fetching user problems:', error)
+      }
+    }
+
+    fetchUserProblems()
+  }, [userId])
+
+  useEffect(() => {
+    const filtered = problems.filter((problem) => {
+      const hasTags = Array.isArray(problem.tags)
+
+      const matchesSearchTerm = problem.name.toLowerCase().includes(searchTerm.toLowerCase())
+
+      const matchesFilters = hasTags && selectedFilters.every((filterTag) =>
+        (problem.tags).includes(filterTag as Tags)
+      )
+
+      return matchesSearchTerm && matchesFilters
+    })
+
+    setCurrentPage(1)
+    setFilteredProblems(filtered)
+  }, [searchTerm, selectedFilters, problems])
+
   const truncateName = (str: string) => str.length > 40 ? str.slice(0, 40) + '...' : str
 
   const pickRandomProblem = () => {
@@ -56,23 +89,6 @@ const ProblemList = () => {
     const randomProblem = problems[Math.floor(Math.random() * problems.length)]
     navigate(`/problems/${randomProblem.problemId}`)
   }
-
-  useEffect(() => {
-    const filtered = problems.filter((problem) => {
-      const hasTags = Array.isArray(problem.tags ?? tmpTags)
-
-      const matchesSearchTerm = problem.name.toLowerCase().includes(searchTerm.toLowerCase())
-
-      const matchesFilters = hasTags && selectedFilters.every((filterTag) =>
-        (problem.tags ?? tmpTags).includes(filterTag as Tags)
-      )
-
-      return matchesSearchTerm && matchesFilters
-    })
-
-    setCurrentPage(1)
-    setFilteredProblems(filtered)
-  }, [searchTerm, selectedFilters, problems])
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
@@ -111,9 +127,7 @@ const ProblemList = () => {
               popup={'Click to open recommended problem'}
               aria-label='Recommended Problem'
             >
-              <Typography variant="button" style={{ textTransform: 'none' }}>
-                Recommended Problem
-              </Typography>
+              Recommended Problem
             </Button>
             <Button
               icon={<ShuffleOnIcon />}
@@ -121,9 +135,7 @@ const ProblemList = () => {
               onClick={pickRandomProblem}
               aria-label='Random Problem'
             >
-              <Typography variant="button" style={{ textTransform: 'none' }}>
-                Pick Random
-              </Typography>
+              Pick Random
             </Button>
             <FiltersButton onFiltersChange={setSelectedFilters} />
             <TextField
@@ -138,15 +150,28 @@ const ProblemList = () => {
 
         <section className={classes.middleSection}>
           <ul>
-            {paginateProblems(filteredProblems, currentPage).map((problem, index) => (
-              <li key={index} className={clsx({[classes.hoverEffect]: problem})}>
-                <Link to={`/problems/${problem.problemId}`}>
-                  <header>{truncateName(problem.name)}</header>
-                  <TagsList tags={problem.tags ?? tmpTags} />
-                  <span className='inside-shadow'>Completed</span>
-                </Link>
-              </li>
-            ))}
+            {paginateProblems(filteredProblems, currentPage).map((problem, index) => {
+              const problemStatus = userProblems && userProblems[problem.problemId]
+                ? userProblems[problem.problemId].toLowerCase()
+                : 'Untried'
+
+              return (
+                <li key={index} className={clsx({[classes.hoverEffect]: problem})}>
+                  <Link to={`/problems/${problem.problemId}`}>
+                    <header>{truncateName(problem.name)}</header>
+                    <TagsList tags={problem.tags} />
+                    <span className={clsx('inside-shadow',
+                      {
+                        [classes.accepted]: problemStatus === 'succeeded',
+                        [classes.attempted]: problemStatus === 'attempted'
+                      }
+                    )}>
+                      {problemStatus}
+                    </span>
+                  </Link>
+                </li>
+              )
+            })}
           </ul>
         </section>
 
@@ -163,9 +188,7 @@ const ProblemList = () => {
                     disabled={currentPage === 1}
                     className={clsx({['hidden']: currentPage === 1})}
                   >
-                    <Typography variant="button" style={{ textTransform: 'none' }}>
-                         Previous Page
-                    </Typography>
+                    Previous Page
                   </Button>
                 </div>
 
@@ -175,9 +198,7 @@ const ProblemList = () => {
                     onClick={() => handlePageChange(page)}
                     variant={page === currentPage ? 'contained' : 'outlined'}
                   >
-                    <Typography variant="button" style={{ textTransform: 'none' }}>
-                      {page}
-                    </Typography>
+                    {page}
                   </Button>
                 ))}
 
@@ -188,9 +209,7 @@ const ProblemList = () => {
                     disabled={currentPage === totalPages}
                     className={clsx({['hidden']: currentPage === totalPages})}
                   >
-                    <Typography variant="button" style={{ textTransform: 'none' }}>
-                         Next Page
-                    </Typography>
+                    Next Page
                   </Button>
                 </div>
               </>

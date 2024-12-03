@@ -1,5 +1,4 @@
 import ReportProblemIcon from '@mui/icons-material/ReportProblem'
-import { Typography } from '@mui/material'
 import { Button } from '../../../utils'
 import { RatingButton } from './rate-problem-button'
 import { CommentButton } from './comment-problem-button'
@@ -24,9 +23,7 @@ export const RateButtonGroup = ({ className }: RateButtonGroupProps) => {
         icon={<ReportProblemIcon />}
         popup={isPreview ? 'Cannot report preview' : 'Click to report this problem'}
       >
-        <Typography variant="button" style={{ textTransform: 'none' }}>
-            Report
-        </Typography>
+        Report
       </Button>
     </div>
   )
