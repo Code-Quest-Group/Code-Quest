@@ -5,6 +5,8 @@ import { createContext, ReactNode, useContext, useEffect, useState } from 'react
 import { Problem } from '../../types'
 import SessionTimeoutModal from './time-out-modal'
 
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+
 const UserContext = createContext({
   username: '',
   userId: '',
@@ -48,7 +50,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 
     const requestInterceptor = axios.interceptors.request.use(
       (config) => {
-        if (config.url === 'http://localhost:8080/auth/refresh-token') {
+        if (config.url === `${apiBaseUrl}/auth/refresh-token`) {
           delete config.headers['Authorization']
         } else if (token) {
           config.headers['Authorization'] = `Bearer ${token}`
@@ -69,7 +71,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
           setIsSessionTimeoutModalOpen(true)
           try {
             const refreshResponse = await axios.post(
-              'http://localhost:8080/auth/refresh-token',
+              `${apiBaseUrl}/auth/refresh-token`,
               { refreshToken }
             )
 

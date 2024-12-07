@@ -22,6 +22,7 @@ export const RateButtonGroup = ({ className }: RateButtonGroupProps) => {
         seriousButton
         icon={<ReportProblemIcon />}
         popup={isPreview ? 'Cannot report preview' : 'Click to report this problem'}
+        aria-label='report-button'
       >
         Report
       </Button>

@@ -2,17 +2,17 @@ import { Box, List, Modal } from '@mui/material'
 import classes from './admin-panel-modal.module.scss'
 import { Seperator } from '../../../utils'
 import { useEffect, useState } from 'react'
-import { ProblemService } from '../../../../services/problem-service'
-import { Problem, User } from '../../../../types'
+import { ProblemService, UserService } from '../../../../services/problem-service'
+import { Problem } from '../../../../types'
 import { Proposal } from '../../../../types/problem/proposal.type'
 import { ProposalListItem } from './proposal-list-item'
 import { ProblemListItem } from './problem-list-item'
-import { UserListItem } from './user-list-item'
+import { BasicUserData, UserListItem } from './user-list-item'
 
 type FeedbackModalProps = {
-  open: boolean;
-  onClose: () => void;
-};
+  open: boolean
+  onClose: () => void
+}
 
 const tmpProblemProposals: Proposal[] = [
   {
@@ -37,37 +37,18 @@ const tmpProblemProposals: Proposal[] = [
   },
 ]
 
-const tmpUsers: User[] = [
-  { username: 'Joohn Boon' },
-  { username: 'Dadamio' },
-  { username: 'Alice Green' },
-  { username: 'Robert Black' },
-  { username: 'Charlie White' },
-  { username: 'Emma Stone' },
-  { username: 'John Doe' },
-  { username: 'Jane Smith' },
-  { username: 'Chris Pratt' },
-  { username: 'Liam Neeson' },
-  { username: 'Olivia Wilde' },
-  { username: 'Will Smith' },
-  { username: 'Scarlett Johansson' },
-  { username: 'Tom Hanks' },
-  { username: 'Rachel Green' },
-  { username: 'Ross Geller' },
-  { username: 'Chandler Bing' },
-  { username: 'Monica Geller' },
-  { username: 'Phoebe Buffay' },
-  { username: 'Joey Tribbiani' }
-]
-
-export const AdminPanel = ({ open, onClose }: FeedbackModalProps) => {
+const AdminPanel = ({ open, onClose }: FeedbackModalProps) => {
   const [problems, setProblems] = useState<Problem[]>([ ])
+  const [allUsers, setAllUsers] = useState<BasicUserData[]>([ ])
 
   useEffect(() => {
     const fetchProblems = async() => {
       try {
-        const data = await ProblemService.getProblems()
-        setProblems(data)
+        const problemData = await ProblemService.getProblems()
+        const usersData = await UserService.getAllUsers()
+
+        setAllUsers(usersData)
+        setProblems(problemData)
       } catch (error) {
         console.log(error)
       }
@@ -107,7 +88,7 @@ export const AdminPanel = ({ open, onClose }: FeedbackModalProps) => {
             <header>Users</header>
             <Seperator isHorizontal />
             <List>
-              {tmpUsers.map((user, index) => (
+              {allUsers.map((user, index) => (
                 <UserListItem user={user} key={index}/>
               ))}
             </List>
@@ -117,3 +98,5 @@ export const AdminPanel = ({ open, onClose }: FeedbackModalProps) => {
     </Modal>
   )
 }
+
+export default AdminPanel

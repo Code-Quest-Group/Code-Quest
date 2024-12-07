@@ -26,9 +26,14 @@ type ActivityChartProps = {
 
 export const ActivityChart = ({ userStatistics }: ActivityChartProps) => {
 
-  if (!userStatistics) {
+  const emptyStatistics = userStatistics
+    && Object.keys(userStatistics.submissions_frequency).length === 0
+    && userStatistics.user_problem_attempts.length === 0
+    && Object.keys(userStatistics.user_problem_tags_count).length === 0
+
+  if (!userStatistics || emptyStatistics) {
     return (
-      <h1> no data man </h1>
+      <header>No profile activity data</header>
     )
   }
 

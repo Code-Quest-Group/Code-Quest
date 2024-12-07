@@ -16,12 +16,14 @@ import { useUser } from '../../../providers'
 import { Button, Seperator } from '../../utils'
 import classes from './sign-in.module.scss'
 
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+
 type SignInModalProps = {
   open: boolean
   onClose: () => void
 }
 
-export const SignInModal = ({ open, onClose }: SignInModalProps) => {
+const SignInModal = ({ open, onClose }: SignInModalProps) => {
   const { setToken, setUsername, setIsAdmin, setRefreshToken, setUserId } = useUser()
 
   const [activeTab, setActiveTab] = useState<'signIn' | 'register'>('signIn')
@@ -48,7 +50,7 @@ export const SignInModal = ({ open, onClose }: SignInModalProps) => {
       }
 
       try {
-        const response = await axios.post('http://localhost:8080/auth/register', payload)
+        const response = await axios.post(`${apiBaseUrl}/auth/register`, payload)
 
         if (response.status === 201) {
           login(String(username), String(password))
@@ -64,7 +66,7 @@ export const SignInModal = ({ open, onClose }: SignInModalProps) => {
     const payload = { password, username_or_email: username }
 
     try {
-      const response = await axios.post('http://localhost:8080/auth/login', payload)
+      const response = await axios.post(`${apiBaseUrl}/auth/login`, payload)
       const userData = response.data.data
 
       setToken(userData.token)
@@ -166,3 +168,5 @@ export const SignInModal = ({ open, onClose }: SignInModalProps) => {
     </Dialog>
   )
 }
+
+export default SignInModal

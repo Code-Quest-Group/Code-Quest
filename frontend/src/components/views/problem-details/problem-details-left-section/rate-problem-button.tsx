@@ -6,6 +6,8 @@ import axios from 'axios'
 import { useCodeEnvironment, useUser } from '../../../../providers'
 import { toast } from 'react-toastify'
 
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+
 export const RatingButton = () => {
   const { username } = useUser()
   const { problem, isPreview } = useCodeEnvironment()
@@ -22,7 +24,7 @@ export const RatingButton = () => {
 
     if (newValue !== null) {
       try {
-        await axios.post(`http://localhost:8080/problems/${problem.problemId}/ratings`, {
+        await axios.post(`${apiBaseUrl}/problems/${problem.problemId}/ratings`, {
           rating: newValue,
         })
 
@@ -45,6 +47,7 @@ export const RatingButton = () => {
     <>
       <Button
         disabled={isPreview}
+        aria-label='rate-button'
         aria-describedby='open-rate-problem-button'
         onClick={handleClick}
         icon={<ThumbsUpDownIcon />}

@@ -7,6 +7,8 @@ import { useCodeEnvironment, useUser } from '../../../../providers'
 import { toast } from 'react-toastify'
 import axios from 'axios'
 
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+
 export const CommentButton = () => {
   const { username } = useUser()
   const { problem, isPreview } = useCodeEnvironment()
@@ -29,7 +31,7 @@ export const CommentButton = () => {
 
     if (value !== null) {
       try {
-        await axios.post(`http://localhost:8080/problems/${problem.problemId}/comments`, {
+        await axios.post(`${apiBaseUrl}/problems/${problem.problemId}/comments`, {
           content: value,
         })
 
@@ -47,6 +49,7 @@ export const CommentButton = () => {
       <Button
         disabled={isPreview}
         aria-describedby='open-comment-problem-button'
+        aria-label='comment-button'
         onClick={handleClick}
         icon={<CommentIcon />}
         popup={isPreview ? 'Cannot comment preview' : 'Click to comment this problem'}

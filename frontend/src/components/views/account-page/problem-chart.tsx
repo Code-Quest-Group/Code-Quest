@@ -17,10 +17,15 @@ type ProblemChartProps = {
 
 export const ProblemChart = ({ userStatistics }: ProblemChartProps) => {
 
-  if (!userStatistics) {
+  const emptyStatistics = userStatistics
+    && Object.keys(userStatistics.submissions_frequency).length === 0
+    && userStatistics.user_problem_attempts.length === 0
+    && Object.keys(userStatistics.user_problem_tags_count).length === 0
+
+  if (!userStatistics || emptyStatistics) {
     return (
-      <ResponsiveContainer minWidth={'20rem'}>
-        <h1> no data D: </h1>
+      <ResponsiveContainer minWidth={'20rem'} className='container'>
+        <header>No profile problem chart data</header>
       </ResponsiveContainer>
     )
   }

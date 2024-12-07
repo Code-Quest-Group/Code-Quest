@@ -5,7 +5,7 @@
     flex-direction: row;
     justify-content: space-around;
     min-height: 56rem;
-    height: 100%;
+    height: calc(100% - 2.5rem);
 
     >div {
         background-color: var(--secondary-white);
@@ -267,6 +267,21 @@
 
         >button {
             margin-left: auto !important;
+        }
+    }
+
+    header {
+        button {
+            color: var(--font-primary-color);
+            background-color: inherit;
+            border: none;
+
+            &:hover {
+                text-decoration: underline;
+                text-decoration-thickness: 1px;
+                text-underline-offset: 0.25rem;
+                cursor: pointer;
+            }
         }
     }
 }

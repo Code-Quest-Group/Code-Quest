@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react'
-import { useCodeEnvironment } from '../../../../providers'
+import { useCodeEnvironment, useUser } from '../../../../providers'
 import axios from 'axios'
 import { Comment } from '../../../../types/problem/comment.type'
 import { Button } from '@mui/material'
 import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
+
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 
 type CommentsSectionProps = {
     commentClassName: string
@@ -11,12 +14,14 @@ type CommentsSectionProps = {
 
 export const CommentsSection = ({ commentClassName }: CommentsSectionProps) => {
   const { problem } = useCodeEnvironment()
+  const { isAdmin, username } = useUser()
   const [comments, setComments] = useState<Comment[]>([])
   const problemId = problem.problemId
+  const navigate = useNavigate()
 
   const handleDeleteComment = async(commentId: string) => {
     try {
-      await axios.delete(`http://localhost:8080/problems/${problemId}/comments/${commentId}`)
+      await axios.delete(`${apiBaseUrl}/problems/${problemId}/comments/${commentId}`)
       setComments((prevComments) => prevComments.filter((comment) => comment.comment_id !== commentId))
       toast.info(`Comment ${commentId} deleted successfully.`)
     } catch (error) {
@@ -27,7 +32,7 @@ export const CommentsSection = ({ commentClassName }: CommentsSectionProps) => {
   useEffect(() => {
     const fetchComments = async() => {
       try {
-        const response = await axios.get(`http://localhost:8080/problems/${problemId}/comments`)
+        const response = await axios.get(`${apiBaseUrl}/problems/${problemId}/comments`)
         const fetchedComments = response.data as Comment[]
         setComments(fetchedComments)
       } catch (error) {
@@ -48,13 +53,22 @@ export const CommentsSection = ({ commentClassName }: CommentsSectionProps) => {
           comments.map((comment, index) => (
             <div key={index} className={commentClassName}>
               <span>
-                <header className='header'>{comment.author}</header>
-                <Button
-                  onClick={() => handleDeleteComment(comment.comment_id)}
-                  sx={{ padding: '0.25rem', height: '2.5rem'}}
-                >
-                  Remove Comment
-                </Button>
+                <header>
+                  <button
+                    onClick={() => navigate(`/account/${comment.user_id}`)}
+                    className='header'
+                  >
+                    {comment.author}
+                  </button>
+                </header>
+                {(isAdmin || username === comment.author) && (
+                  <Button
+                    onClick={() => handleDeleteComment(comment.comment_id)}
+                    sx={{ padding: '0.25rem', height: '2.5rem'}}
+                  >
+                                  Remove Comment
+                  </Button>
+                )}
               </span>
               <p>{comment.content}</p>
             </div>

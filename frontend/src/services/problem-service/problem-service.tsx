@@ -1,9 +1,11 @@
 import axios from 'axios'
 import { Problem } from '../../types'
 
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+
 const getProblems = async() => {
   try {
-    const response = await axios.get('http://localhost:8080/problems')
+    const response = await axios.get(`${apiBaseUrl}/problems`)
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const problems: Problem[] = response.data.map((item: any) => ({
@@ -28,7 +30,7 @@ const getProblems = async() => {
 
 const getProblem = async(problemId: string) => {
   try {
-    const response = await axios.get(`http://localhost:8080/problems/${problemId}`)
+    const response = await axios.get(`${apiBaseUrl}/problems/${problemId}`)
     const raw = response.data
 
     const problem: Problem = {

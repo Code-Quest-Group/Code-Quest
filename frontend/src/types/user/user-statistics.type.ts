@@ -5,6 +5,7 @@ export type UserStatistics = {
     user_problem_attempts: Array<{
       user_id: string
       problem_id: string
+      problem_name: string
       user_problem_status: string
       submission_count: number
       last_submission_time: string

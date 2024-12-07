@@ -10,6 +10,8 @@ import { CustomTestButton } from './custom-test-button'
 import { RunTestCasesButton } from './run-test-cases-button'
 import { AddTask, DoNotDisturb } from '@mui/icons-material'
 
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+
 type SubmitButtonGroupProps = {
     className: string
 }
@@ -28,7 +30,7 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
     }
 
     try {
-      const response = await axios.post('http://localhost:8080/submissions/', {
+      const response = await axios.post(`${apiBaseUrl}/submissions/`, {
         source_code: code,
         problem_id: problem?.problemId,
         language: 'PYTHON',
@@ -58,7 +60,7 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
         return
       }
 
-      const response = await axios.put(`http://localhost:8080/submissions/${submissionId}/publish`)
+      const response = await axios.put(`${apiBaseUrl}/submissions/${submissionId}/publish`)
 
       if (response.status === 200) {
         toast.success('Solution published successfully!')
@@ -100,7 +102,7 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
 
         if (lock) return
         lock = true
-        const response = await axios.get('http://localhost:8080/submissions', params)
+        const response = await axios.get(`${apiBaseUrl}/submissions`, params)
 
         if (response.status === 200 && response.data) {
           const payload: SubmissionResponse = response.data[0]
@@ -144,6 +146,7 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
         onClick={handleSubmit}
         disabled={Boolean(submissionId) || isPreview}
         style={{ position: 'relative', width: '8rem' }}
+        aria-label='submit-button'
         popup={
           isPreview
             ? 'Submitting problem can be done only within problem creator'

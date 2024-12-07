@@ -30,7 +30,7 @@ const ProblemList = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const { showNavbar } = useLayout()
   const navigate = useNavigate()
-  const { userId } = useUser()
+  const { userId, token } = useUser()
 
   useEffect(() => {
     const fetchProblems = async() => {
@@ -52,7 +52,7 @@ const ProblemList = () => {
       if (!userId) return
 
       try {
-        const data = await UserService.getUserProblems(userId)
+        const data = await UserService.getUserProblems(userId, token)
         setUserProblems(data)
       } catch (error) {
         console.log('Error fetching user problems:', error)
@@ -141,7 +141,6 @@ const ProblemList = () => {
             <TextField
               label="Search problem by name"
               variant="outlined"
-              style={{ fontFamily: `'Fredoka', sans-serif`, fontSize: '1.125rem' }}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>

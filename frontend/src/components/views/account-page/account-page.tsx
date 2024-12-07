@@ -6,37 +6,15 @@ import { Avatar, List, ListItem, ListItemText } from '@mui/material'
 import { Button, Seperator } from '../../utils'
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings'
 import { Create, Refresh } from '@mui/icons-material'
-import { useEffect, useState } from 'react'
-import { AdminPanel } from './admin-panel'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { SettingsButton } from './settings-button'
 import { UserService } from '../../../services/user-service'
 import { ProfileUserData, UserStatistics } from '../../../types'
 import { ProblemChart } from './problem-chart'
 import { ActivityChart } from './activity-chart'
 
-const tmpProblems = [
-  { name: 'Add two numbers', href: '/problems/add-two-numbers' },
-  { name: 'Binary Search', href: '/problems/binary-search' },
-  { name: 'Graph Traversal', href: '/problems/graph-traversal' },
-  { name: 'Dynamic Programming', href: '/problems/dynamic-programming' },
-  { name: 'Greedy Algorithm', href: '/problems/greedy-algorithm' },
-  { name: 'Backtracking', href: '/problems/backtracking' },
-  { name: 'String Manipulation', href: '/problems/string-manipulation' },
-  { name: 'Array Operations', href: '/problems/array-operations' },
-  { name: 'Hashing Techniques', href: '/problems/hashing-techniques' },
-  { name: 'Divide and Conquer', href: '/problems/divide-and-conquer' },
-  { name: 'Tree Traversal', href: '/problems/tree-traversal' },
-  { name: 'Matrix Multiplication', href: '/problems/matrix-multiplication' },
-  { name: 'Bit Manipulation', href: '/problems/bit-manipulation' },
-  { name: 'Recursion Basics', href: '/problems/recursion-basics' },
-  { name: 'Queue Operations', href: '/problems/queue-operations' },
-  { name: 'Stack Implementation', href: '/problems/stack-implementation' },
-  { name: 'Linked List Basics', href: '/problems/linked-list-basics' },
-  { name: 'Heap Operations', href: '/problems/heap-operations' },
-  { name: 'Trie Implementation', href: '/problems/trie-implementation' },
-  { name: 'Network Flow Algorithms', href: '/problems/network-flow-algorithms' }
-]
+const AdminPanel = lazy(() => import('./admin-panel/admin-panel-modal'))
+const SettingsButton = lazy(() => import('./settings-button'))
 
 const tmpSubmissions = [
   { name: 'Problem proposal 1', status: 'Declined' },
@@ -77,7 +55,6 @@ const AccountPage = () => {
 
         setUser(userData)
         setUserStatistics(userStatisticsData)
-        console.log(userStatisticsData)
 
         if (userId === currentUserId) {
           const newPreferences: Preferences = {
@@ -102,6 +79,10 @@ const AccountPage = () => {
 
   const handleOpenAdminModal = () => setOpenAdminPanel(true)
   const handleCloseAdminModal = () => setOpenAdminPanel(false)
+
+  const completedProblems = userStatistics?.user_problem_attempts.filter(
+    attempt => attempt.user_problem_status === 'SUCCEEDED'
+  ) || []
 
   return (
     <main className={clsx({'full-height': !showNavbar})}>
@@ -129,13 +110,17 @@ const AccountPage = () => {
           <div className={classes.solvedProblems}>
             <header>Completed problems</header>
             <List>
-              {tmpProblems.map((problem, index) => (
-                <li key={index}>
-                  <ListItem component="a" href={problem.href}>
-                    <ListItemText primary={problem.name} />
-                  </ListItem>
-                </li>
-              ))}
+              {completedProblems.length ? (
+                completedProblems.map((problem, index) => (
+                  <li key={index}>
+                    <ListItem component='div' onClick={() => navigate(`/problems/${problem.problem_id}`)}>
+                      <ListItemText primary={problem.problem_name} />
+                    </ListItem>
+                  </li>
+                ))
+              ) : (
+                <li className='container' key={'no-problems'}> This user has no problems solved</li>
+              )}
             </List>
           </div>
           <div className={classes.submissionsAndAdminPanel}>
@@ -183,7 +168,9 @@ const AccountPage = () => {
           </div>
         </section>
       </div>
-      <AdminPanel open={openAdminPanel} onClose={handleCloseAdminModal}/>
+      <Suspense>
+        <AdminPanel open={openAdminPanel} onClose={handleCloseAdminModal}/>
+      </Suspense>
     </main>
   )
 }

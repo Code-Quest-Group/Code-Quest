@@ -4,17 +4,21 @@ import axios from 'axios'
 import { PublishedSubmission } from '../../../../types/problem/published-submission.type'
 import classes from './published-submissions.module.scss'
 import { Seperator } from '../../../utils'
+import { useNavigate } from 'react-router-dom'
+
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 
 export const PublishedSubmissionsSection = () => {
   const { problem } = useCodeEnvironment()
   const [submissions, setSubmissions] = useState<PublishedSubmission[]>([])
   const problemId = problem.problemId
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchPublishedSubmissions = async() => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/problems/${problemId}/published-submissions`
+          `${apiBaseUrl}/problems/${problemId}/published-submissions`
         )
 
         const fetchedSubmissions = response.data as PublishedSubmission[]
@@ -37,7 +41,11 @@ export const PublishedSubmissionsSection = () => {
         {submissions.length > 0 ? (
           submissions.map((submission, index) => (
             <div key={index}>
-              <header className="header">Author: {submission.username}</header>
+              <header className="header">Author:{' '}
+                <button onClick={() => navigate(`/account/${submission.user_id}`)}>
+                  {submission.username}
+                </button>
+              </header>
 
               <p>
                 <small>

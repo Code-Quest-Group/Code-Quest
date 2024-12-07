@@ -19,7 +19,7 @@ type SettingsButtonProps = {
   preferences?: Preferences
 }
 
-export const SettingsButton = ({ hideButton, preferences }: SettingsButtonProps) => {
+const SettingsButton = ({ hideButton, preferences }: SettingsButtonProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [isProfilePublic, setIsProfilePublic] = useState(preferences?.isProfilePublic ?? false)
   const [isDarkMode, setIsDarkMode] = useState(preferences?.darkMode ?? false)
@@ -127,3 +127,5 @@ export const SettingsButton = ({ hideButton, preferences }: SettingsButtonProps)
     </>
   )
 }
+
+export default SettingsButton

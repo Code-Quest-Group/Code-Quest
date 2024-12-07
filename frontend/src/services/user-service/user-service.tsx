@@ -2,9 +2,11 @@ import axios from 'axios'
 import { ProfileUserData } from '../../types'
 import { UserStatistics } from '../../types'
 
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+
 const getUserData = async(userId: string) => {
   try {
-    const response = await axios.get(`http://localhost:8080/user/${userId}`)
+    const response = await axios.get(`${apiBaseUrl}/user/${userId}`)
     const userData = response.data as ProfileUserData
 
     return userData
@@ -14,15 +16,23 @@ const getUserData = async(userId: string) => {
   }
 }
 
-const getUserStatistics = async(userId: string) => {
+const getUserStatistics = async(userId: string, token?: string) => {
   try {
-    const response = await axios.get(`http://localhost:8080/user/${userId}/statistics`)
+    const config = token
+      ? { headers: { Authorization: `Bearer ${token}` } }
+      : undefined
+
+    const response = await axios.get(`${apiBaseUrl}/user/${userId}/statistics`, config)
     const userStatistics = response.data as UserStatistics
 
     return userStatistics
-  } catch (error) {
-    console.error(error)
-    throw error
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (_) {
+    return {
+      submissions_frequency: {},
+      user_problem_attempts: [],
+      user_problem_tags_count: {}
+    } as UserStatistics
   }
 }
 
@@ -36,7 +46,7 @@ const setUserPreferences = async(
   }
 ) => {
   try {
-    const response = await axios.post(`http://localhost:8080/user/${userId}/preferences`, preferences)
+    const response = await axios.post(`${apiBaseUrl}/user/${userId}/preferences`, preferences)
     return response.data
   } catch (error) {
     console.error(error)
@@ -44,9 +54,9 @@ const setUserPreferences = async(
   }
 }
 
-const getUserProblems = async(userId: string) => {
+const getUserProblems = async(userId: string, token?: string) => {
   try {
-    const userStatistics = await getUserStatistics(userId)
+    const userStatistics = await getUserStatistics(userId, token)
     const problemData = [...userStatistics.user_problem_attempts]
 
     const problemDict = problemData.reduce((acc, problem) => {
@@ -61,9 +71,20 @@ const getUserProblems = async(userId: string) => {
   }
 }
 
+const getAllUsers = async() => {
+  try {
+    const response = await axios.get(`${apiBaseUrl}/user`)
+    return response.data
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
 export const UserService = {
   getUserData,
   getUserStatistics,
   setUserPreferences,
   getUserProblems,
+  getAllUsers,
 }

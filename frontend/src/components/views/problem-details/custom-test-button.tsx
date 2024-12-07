@@ -64,7 +64,7 @@ export const CustomTestButton = () => {
     <>
       <Button
         disabled={isPreview}
-        aria-describedby='open-custom-case-field'
+        aria-label='create-custom-cases-button'
         onClick={handleClick}
         icon={<EditNoteIcon />}
         popup={isPreview ? 'Cannot add a custom case to preview' : 'Click write a custom case'}

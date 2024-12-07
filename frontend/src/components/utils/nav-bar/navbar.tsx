@@ -12,12 +12,13 @@ import { toast } from 'react-toastify'
 import { useLayout, useUser } from '../../../providers'
 import { Seperator } from '../seperator'
 import classes from './navbar.module.scss'
-import { useEffect, useState } from 'react'
-import { SignInModal } from '../../views/sign-in'
+import { lazy, useEffect, useState } from 'react'
+
+const SignInModal = lazy(() => import('../../views/sign-in/sign-in'))
 
 export const Navbar = () => {
   const { showNavbar, toggleNavbar } = useLayout()
-  const { username, setToken, setUserId, setUsername, userId } = useUser()
+  const { username, setToken, setUserId, setUsername, userId, setIsAdmin } = useUser()
   const navigate = useNavigate()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isFirefox, setIsFirefox] = useState(false)
@@ -29,6 +30,7 @@ export const Navbar = () => {
     setUserId('')
     setToken('')
     setUsername('')
+    setIsAdmin(false)
     toast.info('Logged out')
 
     navigate('/problems')
@@ -108,7 +110,7 @@ export const Navbar = () => {
           {showNavbar ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
         </IconButton>
       </div>
-      <SignInModal open={isModalOpen} onClose={handleCloseModal} />
+      {isModalOpen && <SignInModal open={isModalOpen} onClose={handleCloseModal} />}
     </>
   )
 }
