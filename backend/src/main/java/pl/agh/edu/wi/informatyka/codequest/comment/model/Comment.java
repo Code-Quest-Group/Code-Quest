@@ -25,6 +25,10 @@ public class Comment {
     @JoinColumn(name = "user_id", nullable = false)
     User user;
 
+    @JsonProperty("user_id")
+    @Column(name = "user_id", insertable = false, updatable = false)
+    private String userId;
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "problem_id", nullable = false)
