@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import pl.agh.edu.wi.informatyka.codequest.user.dto.UpdateUserPreferencesDTO;
 import pl.agh.edu.wi.informatyka.codequest.user.dto.UserStatisticsDTO;
 import pl.agh.edu.wi.informatyka.codequest.user.model.User;
+import pl.agh.edu.wi.informatyka.codequest.user.model.UserView;
 
 @RestController
 @Tag(name = "Users")
@@ -20,6 +22,11 @@ public class UserController {
 
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    @GetMapping("/user")
+    public List<UserView> getUser() {
+        return this.userService.getAllUserViews();
     }
 
     @GetMapping("/user/{userId}")

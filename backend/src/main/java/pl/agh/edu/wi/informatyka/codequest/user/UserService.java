@@ -19,6 +19,7 @@ import pl.agh.edu.wi.informatyka.codequest.user.dto.UserStatisticsDTO;
 import pl.agh.edu.wi.informatyka.codequest.user.model.Role;
 import pl.agh.edu.wi.informatyka.codequest.user.model.User;
 import pl.agh.edu.wi.informatyka.codequest.user.model.UserPreferences;
+import pl.agh.edu.wi.informatyka.codequest.user.model.UserView;
 import pl.agh.edu.wi.informatyka.codequest.userproblemattempt.UserProblemAttemptsRepository;
 import pl.agh.edu.wi.informatyka.codequest.userproblemattempt.model.UserProblemAttempt;
 import pl.agh.edu.wi.informatyka.codequest.userproblemattempt.model.UserProblemStatus;
@@ -126,5 +127,11 @@ public class UserService {
             userPreferences.setTimezone(updateDTO.getTimezone());
         }
         this.userRepository.save(updateDTO.getUser());
+    }
+
+    public List<UserView> getAllUserViews() {
+        return userRepository.findAll().stream()
+                .map(user -> new UserView(user.getUserId(), user.getUsername(), user.getLastLogin()))
+                .collect(Collectors.toList());
     }
 }
