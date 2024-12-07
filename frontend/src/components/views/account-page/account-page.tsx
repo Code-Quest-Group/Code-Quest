@@ -113,7 +113,7 @@ const AccountPage = () => {
               {completedProblems.length ? (
                 completedProblems.map((problem, index) => (
                   <li key={index}>
-                    <ListItem component='div' onClick={() => navigate(`/problems/${problem.problem_id}`)}>
+                    <ListItem component='button' onClick={() => navigate(`/problems/${problem.problem_id}`)}>
                       <ListItemText primary={problem.problem_name} />
                     </ListItem>
                   </li>
@@ -169,7 +169,7 @@ const AccountPage = () => {
         </section>
       </div>
       <Suspense>
-        <AdminPanel open={openAdminPanel} onClose={handleCloseAdminModal}/>
+        {openAdminPanel && <AdminPanel open={openAdminPanel} onClose={handleCloseAdminModal}/>}
       </Suspense>
     </main>
   )

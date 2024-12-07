@@ -12,7 +12,7 @@ import { toast } from 'react-toastify'
 import { useLayout, useUser } from '../../../providers'
 import { Seperator } from '../seperator'
 import classes from './navbar.module.scss'
-import { lazy, useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 
 const SignInModal = lazy(() => import('../../views/sign-in/sign-in'))
 
@@ -110,7 +110,9 @@ export const Navbar = () => {
           {showNavbar ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
         </IconButton>
       </div>
-      {isModalOpen && <SignInModal open={isModalOpen} onClose={handleCloseModal} />}
+      <Suspense>
+        {isModalOpen && <SignInModal open={isModalOpen} onClose={handleCloseModal} />}
+      </Suspense>
     </>
   )
 }
