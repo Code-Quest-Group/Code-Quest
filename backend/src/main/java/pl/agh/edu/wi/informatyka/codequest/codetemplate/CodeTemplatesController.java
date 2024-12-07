@@ -58,7 +58,7 @@ public class CodeTemplatesController {
 
     @DeleteMapping()
     @Operation(
-            summary = "Create new code template",
+            summary = "Delete existing code template",
             description = "This endpoint is accessible only by ADMIN role.",
             security = @SecurityRequirement(name = "adminBearerAuth"))
     public ResponseEntity<GenericResponse<Object>> deleteCodeTemplate(

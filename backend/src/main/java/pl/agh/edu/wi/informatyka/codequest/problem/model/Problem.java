@@ -7,8 +7,10 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.agh.edu.wi.informatyka.codequest.codetemplate.model.CodeTemplate;
 import pl.agh.edu.wi.informatyka.codequest.sourcecode.Language;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.Submission;
+import pl.agh.edu.wi.informatyka.codequest.user.model.User;
 import pl.agh.edu.wi.informatyka.codequest.user.model.UserProblemDetails;
 import pl.agh.edu.wi.informatyka.codequest.util.converter.LanguageListConverter;
 import pl.agh.edu.wi.informatyka.codequest.util.converter.ListToJsonConverter;
@@ -83,6 +85,10 @@ public class Problem {
     @Transient
     @JsonProperty("user_problem_details")
     UserProblemDetails userProblemDetails;
+
+    @Transient
+    @JsonProperty("code_templates")
+    List<CodeTemplate> codeTemplates;
 
     @Override
     public String toString() {

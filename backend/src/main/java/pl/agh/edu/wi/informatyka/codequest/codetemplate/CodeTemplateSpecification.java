@@ -16,10 +16,6 @@ public final class CodeTemplateSpecification {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (dto.getId() != null) {
-                predicates.add(criteriaBuilder.equal(root.get(CodeTemplate_.ID), dto.getId()));
-            }
-
             if (dto.getProblemId() != null) {
                 predicates.add(criteriaBuilder.equal(root.get(Problem_.PROBLEM_ID), dto.getProblemId()));
             }

@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.agh.edu.wi.informatyka.codequest.codetemplate.CodeTemplatesRepository;
+import pl.agh.edu.wi.informatyka.codequest.codetemplate.CodeTemplatesService;
+import pl.agh.edu.wi.informatyka.codequest.codetemplate.model.CodeTemplate;
 import pl.agh.edu.wi.informatyka.codequest.problem.dto.CreateProblemDTO;
 import pl.agh.edu.wi.informatyka.codequest.problem.model.Problem;
 import pl.agh.edu.wi.informatyka.codequest.problemrating.ProblemRatingsService;
@@ -22,15 +24,18 @@ public class ProblemsService {
     private final ProblemsRepository problemsRepository;
     private final ProblemRatingsService problemRatingsService;
     private final UserProblemAttemptsService userProblemAttemptsService;
+    private final CodeTemplatesService codeTemplatesService;
 
     public ProblemsService(
             ProblemsRepository problemsRepository,
             CodeTemplatesRepository codeTemplatesRepository,
             ProblemRatingsService problemRatingsService,
-            UserProblemAttemptsService userProblemAttemptsService) {
+            UserProblemAttemptsService userProblemAttemptsService,
+            CodeTemplatesService codeTemplatesService) {
         this.problemsRepository = problemsRepository;
         this.problemRatingsService = problemRatingsService;
         this.userProblemAttemptsService = userProblemAttemptsService;
+        this.codeTemplatesService = codeTemplatesService;
     }
 
     public Optional<Problem> getProblem(String problemId) {
@@ -112,7 +117,18 @@ public class ProblemsService {
                 .getUserProblemRanking(problemId, user.getUserId())
                 .ifPresent(problemRating -> details.setRating(problemRating.getRating()));
 
+        List<CodeTemplate> codeTemplates = this.codeTemplatesService.getDefaultCodeTemplates(problemId);
+
         problem.setUserProblemDetails(details);
+        problem.setCodeTemplates(codeTemplates);
+        return problem;
+    }
+
+    public Problem getProblemWithTemplates(String problemId) {
+        Problem problem = this.getProblemOrThrow(problemId);
+        List<CodeTemplate> codeTemplates = this.codeTemplatesService.getDefaultCodeTemplates(problemId);
+        problem.setCodeTemplates(codeTemplates);
+
         return problem;
     }
 }

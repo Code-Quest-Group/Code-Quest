@@ -1,5 +1,6 @@
 package pl.agh.edu.wi.informatyka.codequest.codetemplate;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.CrudRepository;
@@ -12,4 +13,6 @@ public interface CodeTemplatesRepository
 
     Optional<CodeTemplate> findByProblemIdAndLanguageAndTemplateType(
             String problemId, Language language, TemplateType type);
+
+    List<CodeTemplate> findByProblemIdAndTemplateType(String problemId, TemplateType templateType);
 }

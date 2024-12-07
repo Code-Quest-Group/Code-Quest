@@ -68,4 +68,8 @@ public class CodeTemplatesService {
 
         return codeTemplate;
     }
+
+    public List<CodeTemplate> getDefaultCodeTemplates(String problemId) {
+        return this.codeTemplatesRepository.findByProblemIdAndTemplateType(problemId, TemplateType.DEFAULT_DEFINITION);
+    }
 }

@@ -39,7 +39,7 @@ public class ProblemsController {
         if (user != null) {
             return problemsService.getProblemWithUserDetails(problemId, user);
         } else {
-            return problemsService.getProblemOrThrow(problemId);
+            return problemsService.getProblemWithTemplates(problemId);
         }
     }
 
