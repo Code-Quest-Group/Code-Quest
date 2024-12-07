@@ -35,6 +35,11 @@ public class UserProblemAttempt {
     @JoinColumn(name = "problem_id", nullable = false)
     private Problem problem;
 
+    @JsonProperty("problem_name")
+    public String getProblemName() {
+        return problem != null ? problem.getName() : null;
+    }
+
     @JsonProperty("problem_id")
     @Column(name = "problem_id", insertable = false, updatable = false)
     private String problemId;
