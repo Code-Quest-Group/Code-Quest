@@ -87,13 +87,14 @@ public class UserService {
         return userStatisticsDTO;
     }
 
-    private Optional<User> getUser(String userId) {
+    public Optional<User> getUser(String userId) {
         return this.userRepository.findById(userId);
     }
 
     public User getUserOrThrow(User authenticatedUser, String userId) {
-        boolean hasFullAccess = authenticatedUser.getUserRole() == Role.ADMIN
-                || authenticatedUser.getUserId().equals(userId);
+        boolean hasFullAccess = authenticatedUser != null
+                && (authenticatedUser.getUserRole() == Role.ADMIN
+                        || authenticatedUser.getUserId().equals(userId));
         User user = this.getUser(userId)
                 .orElseThrow(() ->
                         new ResponseStatusException(HttpStatus.NOT_FOUND, "User with id '" + userId + "' not found"));

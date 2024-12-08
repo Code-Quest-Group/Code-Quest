@@ -5,8 +5,10 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -42,9 +44,18 @@ public class UserController {
     public UserStatisticsDTO getUserStatistics(
             @AuthenticationPrincipal User user,
             @PathVariable @Parameter(example = "7aba9807-b018-4923-a6db-421c7e232237") String userId) {
+        User pathUser = this.userService
+                .getUser(userId)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "User with id '" + userId + "' not found"));
+        if ((user == null || !Objects.equals(user.getUserId(), userId))
+                && !pathUser.getPreferences().getIsProfilePublic()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
         return this.userService.getUserStatistics(userId);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/user/{userId}/preferences")
     @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<?> getUserStatistics(
