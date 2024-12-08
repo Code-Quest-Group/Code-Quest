@@ -7,7 +7,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import LoginIcon from '@mui/icons-material/Login'
 import LogoutIcon from '@mui/icons-material/Logout'
 import { IconButton } from '@mui/material'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { useLayout, useUser } from '../../../providers'
 import { Seperator } from '../seperator'
@@ -50,14 +50,14 @@ export const Navbar = () => {
         <nav className={classes.navbar}>
           <section>
             <CodeQuestLogo />
-            <Link
-              to="/"
+            <button
+              onClick={() => navigate('/')}
               className={classes.navbarLinks}
               tabIndex={tabIndex}
               aria-label='Problem List'
             >
               Problem List
-            </Link>
+            </button>
           </section>
           <section>
             {username === '' ? (
@@ -72,15 +72,15 @@ export const Navbar = () => {
               </button>
             ) : (
               <>
-                <Link
+                <button
                   className={classes.navbarLinks}
-                  to={`/account/${userId}`}
+                  onClick={() => navigate(`/account/${userId}`)}
                   tabIndex={tabIndex}
                   aria-label='account'
                 >
                   <p>{username}</p>
                   <AccountCircleIcon fontSize="large"/>
-                </Link>
+                </button>
                 <Seperator hasMargins/>
                 <button
                   className={classes.navbarLinks}

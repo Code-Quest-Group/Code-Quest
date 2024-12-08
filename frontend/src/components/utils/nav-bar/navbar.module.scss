@@ -49,6 +49,10 @@
             margin-left: auto;
         }
 
+        button {
+            font-family: var(--primary-font-family);
+        }
+
         @include breakpoints.for-tablets {
 
             >span {
@@ -58,7 +62,7 @@
 
         @include breakpoints.for-tablets {
 
-            >a {
+            >button {
                 margin-left: 0 !important;
             }
 
