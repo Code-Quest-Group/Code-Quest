@@ -5,8 +5,7 @@ import { Button } from '../../../utils'
 import axios from 'axios'
 import { useCodeEnvironment, useUser } from '../../../../providers'
 import { toast } from 'react-toastify'
-
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+import { config } from '../../../../../config'
 
 export const RatingButton = () => {
   const { username } = useUser()
@@ -24,7 +23,7 @@ export const RatingButton = () => {
 
     if (newValue !== null) {
       try {
-        await axios.post(`${apiBaseUrl}/problems/${problem.problemId}/ratings`, {
+        await axios.post(`${config.apiBaseUrl}/problems/${problem.problemId}/ratings`, {
           rating: newValue,
         })
 

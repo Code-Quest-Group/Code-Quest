@@ -1,12 +1,11 @@
 import axios from 'axios'
 import { ProfileUserData } from '../../types'
 import { UserStatistics } from '../../types'
-
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+import { config } from '../../../config'
 
 const getUserData = async(userId: string) => {
   try {
-    const response = await axios.get(`${apiBaseUrl}/user/${userId}`)
+    const response = await axios.get(`${config.apiBaseUrl}/user/${userId}`)
     const userData = response.data as ProfileUserData
 
     return userData
@@ -18,11 +17,11 @@ const getUserData = async(userId: string) => {
 
 const getUserStatistics = async(userId: string, token?: string) => {
   try {
-    const config = token
+    const specialConfig = token
       ? { headers: { Authorization: `Bearer ${token}` } }
       : undefined
 
-    const response = await axios.get(`${apiBaseUrl}/user/${userId}/statistics`, config)
+    const response = await axios.get(`${config.apiBaseUrl}/user/${userId}/statistics`, specialConfig)
     const userStatistics = response.data as UserStatistics
 
     return userStatistics
@@ -46,7 +45,7 @@ const setUserPreferences = async(
   }
 ) => {
   try {
-    const response = await axios.post(`${apiBaseUrl}/user/${userId}/preferences`, preferences)
+    const response = await axios.post(`${config.apiBaseUrl}/user/${userId}/preferences`, preferences)
     return response.data
   } catch (error) {
     console.error(error)
@@ -73,7 +72,7 @@ const getUserProblems = async(userId: string, token?: string) => {
 
 const getAllUsers = async() => {
   try {
-    const response = await axios.get(`${apiBaseUrl}/user`)
+    const response = await axios.get(`${config.apiBaseUrl}/user`)
     return response.data
   } catch (error) {
     console.error(error)

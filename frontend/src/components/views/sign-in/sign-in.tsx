@@ -15,8 +15,7 @@ import { toast } from 'react-toastify'
 import { useUser } from '../../../providers'
 import { Button, Seperator } from '../../utils'
 import classes from './sign-in.module.scss'
-
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+import { config } from '../../../../config'
 
 type SignInModalProps = {
   open: boolean
@@ -50,7 +49,7 @@ const SignInModal = ({ open, onClose }: SignInModalProps) => {
       }
 
       try {
-        const response = await axios.post(`${apiBaseUrl}/auth/register`, payload)
+        const response = await axios.post(`${config.apiBaseUrl}/auth/register`, payload)
 
         if (response.status === 201) {
           login(String(username), String(password))
@@ -66,7 +65,7 @@ const SignInModal = ({ open, onClose }: SignInModalProps) => {
     const payload = { password, username_or_email: username }
 
     try {
-      const response = await axios.post(`${apiBaseUrl}/auth/login`, payload)
+      const response = await axios.post(`${config.apiBaseUrl}/auth/login`, payload)
       const userData = response.data.data
 
       setToken(userData.token)

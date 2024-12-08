@@ -5,8 +5,7 @@ import { Comment } from '../../../../types/problem/comment.type'
 import { Button } from '@mui/material'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
-
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+import { config } from '../../../../../config'
 
 type CommentsSectionProps = {
     commentClassName: string
@@ -21,7 +20,7 @@ export const CommentsSection = ({ commentClassName }: CommentsSectionProps) => {
 
   const handleDeleteComment = async(commentId: string) => {
     try {
-      await axios.delete(`${apiBaseUrl}/problems/${problemId}/comments/${commentId}`)
+      await axios.delete(`${config.apiBaseUrl}/problems/${problemId}/comments/${commentId}`)
       setComments((prevComments) => prevComments.filter((comment) => comment.comment_id !== commentId))
       toast.info(`Comment ${commentId} deleted successfully.`)
     } catch (error) {
@@ -32,7 +31,7 @@ export const CommentsSection = ({ commentClassName }: CommentsSectionProps) => {
   useEffect(() => {
     const fetchComments = async() => {
       try {
-        const response = await axios.get(`${apiBaseUrl}/problems/${problemId}/comments`)
+        const response = await axios.get(`${config.apiBaseUrl}/problems/${problemId}/comments`)
         const fetchedComments = response.data as Comment[]
         setComments(fetchedComments)
       } catch (error) {

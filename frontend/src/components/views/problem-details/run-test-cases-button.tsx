@@ -5,8 +5,7 @@ import { useCodeEnvironment, useUser } from '../../../providers'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { useEffect } from 'react'
-
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+import { config } from '../../../../config'
 
 export const RunTestCasesButton = () => {
   const {
@@ -29,7 +28,7 @@ export const RunTestCasesButton = () => {
     }
 
     try {
-      const response = await axios.post(`${apiBaseUrl}/submissions/custom`, {
+      const response = await axios.post(`${config.apiBaseUrl}/submissions/custom`, {
         language: currentLanguage,
         source_code: code,
         problem_id: problem.problemId,
@@ -65,7 +64,7 @@ export const RunTestCasesButton = () => {
           return
         }
 
-        const response = await axios.get(`${apiBaseUrl}/submissions/custom/${submissionId}`)
+        const response = await axios.get(`${config.apiBaseUrl}/submissions/custom/${submissionId}`)
 
         if (response.status === 200 && response.data) {
           const payload = response.data

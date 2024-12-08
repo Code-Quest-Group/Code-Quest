@@ -5,8 +5,7 @@ import { PublishedSubmission } from '../../../../types/problem/published-submiss
 import classes from './published-submissions.module.scss'
 import { Seperator } from '../../../utils'
 import { useNavigate } from 'react-router-dom'
-
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+import { config } from '../../../../../config'
 
 export const PublishedSubmissionsSection = () => {
   const { problem } = useCodeEnvironment()
@@ -18,7 +17,7 @@ export const PublishedSubmissionsSection = () => {
     const fetchPublishedSubmissions = async() => {
       try {
         const response = await axios.get(
-          `${apiBaseUrl}/problems/${problemId}/published-submissions`
+          `${config.apiBaseUrl}/problems/${problemId}/published-submissions`
         )
 
         const fetchedSubmissions = response.data as PublishedSubmission[]

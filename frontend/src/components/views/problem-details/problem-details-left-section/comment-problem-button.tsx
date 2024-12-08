@@ -6,8 +6,7 @@ import { Button } from '../../../utils'
 import { useCodeEnvironment, useUser } from '../../../../providers'
 import { toast } from 'react-toastify'
 import axios from 'axios'
-
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+import { config } from '../../../../../config'
 
 export const CommentButton = () => {
   const { username } = useUser()
@@ -31,7 +30,7 @@ export const CommentButton = () => {
 
     if (value !== null) {
       try {
-        await axios.post(`${apiBaseUrl}/problems/${problem.problemId}/comments`, {
+        await axios.post(`${config.apiBaseUrl}/problems/${problem.problemId}/comments`, {
           content: value,
         })
 
