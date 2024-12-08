@@ -219,7 +219,7 @@ public class SubmissionsService {
         if (result != null) {
             SubmissionStatus status =
                     SubmissionStatus.fromId(result.getJudge0Status().getId());
-            if (status == SubmissionStatus.PROCESSING) {
+            if (status == SubmissionStatus.PROCESSING || status == SubmissionStatus.IN_QUEUE) {
                 this.logger.info("Submission {} is still processing!", submission.getToken());
                 return;
             }
