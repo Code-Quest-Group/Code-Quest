@@ -7,7 +7,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import LoginIcon from '@mui/icons-material/Login'
 import LogoutIcon from '@mui/icons-material/Logout'
 import { IconButton } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { useLayout, useUser } from '../../../providers'
 import { Seperator } from '../seperator'
@@ -33,7 +33,7 @@ export const Navbar = () => {
     setIsAdmin(false)
     toast.info('Logged out')
 
-    navigate('/problems')
+    navigate('/')
     window.location.reload()
   }
 
@@ -50,14 +50,14 @@ export const Navbar = () => {
         <nav className={classes.navbar}>
           <section>
             <CodeQuestLogo />
-            <a
-              href="/problems"
+            <Link
+              to="/"
               className={classes.navbarLinks}
               tabIndex={tabIndex}
               aria-label='Problem List'
             >
               Problem List
-            </a>
+            </Link>
           </section>
           <section>
             {username === '' ? (
@@ -72,15 +72,15 @@ export const Navbar = () => {
               </button>
             ) : (
               <>
-                <a
+                <Link
                   className={classes.navbarLinks}
-                  href={`/account/${userId}`}
+                  to={`/account/${userId}`}
                   tabIndex={tabIndex}
                   aria-label='account'
                 >
                   <p>{username}</p>
                   <AccountCircleIcon fontSize="large"/>
-                </a>
+                </Link>
                 <Seperator hasMargins/>
                 <button
                   className={classes.navbarLinks}

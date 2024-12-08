@@ -71,20 +71,6 @@ function App() {
                   }
                 />
                 <Route
-                  path="/problems"
-                  element={
-                    <>
-                      <WebApplicationSchema />
-                      <Helmet>
-                        <link rel="preload" href="/fonts/Fredoka-Regular.ttf" as="font" type="font/ttf" />
-                        <link rel="preload" href="/fonts/Fredoka-Bold.ttf" as="font" type="font/ttf" />
-                        <meta name="description" content="Browse a list of problems on Code Quest" />
-                      </Helmet>
-                      <ProblemList />
-                    </>
-                  }
-                />
-                <Route
                   path="/problems/:problemId"
                   element={
                     <>
