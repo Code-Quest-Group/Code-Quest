@@ -1,3 +1,5 @@
+@use '@mixins' as breakpoints;
+
 @font-face {
   font-family: 'Fredoka';
   src: url('/fonts/Fredoka-Regular.ttf') format('truetype');
@@ -114,7 +116,6 @@ main {
   height: calc(100% - 8.5rem);
   padding: 0.75rem;
   padding-top: 0.25rem;
-  transition: transform 0.3s ease, height 0.3s ease;
 }
 
 a {

@@ -1,5 +1,16 @@
 @use '@mixins' as breakpoints;
 
+.safariInsanity {
+    @include breakpoints.for-tablets {
+        margin-top: 23rem;
+    }
+
+    @include breakpoints.for-phones {
+        margin-top: 33rem;
+    }
+
+}
+
 .problemDetailsContainer {
     display: flex;
     flex-direction: row;
@@ -73,6 +84,7 @@
             flex-direction: column;
             align-items: flex-start;
             height: calc(100% - 4rem);
+            min-height: 40rem;
 
             >div {
 

@@ -72,7 +72,6 @@
             list-style-type: none;
             padding: 0;
             margin: 0;
-            z-index: 10;
 
             >li {
                 height: 3rem;
@@ -89,7 +88,7 @@
                 }
 
                 @include breakpoints.for-phones {
-                    min-width: 37.75rem;
+                    min-width: 42.125rem;
                 }
 
                 >a {

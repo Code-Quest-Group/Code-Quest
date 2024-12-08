@@ -47,6 +47,12 @@ const AccountPage = () => {
   const [isOwnAccountPage, setIsOwnAccountPage] = useState(false)
   const [preferences, setPreferences] = useState<Preferences>()
   const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isSafari, setIsSafari] = useState<boolean>(false)
+
+  useEffect(() => {
+    const isUsingSafari = navigator.userAgent.toLowerCase().includes('safari')
+    setIsSafari(isUsingSafari)
+  }, [])
 
   useEffect(() => {
     const fetchUser = async() => {
@@ -111,7 +117,6 @@ const AccountPage = () => {
             <div className={classes.userCard}>
               <Avatar
                 alt={user.username}
-                src="path... maybe"
                 sx={{ width: 60, height: 60, fontSize: '2rem' }}
               />
               <header>{user.username}</header>
@@ -121,9 +126,11 @@ const AccountPage = () => {
               <ProblemChart userStatistics={userStatistics} />
             </div>
           </div>
-          <div className={classes.activityChart}>
-            <ActivityChart userStatistics={userStatistics} />
-          </div>
+          {!isSafari && (
+            <div className={classes.activityChart}>
+              <ActivityChart userStatistics={userStatistics} />
+            </div>
+          )}
         </section>
         <section className={classes.bottomSection}>
           <div className={classes.solvedProblems}>

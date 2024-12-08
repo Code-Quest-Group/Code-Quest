@@ -26,8 +26,14 @@ const ProblemDetails = ({ isPreview }: ProblemDetailsProps) => {
   const [problem, setProblem] = useState<Problem | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsloading] = useState<boolean>(false)
+  const [isSafari, setIsSafari] = useState<boolean>(false)
   const { userProblem } = useUser()
   const fullScreenHandle = useFullScreenHandle()
+
+  useEffect(() => {
+    const isUsingSafari = navigator.userAgent.toLowerCase().includes('safari')
+    setIsSafari(isUsingSafari)
+  }, [])
 
   useEffect(() => {
     setIsloading(true)
@@ -67,7 +73,7 @@ const ProblemDetails = ({ isPreview }: ProblemDetailsProps) => {
 
   return (
     <CodeEnvironmentProvider problem={problem} isPreview={isPreview}>
-      <main className={clsx(classes.problemDetailsContainer)}>
+      <main className={clsx(classes.problemDetailsContainer, {[classes.safariInsanity]: isSafari})}>
         <LeftSection classes={classes} problem={problem}/>
         <Seperator />
         <div className={classes.rightSection}>
