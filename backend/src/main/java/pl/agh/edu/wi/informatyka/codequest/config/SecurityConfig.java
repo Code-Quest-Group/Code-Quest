@@ -47,13 +47,19 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/judge0/webhook")
                         .permitAll()
                         .requestMatchers(
-                                "/auth/**", "/error", "/swagger-ui/**", "/v3/api-docs*/**", "/api", "/favicon.ico")
+                                "/auth/**",
+                                "/error",
+                                "/swagger-ui/**",
+                                "/v3/api-docs*/**",
+                                "/api",
+                                "/favicon.ico",
+                                "/user")
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/problems/**")
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/problems")
                         .permitAll()
-                        .requestMatchers(HttpMethod.GET, "/user")
+                        .requestMatchers(HttpMethod.GET, "/user/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated())
