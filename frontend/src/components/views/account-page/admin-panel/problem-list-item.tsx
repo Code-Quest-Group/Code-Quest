@@ -5,11 +5,10 @@ import { Block, EditNote } from '@mui/icons-material'
 import { Problem } from '../../../../types'
 
 type ProblemListItemProps = {
-    key: number,
     problem: Problem
 }
 
-export const ProblemListItem = ({ key, problem }: ProblemListItemProps) => {
+export const ProblemListItem = ({ problem }: ProblemListItemProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -23,7 +22,6 @@ export const ProblemListItem = ({ key, problem }: ProblemListItemProps) => {
   return (
     <>
       <ListItem
-        key={key}
         component="button"
         onClick={handleClick}
       >

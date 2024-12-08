@@ -50,7 +50,10 @@ const AccountPage = () => {
   const [isSafari, setIsSafari] = useState<boolean>(false)
 
   useEffect(() => {
-    const isUsingSafari = navigator.userAgent.toLowerCase().includes('safari')
+    const isUsingSafari =
+      navigator.userAgent.toLowerCase().includes('safari')
+      && !navigator.userAgent.toLowerCase().includes('chrome')
+
     setIsSafari(isUsingSafari)
   }, [])
 

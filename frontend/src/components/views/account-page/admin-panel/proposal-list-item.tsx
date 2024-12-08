@@ -5,11 +5,10 @@ import { Button, Seperator } from '../../../utils'
 import { Block, CheckBox } from '@mui/icons-material'
 
 type ProposalListItemProps = {
-    key: number,
     problemProposal: Proposal
 }
 
-export const ProposalListItem = ({ key, problemProposal }: ProposalListItemProps) => {
+export const ProposalListItem = ({ problemProposal }: ProposalListItemProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -23,7 +22,6 @@ export const ProposalListItem = ({ key, problemProposal }: ProposalListItemProps
   return (
     <>
       <ListItem
-        key={key}
         component="button"
         onClick={handleClick}
       >

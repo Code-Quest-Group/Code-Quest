@@ -10,11 +10,10 @@ export type BasicUserData = {
 }
 
 type UserListItemProps = {
-    key: number,
     user: BasicUserData
 }
 
-export const UserListItem = ({ key, user }: UserListItemProps) => {
+export const UserListItem = ({ user }: UserListItemProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const navigate = useNavigate()
 
@@ -29,7 +28,6 @@ export const UserListItem = ({ key, user }: UserListItemProps) => {
   return (
     <>
       <ListItem
-        key={key}
         component="button"
         onClick={handleClick}
       >

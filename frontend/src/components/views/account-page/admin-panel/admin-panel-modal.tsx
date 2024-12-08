@@ -1,7 +1,7 @@
 import { Box, List, Modal } from '@mui/material'
 import classes from './admin-panel-modal.module.scss'
 import { Seperator } from '../../../utils'
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { ProblemService, UserService } from '../../../../services/problem-service'
 import { Problem } from '../../../../types'
 import { Proposal } from '../../../../types/problem/proposal.type'
@@ -71,7 +71,9 @@ const AdminPanel = ({ open, onClose }: FeedbackModalProps) => {
             <Seperator isHorizontal />
             <List>
               {tmpProblemProposals.map((problem, index) => (
-                <ProposalListItem problemProposal={problem} key={index}/>
+                <Fragment key={index}>
+                  <ProposalListItem problemProposal={problem} />
+                </Fragment>
               ))}
             </List>
           </section>
@@ -80,7 +82,9 @@ const AdminPanel = ({ open, onClose }: FeedbackModalProps) => {
             <Seperator isHorizontal />
             <List>
               {problems.map((problem, index) => (
-                <ProblemListItem problem={problem} key={index}/>
+                <Fragment key={index}>
+                  <ProblemListItem problem={problem}/>
+                </Fragment>
               ))}
             </List>
           </section>
@@ -89,7 +93,9 @@ const AdminPanel = ({ open, onClose }: FeedbackModalProps) => {
             <Seperator isHorizontal />
             <List>
               {allUsers.map((user, index) => (
-                <UserListItem user={user} key={index}/>
+                <Fragment key={index}>
+                  <UserListItem user={user} />
+                </Fragment>
               ))}
             </List>
           </section>
