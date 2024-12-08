@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import clsx from 'clsx'
 import classes from './problem-creator.module.scss'
-import { useLayout, useUser } from '../../../providers'
+import { useUser } from '../../../providers'
 import { FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
 import { FormEvent, useState } from 'react'
 import { Button, Seperator } from '../../utils'
@@ -14,7 +14,6 @@ import { toast } from 'react-toastify'
 import { v4 as uuidv4 } from 'uuid'
 
 const ProblemCreator = () => {
-  const { showNavbar } = useLayout()
   const { setUserProblem, isAdmin } = useUser()
 
   const [title, setTitle] = useState('')
@@ -126,7 +125,7 @@ const ProblemCreator = () => {
   }
 
   return (
-    <main className={clsx({ 'full-height': !showNavbar })}>
+    <main>
       <div className={classes.problemCreatorContainer}>
         <div className={classes.creatorFormContainer}>
           <h1>Problem Creator</h1>

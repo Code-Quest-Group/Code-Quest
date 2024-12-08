@@ -18,6 +18,7 @@ const getProblems = async() => {
       exampleTestCases: item.example_test_cases,
       hints: item.hints,
       tags: item.tags,
+      rating: item.rating,
     }))
 
     return problems
@@ -43,7 +44,8 @@ const getProblem = async(problemId: string) => {
       exampleTestCases: raw.example_testcases,
       exampleExpectedResults: raw.example_expected_result,
       tags: raw.tags,
-      constraints: '', // TODO
+      constraints: raw.constraints,
+      rating: raw.rating,
     }
 
     return problem

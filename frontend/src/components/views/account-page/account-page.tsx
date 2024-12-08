@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import clsx from 'clsx'
 import classes from './account-page.module.scss'
-import { useLayout, useUser } from '../../../providers'
+import { useUser } from '../../../providers'
 import { Avatar, List, ListItem, ListItemText } from '@mui/material'
 import { Button, Seperator } from '../../utils'
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings'
@@ -12,6 +12,7 @@ import { UserService } from '../../../services/user-service'
 import { ProfileUserData, UserStatistics } from '../../../types'
 import { ProblemChart } from './problem-chart'
 import { ActivityChart } from './activity-chart'
+import { LoadingPage } from '../loading-page/loading-page'
 
 const AdminPanel = lazy(() => import('./admin-panel/admin-panel-modal'))
 const SettingsButton = lazy(() => import('./settings-button'))
@@ -39,16 +40,18 @@ type Preferences = {
 const AccountPage = () => {
   const { userId } = useParams<{ userId: string }>()
   const { userId: currentUserId, isAdmin } = useUser()
-  const { showNavbar } = useLayout()
   const navigate = useNavigate()
   const [user, setUser] = useState<ProfileUserData>()
   const [userStatistics, setUserStatistics] = useState<UserStatistics>()
   const [openAdminPanel, setOpenAdminPanel] = useState(false)
   const [isOwnAccountPage, setIsOwnAccountPage] = useState(false)
   const [preferences, setPreferences] = useState<Preferences>()
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
     const fetchUser = async() => {
+      setIsLoading(true)
+
       try {
         const userData = await UserService.getUserData(userId!)
         const userStatisticsData = await UserService.getUserStatistics(userId!)
@@ -61,13 +64,15 @@ const AccountPage = () => {
             language: userData.preferences.language,
             timezone: userData.preferences.timezone,
             darkMode: userData.preferences.darkMode,
-            isProfilePublic: userData.preferences.isProfilePublic
+            isProfilePublic: userData.preferences.isProfilePublic,
           }
 
           setPreferences(newPreferences)
         }
-      } catch(err) {
+      } catch (err) {
         console.log(err)
+      } finally {
+        setIsLoading(false)
       }
     }
 
@@ -75,7 +80,21 @@ const AccountPage = () => {
     fetchUser()
   }, [userId])
 
-  if (!user) return <div className='container'>No user found</div>
+  if (isLoading) {
+    return (
+      <div className='container scrollable'>
+        <LoadingPage />
+      </div>
+    )
+  }
+
+  if (!user) {
+    return (
+      <div className="container">
+        <h1>No user found</h1>
+      </div>
+    )
+  }
 
   const handleOpenAdminModal = () => setOpenAdminPanel(true)
   const handleCloseAdminModal = () => setOpenAdminPanel(false)
@@ -85,7 +104,7 @@ const AccountPage = () => {
   ) || []
 
   return (
-    <main className={clsx({'full-height': !showNavbar})}>
+    <main className={classes.mainContainer}>
       <div className={classes.accountPageContainer}>
         <section className={classes.topSection}>
           <div className={classes.topGrouping}>

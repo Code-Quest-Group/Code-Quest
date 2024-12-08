@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useLayout, useUser } from '../../../providers'
+import { useUser } from '../../../providers'
 import { ProblemService, UserService } from '../../../services/problem-service'
 import { Problem } from '../../../types'
 import classes from './problem-list.module.scss'
@@ -14,8 +14,9 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import { TagsList } from '../../utils/tags-list/tags-list'
 import { FiltersButton } from './filters-button'
 import { Tags } from '../../../types/problem/tags.type'
+import { toast } from 'react-toastify'
 
-const MAXIMUM_PROBLEMS: number = 14
+const MAXIMUM_PROBLEMS: number = 12
 
 type UserProblemData = {
   [problemId: string]: string
@@ -28,7 +29,6 @@ const ProblemList = () => {
   const [userProblems, setUserProblems] = useState<UserProblemData>({})
   const [searchTerm, setSearchTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
-  const { showNavbar } = useLayout()
   const navigate = useNavigate()
   const { userId, token } = useUser()
 
@@ -90,6 +90,20 @@ const ProblemList = () => {
     navigate(`/problems/${randomProblem.problemId}`)
   }
 
+  const pickRecommendedProblem = () => {
+    const filteredProblems = problems.filter(
+      (problem) => !(userProblems && userProblems[problem.problemId] === 'succeeded')
+    )
+
+    const sortedProblems = filteredProblems.sort((a, b) => (a.rating ?? 0) - (b.rating ?? 0))
+    if (sortedProblems.length > 0) {
+      navigate(`/problems/${sortedProblems[0].problemId}`)
+      return
+    }
+
+    toast.info('There are no more problems to be recommended for You, Well done!')
+  }
+
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
   }
@@ -118,11 +132,12 @@ const ProblemList = () => {
   }
 
   return (
-    <main className={clsx({'full-height': !showNavbar})}>
+    <main>
       <div className={classes.mainContent}>
         <section className={classes.topSection}>
           <div className={clsx('container', classes.uiContainer)}>
             <Button
+              onClick={pickRecommendedProblem}
               icon={<RecommendIcon />}
               popup={'Click to open recommended problem'}
               aria-label='Recommended Problem'

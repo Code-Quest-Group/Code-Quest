@@ -3,7 +3,7 @@ import { IconButton, Typography } from '@mui/material'
 import clsx from 'clsx'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { CodeEnvironmentProvider, useLayout, useUser } from '../../../providers'
+import { CodeEnvironmentProvider, useUser } from '../../../providers'
 import { ProblemService } from '../../../services/problem-service'
 import { Problem } from '../../../types'
 import { FallbackComponent, Seperator } from '../../utils'
@@ -15,6 +15,7 @@ import { LeftSection } from './problem-details-left-section/problem-details-left
 import { FullScreen, useFullScreenHandle } from 'react-full-screen'
 import { LanguageDropdown } from './language-selector'
 import { ErrorBoundary } from 'react-error-boundary'
+import { LoadingPage } from '../loading-page/loading-page'
 
 type ProblemDetailsProps = {
   isPreview?: boolean
@@ -24,11 +25,12 @@ const ProblemDetails = ({ isPreview }: ProblemDetailsProps) => {
   const { problemId } = useParams<{ problemId: string }>()
   const [problem, setProblem] = useState<Problem | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsloading] = useState<boolean>(false)
   const { userProblem } = useUser()
-  const { showNavbar } = useLayout()
   const fullScreenHandle = useFullScreenHandle()
 
   useEffect(() => {
+    setIsloading(true)
     if (!isPreview) {
       const fetchProblem = async() => {
         setError(null)
@@ -41,14 +43,15 @@ const ProblemDetails = ({ isPreview }: ProblemDetailsProps) => {
       }
 
       fetchProblem()
+      setIsloading(false)
     } else {
       setProblem(userProblem as Problem)
     }
   }, [problemId])
 
-  if (error && !problem && !isPreview) {
+  if (error && !problem && !isPreview && !isLoading) {
     return (
-      <div className='container'>
+      <div className='container scrollable'>
         <h1>No problem with given name found</h1>
       </div>
     )
@@ -56,15 +59,15 @@ const ProblemDetails = ({ isPreview }: ProblemDetailsProps) => {
 
   if (!problem) {
     return (
-      <div className='container'>
-        <h1>You have no problem preview available</h1>
+      <div className={clsx(classes.problemDetailsContainer)}>
+        <LoadingPage />
       </div>
     )
   }
 
   return (
     <CodeEnvironmentProvider problem={problem} isPreview={isPreview}>
-      <main className={clsx(classes.problemDetailsContainer, {'full-height': !showNavbar})}>
+      <main className={clsx(classes.problemDetailsContainer)}>
         <LeftSection classes={classes} problem={problem}/>
         <Seperator />
         <div className={classes.rightSection}>

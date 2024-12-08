@@ -55,7 +55,7 @@ export const CodeEditor = ({ className, isFullscreen }: CodeEditorProps) => {
       <Seperator isHorizontal />
       <Box
         sx={{
-          height: 'max(50vh, 30rem)',
+          height: 'max(50vh, 28rem)',
           width: '100%',
           display: 'flex',
           alignItems: 'center',

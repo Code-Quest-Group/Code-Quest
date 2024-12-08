@@ -24,13 +24,17 @@ export const ProblemDetailsDescription = ({ classes }: ProblemDetailsDescription
       <div className={classes.whiteBackgroundDescription}>
         <p>{problem.description}</p>
       </div>
-      <header>Example</header>
-      <div className={classes.whiteBackgroundDescription}>
-        <p>{example}</p>
+      <div>
+        <header>Example</header>
+        <div className={classes.whiteBackgroundDescription}>
+          <p>{example}</p>
+        </div>
       </div>
-      <header>Constraints</header>
-      <div className={classes.whiteBackgroundDescription}>
-        <p>{problem.constraints || 'Please add constraints'}</p>
+      <div>
+        <header>Constraints</header>
+        <div className={classes.whiteBackgroundDescription}>
+          <p>{problem.constraints || 'Please add constraints'}</p>
+        </div>
       </div>
 
       <RateButtonGroup className={classes.buttonGroup} />
