@@ -2,7 +2,8 @@
 
 @font-face {
   font-family: 'Fredoka';
-  src: url('/fonts/Fredoka-Regular.ttf') format('truetype');
+  src: url('/fonts/Fredoka-Regular.woff2') format('woff2'),
+    url('/fonts/Fredoka-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -10,7 +11,8 @@
 
 @font-face {
   font-family: 'Fredoka';
-  src: url('/fonts/Fredoka-Bold.ttf') format('truetype');
+  src: url('/fonts/Fredoka-Bold.woff2') format('woff2'),
+    url('/fonts/Fredoka-Bold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
   font-display: swap;

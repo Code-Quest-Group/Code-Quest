@@ -60,8 +60,6 @@ function App() {
                   <>
                     <WebApplicationSchema />
                     <Helmet>
-                      <link rel="preload" href="/fonts/Fredoka-Regular.ttf" as="font" type="font/ttf" />
-                      <link rel="preload" href="/fonts/Fredoka-Bold.ttf" as="font" type="font/ttf" />
                       <meta name="description" content="Browse a list of problems on Code Quest" />
                     </Helmet>
                     <ProblemList />
@@ -74,8 +72,6 @@ function App() {
                   <>
                     <WebApplicationSchema />
                     <Helmet>
-                      <link rel="preload" href="/fonts/Fredoka-Regular.ttf" as="font" type="font/ttf" />
-                      <link rel="preload" href="/fonts/Fredoka-Bold.ttf" as="font" type="font/ttf" />
                       <meta name="description" content="Detailed view of a specific problem on Code Quest" />
                     </Helmet>
                     <ProblemDetails />
@@ -88,8 +84,6 @@ function App() {
                   <>
                     <WebApplicationSchema />
                     <Helmet>
-                      <link rel="preload" href="/fonts/Fredoka-Regular.ttf" as="font" type="font/ttf" />
-                      <link rel="preload" href="/fonts/Fredoka-Bold.ttf" as="font" type="font/ttf" />
                       <meta name="description" content="Users account page" />
                     </Helmet>
                     <AccountPage />
@@ -102,8 +96,6 @@ function App() {
                   <>
                     <WebApplicationSchema />
                     <Helmet>
-                      <link rel="preload" href="/fonts/Fredoka-Regular.ttf" as="font" type="font/ttf" />
-                      <link rel="preload" href="/fonts/Fredoka-Bold.ttf" as="font" type="font/ttf" />
                       <meta name="description" content="Create your own problem" />
                     </Helmet>
                     <ProblemCreator />
@@ -116,8 +108,6 @@ function App() {
                   <>
                     <WebApplicationSchema />
                     <Helmet>
-                      <link rel="preload" href="/fonts/Fredoka-Regular.ttf" as="font" type="font/ttf" />
-                      <link rel="preload" href="/fonts/Fredoka-Bold.ttf" as="font" type="font/ttf" />
                       <meta name="description" content="Preview your problem" />
                     </Helmet>
                     <ProblemDetails isPreview />
@@ -130,8 +120,6 @@ function App() {
                   <>
                     <WebApplicationSchema />
                     <Helmet>
-                      <link rel="preload" href="/fonts/Fredoka-Regular.ttf" as="font" type="font/ttf" />
-                      <link rel="preload" href="/fonts/Fredoka-Bold.ttf" as="font" type="font/ttf" />
                       <meta name="description" content="Page not found" />
                     </Helmet>
                     <NotFoundPage />
