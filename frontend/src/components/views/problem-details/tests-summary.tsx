@@ -3,9 +3,10 @@
 import CancelIcon from '@mui/icons-material/Cancel'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import { Button, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { useCodeEnvironment } from '../../../providers'
 import { parseRawResults } from './problem-details.utils'
+import clsx from 'clsx'
 
 type TestsSummaryProps = {
     className: string
@@ -17,6 +18,7 @@ export const TestsSummary = ({ className }: TestsSummaryProps) => {
     currentTestIndex,
     setCurrentTestIndex,
     receivedOutput,
+    userStdout,
     testCases,
     inputFormat,
     expectedResults
@@ -68,10 +70,10 @@ export const TestsSummary = ({ className }: TestsSummaryProps) => {
           </li>
         ))}
       </ul>
-      <div className="inside-shadow">
-        <header>Test Case {currentTestIndex} Results:</header>
-        <p>Input: {String(formattedTests[currentTestIndex - 1]).replace(/,/g, ', ')}</p>
-        <p>
+      <div className={clsx('inside-shadow')}>
+        <header tabIndex={0}>Test Case {currentTestIndex} Results:</header>
+        <p tabIndex={0}>Input: {String(formattedTests[currentTestIndex - 1]).replace(/,/g, ', ')}</p>
+        <p tabIndex={0}>
           Expected:{' '}
           {
             problem.exampleExpectedResults[currentTestIndex - 1] ||
@@ -79,7 +81,19 @@ export const TestsSummary = ({ className }: TestsSummaryProps) => {
             'Not calculated yet'
           }
         </p>
-        <p>Output: {String(receivedOutput[currentTestIndex - 1]).replace(/,/g, ', ') || 'None'}</p>
+        <p tabIndex={0}>Output: {String(receivedOutput[currentTestIndex - 1]).replace(/,/g, ', ') || 'None'}</p>
+        <p tabIndex={0}>
+          Stdout:
+          <br />
+          {userStdout[currentTestIndex - 1]
+            ? userStdout[currentTestIndex - 1].split('\n').map((line, index) => (
+              <Fragment key={index}>
+                {line}
+                <br />
+              </Fragment>
+            ))
+            : 'None'}
+        </p>
       </div>
     </div>
   )

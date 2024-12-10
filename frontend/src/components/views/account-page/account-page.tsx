@@ -13,6 +13,7 @@ import { ProfileUserData, UserStatistics } from '../../../types'
 import { ProblemChart } from './problem-chart'
 import { ActivityChart } from './activity-chart'
 import { LoadingPage } from '../loading-page/loading-page'
+import { format } from 'date-fns-tz'
 
 const AdminPanel = lazy(() => import('./admin-panel/admin-panel-modal'))
 const SettingsButton = lazy(() => import('./settings-button'))
@@ -30,11 +31,35 @@ const tmpSubmissions = [
   { name: 'Someones proposal 10', status: 'Approved' },
 ]
 
+const adjustToTimezone = (dateString: string, timezone: string) => {
+  const offsetMatch = timezone.match(/UTC([+-]\d{2}):(\d{2})/)
+  let offsetMinutes = 0
+
+  if (offsetMatch) {
+    const hours = parseInt(offsetMatch[1], 10)
+    const minutes = parseInt(offsetMatch[2], 10)
+    offsetMinutes = hours * 60 + Math.sign(hours) * minutes
+  }
+
+  const date = new Date(dateString)
+  return new Date(date.getTime() + offsetMinutes * 60 * 1000)
+}
+
 type Preferences = {
   language: string,
   timezone: string,
   darkMode: boolean,
   isProfilePublic: boolean
+}
+
+type CompletedProblem = {
+  user_id: string
+  problem_id: string
+  problem_name: string
+  user_problem_status: string
+  submission_count: number
+  last_submission_time: string
+  adjustedDate: Date
 }
 
 const AccountPage = () => {
@@ -46,6 +71,7 @@ const AccountPage = () => {
   const [openAdminPanel, setOpenAdminPanel] = useState(false)
   const [isOwnAccountPage, setIsOwnAccountPage] = useState(false)
   const [preferences, setPreferences] = useState<Preferences>()
+  const [completedProblems, setCompletedProblems] = useState<CompletedProblem[]>()
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [isSafari, setIsSafari] = useState<boolean>(false)
 
@@ -89,6 +115,20 @@ const AccountPage = () => {
     fetchUser()
   }, [userId])
 
+  useEffect(() => {
+    if (!userStatistics || !preferences) return
+
+    const updatedProblems: CompletedProblem[] = userStatistics.user_problem_attempts
+      .filter(attempt => attempt.user_problem_status === 'SUCCEEDED')
+      .sort((a, b) => new Date(b.last_submission_time).getTime() - new Date(a.last_submission_time).getTime())
+      .map(problem => ({
+        ...problem,
+        adjustedDate: adjustToTimezone(problem.last_submission_time, preferences.timezone),
+      }))
+
+    setCompletedProblems(updatedProblems)
+  }, [preferences, userStatistics])
+
   if (isLoading) {
     return (
       <div className='container scrollable'>
@@ -108,10 +148,6 @@ const AccountPage = () => {
   const handleOpenAdminModal = () => setOpenAdminPanel(true)
   const handleCloseAdminModal = () => setOpenAdminPanel(false)
 
-  const completedProblems = userStatistics?.user_problem_attempts.filter(
-    attempt => attempt.user_problem_status === 'SUCCEEDED'
-  ) || []
-
   return (
     <main className={classes.mainContainer}>
       <div className={classes.accountPageContainer}>
@@ -123,7 +159,11 @@ const AccountPage = () => {
                 sx={{ width: 60, height: 60, fontSize: '2rem' }}
               />
               <header>{user.username}</header>
-              <SettingsButton hideButton={!isOwnAccountPage} preferences={preferences}/>
+              <SettingsButton
+                hideButton={!isOwnAccountPage}
+                preferences={preferences}
+                onClose={(value: Preferences) => setPreferences(value)}
+              />
             </div>
             <div className={classes.problemTypeChart}>
               <ProblemChart userStatistics={userStatistics} />
@@ -139,16 +179,24 @@ const AccountPage = () => {
           <div className={classes.solvedProblems}>
             <header>Completed problems</header>
             <List>
-              {completedProblems.length ? (
-                completedProblems.map((problem, index) => (
-                  <li key={index}>
-                    <ListItem component='button' onClick={() => navigate(`/problems/${problem.problem_id}`)}>
-                      <ListItemText primary={problem.problem_name} />
-                    </ListItem>
-                  </li>
-                ))
+              {completedProblems && completedProblems.length ? (
+                completedProblems.map((problem, index) => {
+                  const formattedDate = format(problem.adjustedDate, 'yyyy-MM-dd HH:mm:ss')
+                  return (
+                    <li key={index}>
+                      <ListItem component="button" onClick={() => navigate(`/problems/${problem.problem_id}`)}>
+                        <ListItemText
+                          primary={problem.problem_name}
+                          secondary={`(Completed at ${formattedDate})`}
+                        />
+                      </ListItem>
+                    </li>
+                  )
+                })
               ) : (
-                <li className='container' key={'no-problems'}> This user has no problems solved</li>
+                <li className="container" key={'no-problems'}>
+          This user has no problems solved
+                </li>
               )}
             </List>
           </div>

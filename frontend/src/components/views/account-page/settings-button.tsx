@@ -1,4 +1,15 @@
-import { Box, CircularProgress, Button as MuiButton, Popover, Switch, Typography } from '@mui/material'
+/* eslint-disable no-unused-vars */
+import {
+  Box,
+  CircularProgress,
+  MenuItem,
+  Button as MuiButton,
+  Popover,
+  Select,
+  SelectChangeEvent,
+  Switch,
+  Typography
+} from '@mui/material'
 import { ChangeEvent, useState } from 'react'
 import { UserService } from '../../../services/user-service'
 import { useUser } from '../../../providers'
@@ -8,21 +19,23 @@ import { Button } from '../../utils'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 
 type Preferences = {
-  language: string,
-  timezone: string,
-  darkMode: boolean,
+  language: string
+  timezone: string
+  darkMode: boolean
   isProfilePublic: boolean
 }
 
 type SettingsButtonProps = {
   hideButton?: boolean
   preferences?: Preferences
+  onClose: (value: Preferences) => void
 }
 
-const SettingsButton = ({ hideButton, preferences }: SettingsButtonProps) => {
+const SettingsButton = ({ hideButton, preferences, onClose }: SettingsButtonProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [isProfilePublic, setIsProfilePublic] = useState(preferences?.isProfilePublic ?? false)
   const [isDarkMode, setIsDarkMode] = useState(preferences?.darkMode ?? false)
+  const [timezone, setTimezone] = useState(preferences?.timezone ?? 'UTC')
   const [isLoading, setIsLoading] = useState(false)
   const { userId, setDarkMode } = useUser()
 
@@ -34,17 +47,29 @@ const SettingsButton = ({ hideButton, preferences }: SettingsButtonProps) => {
     setAnchorEl(null)
   }
 
+  const handleTimezoneChange = (event: SelectChangeEvent<string>) => {
+    setTimezone(event.target.value)
+  }
+
   const confirmChange = async() => {
     setIsLoading(true)
     try {
-      await UserService.setUserPreferences(userId, {
+      const newPreferences = {
         language: 'en',
-        timezone: 'UTC',
+        timezone,
         dark_mode: isDarkMode,
         is_profile_public: isProfilePublic,
-      })
+      }
+
+      await UserService.setUserPreferences(userId, newPreferences)
 
       setDarkMode(isDarkMode)
+      onClose({
+        language: 'en',
+        timezone,
+        darkMode: isDarkMode,
+        isProfilePublic,
+      })
       handleClose()
       toast.success('Updated preferences!')
     } catch (error) {
@@ -57,7 +82,7 @@ const SettingsButton = ({ hideButton, preferences }: SettingsButtonProps) => {
   return (
     <>
       <MuiButton
-        className={clsx({['hidden']: hideButton})}
+        className={clsx({ ['hidden']: hideButton })}
         aria-describedby='open-settings-button'
         onClick={handleClick}
       >
@@ -88,7 +113,7 @@ const SettingsButton = ({ hideButton, preferences }: SettingsButtonProps) => {
           gap: 1,
           width: 200,
         }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%'}}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
             <Typography>Public profile</Typography>
             <Switch
               checked={isProfilePublic}
@@ -112,11 +137,37 @@ const SettingsButton = ({ hideButton, preferences }: SettingsButtonProps) => {
               }
             />
           </Box>
+          <Box sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+            marginBottom: '1rem',
+          }}>
+            <Typography>Time Zone</Typography>
+            <Select
+              value={timezone}
+              onChange={handleTimezoneChange}
+              fullWidth
+              sx={{ fontSize: '1rem' }}
+            >
+              {['UTC-12:00', 'UTC-11:00', 'UTC-10:00', 'UTC-09:00', 'UTC-08:00',
+                'UTC-07:00', 'UTC-06:00', 'UTC-05:00', 'UTC-04:00', 'UTC-03:00',
+                'UTC-02:00', 'UTC-01:00', 'UTC+00:00', 'UTC+01:00', 'UTC+02:00',
+                'UTC+03:00', 'UTC+04:00', 'UTC+05:00', 'UTC+06:00', 'UTC+07:00',
+                'UTC+08:00', 'UTC+09:00', 'UTC+10:00', 'UTC+11:00', 'UTC+12:00']
+                .map(zone => (
+                  <MenuItem key={zone} value={zone} sx={{ fontSize: '1rem' }}>
+                    {zone}
+                  </MenuItem>
+                ))
+              }
+            </Select>
+          </Box>
           <Button
             onClick={confirmChange}
             disabled={isLoading}
             icon={isLoading ?
-              <CircularProgress size={20} style={{color: 'white'}}/>
+              <CircularProgress size={20} style={{ color: 'white' }} />
               : <CheckCircleIcon />
             }
           >

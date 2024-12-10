@@ -17,6 +17,7 @@ export const RunTestCasesButton = () => {
     submissionId,
     setExpectedResults,
     setReceivedOutput,
+    setUserStdout,
     isPreview
   } = useCodeEnvironment()
   const { username } = useUser()
@@ -75,17 +76,18 @@ export const RunTestCasesButton = () => {
             toast.warning(`Passed test cases ${payload.correct_testcases} / ${payload.total_testcases}`)
           } else if (!['PROCESSING', 'IN_QUEUE'].includes(payload.status)) {
             if (['RUNTIME_ERROR_NZEC', 'INTERNAL_ERROR'].includes(payload.status)) {
-              toast.error(`Unexpected error! ${payload.stderr ?? payload.error_message}`, { autoClose: false })
+              toast.error(`Unexpected error! ${payload.stderr ?? payload.error_message}`, { autoClose: 30000 })
               clearInterval(pollInterval)
               setSubmissionId('')
               return
             }
-            toast.error(`Error! ${payload.status}`, { autoClose: false })
+            toast.error(`Error! ${payload.status}`, { autoClose: 30000 })
           }
 
           if (!['PROCESSING', 'IN_QUEUE'].includes(payload.status)) {
             setExpectedResults(payload.expected_answer)
             setReceivedOutput(payload.user_answer)
+            setUserStdout(payload.user_output)
             clearInterval(pollInterval)
             setSubmissionId('')
           }

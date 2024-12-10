@@ -20,6 +20,7 @@ type CodeEnvironmentContextType = {
   inputFormat: string
   isPreview: boolean;
   expectedResults: (string | number)[]
+  userStdout: (string)[]
   setCurrentProblem: (problem: Problem) => void
   setCurrentLanguage: (language: string) => void
   setCode: (code: string) => void
@@ -28,6 +29,7 @@ type CodeEnvironmentContextType = {
   setSubmissionId: (id: string) => void
   setReceivedOutput: (output: (string | number)[]) => void
   setExpectedResults: (results: (string | number)[]) => void
+  setUserStdout: (userStdout: (string)[]) => void
   fetchSavedCode: () => string | null
   resetCodeToTemplate: () => void
 }
@@ -42,6 +44,7 @@ const CodeEnvironmentContext = createContext<CodeEnvironmentContextType>({
   receivedOutput: [],
   inputFormat: '',
   expectedResults: [],
+  userStdout: [],
   isPreview: false,
   setCurrentProblem: () => {},
   setCurrentLanguage: () => {},
@@ -51,6 +54,7 @@ const CodeEnvironmentContext = createContext<CodeEnvironmentContextType>({
   setSubmissionId: () => {},
   setReceivedOutput: () => {},
   setExpectedResults: () => {},
+  setUserStdout: () => {},
   fetchSavedCode: () => null,
   resetCodeToTemplate: () => {},
 })
@@ -71,6 +75,7 @@ export const CodeEnvironmentProvider = ({ children, problem, isPreview = false }
   const [submissionId, setSubmissionId] = useState('')
   const [receivedOutput, setReceivedOutput] = useState<(string | number)[]>([])
   const [expectedResults, setExpectedResults] = useState<(string | number)[]>([])
+  const [userStdout, setUserStdout] = useState<(string)[]>([])
   const [inputFormat, _] = useState(problem.inputFormat)
 
   useEffect(() => {
@@ -107,6 +112,7 @@ export const CodeEnvironmentProvider = ({ children, problem, isPreview = false }
         inputFormat,
         isPreview,
         expectedResults,
+        userStdout,
         setCurrentProblem,
         setCurrentLanguage,
         setCode,
@@ -115,6 +121,7 @@ export const CodeEnvironmentProvider = ({ children, problem, isPreview = false }
         setSubmissionId,
         setReceivedOutput,
         setExpectedResults,
+        setUserStdout,
         fetchSavedCode,
         resetCodeToTemplate,
       }}

@@ -114,13 +114,13 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
             setOpenModal(true)
           } else if (payload.status === 'WRONG_ANSWER') {
             toast.warning(`Passed test cases ${payload.correct_testcases} / ${payload.total_testcases}`)
-            toast.error(`Wrong asnwer! Failed at ${payload.error_message}`, { autoClose: false })
+            toast.error(`Wrong asnwer! Failed at ${payload.error_message}`, { autoClose: 30000 })
           } else if (payload.status === 'TIME_LIMIT_EXCEEDED') {
-            toast.error(`Runtime error! Single test case took ${payload.time} seconds!`, { autoClose: false })
+            toast.error(`Runtime error! Single test case took ${payload.time} seconds!`, { autoClose: 30000 })
           } else if (payload.status === 'RUNTIME_ERROR_NZEC') {
-            toast.error(`Unexpected error! ${payload.stderr}`, { autoClose: false })
+            toast.error(`Unexpected error! ${payload.stderr}`, { autoClose: 30000 })
           } else if (!['PROCESSING', 'IN_QUEUE'].includes(payload.status)) {
-            toast.error(`Unexpected error! ${payload.error_message}`, { autoClose: false })
+            toast.error(`Unexpected error! ${payload.error_message}`, { autoClose: 30000 })
           }
 
           if (!['PROCESSING', 'IN_QUEUE'].includes(payload.status)) {
