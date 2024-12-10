@@ -120,7 +120,7 @@ function App() {
                       <link rel="preload" href="/fonts/Fredoka-Bold.ttf" as="font" type="font/ttf" />
                       <meta name="description" content="Preview your problem" />
                     </Helmet>
-                    <ProblemDetails isPreview/>
+                    <ProblemDetails isPreview />
                   </>
                 }
               />

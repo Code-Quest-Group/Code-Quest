@@ -51,7 +51,7 @@ const SettingsButton = ({ hideButton, preferences, onClose }: SettingsButtonProp
     setTimezone(event.target.value)
   }
 
-  const confirmChange = async() => {
+  const confirmChange = async () => {
     setIsLoading(true)
     try {
       const newPreferences = {
@@ -116,6 +116,7 @@ const SettingsButton = ({ hideButton, preferences, onClose }: SettingsButtonProp
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
             <Typography>Public profile</Typography>
             <Switch
+              inputProps={{ 'aria-label': 'Public Profile Setting' }}
               checked={isProfilePublic}
               onChange={(event: ChangeEvent<HTMLInputElement>) =>
                 setIsProfilePublic(event.target.checked)
@@ -131,6 +132,7 @@ const SettingsButton = ({ hideButton, preferences, onClose }: SettingsButtonProp
           }}>
             <Typography>Dark Mode</Typography>
             <Switch
+              inputProps={{ 'aria-label': 'Dark Mode Setting' }}
               checked={isDarkMode}
               onChange={(event: ChangeEvent<HTMLInputElement>) =>
                 setIsDarkMode(event.target.checked)
@@ -145,6 +147,7 @@ const SettingsButton = ({ hideButton, preferences, onClose }: SettingsButtonProp
           }}>
             <Typography>Time Zone</Typography>
             <Select
+              inputProps={{ 'aria-label': 'Time Zone Setting' }}
               value={timezone}
               onChange={handleTimezoneChange}
               fullWidth

@@ -2,7 +2,7 @@
 import clsx from 'clsx'
 import classes from './account-page.module.scss'
 import { useUser } from '../../../providers'
-import { Avatar, List, ListItem, ListItemText } from '@mui/material'
+import { Avatar, ListItemText, MenuItem, MenuList } from '@mui/material'
 import { Button, Seperator } from '../../utils'
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings'
 import { Create, Refresh } from '@mui/icons-material'
@@ -84,7 +84,7 @@ const AccountPage = () => {
   }, [])
 
   useEffect(() => {
-    const fetchUser = async() => {
+    const fetchUser = async () => {
       setIsLoading(true)
 
       try {
@@ -178,27 +178,30 @@ const AccountPage = () => {
         <section className={classes.bottomSection}>
           <div className={classes.solvedProblems}>
             <header>Completed problems</header>
-            <List>
+            <Seperator isHorizontal />
+            <MenuList>
               {completedProblems && completedProblems.length ? (
                 completedProblems.map((problem, index) => {
                   const formattedDate = format(problem.adjustedDate, 'yyyy-MM-dd HH:mm:ss')
                   return (
-                    <li key={index}>
-                      <ListItem component="button" onClick={() => navigate(`/problems/${problem.problem_id}`)}>
-                        <ListItemText
-                          primary={problem.problem_name}
-                          secondary={`(Completed at ${formattedDate})`}
-                        />
-                      </ListItem>
-                    </li>
+                    <MenuItem
+                      key={index}
+                      component="button"
+                      onClick={() => navigate(`/problems/${problem.problem_id}`)}
+                    >
+                      <ListItemText
+                        primary={problem.problem_name}
+                        secondary={`(Completed at ${formattedDate})`}
+                      />
+                    </MenuItem>
                   )
                 })
               ) : (
                 <li className="container" key={'no-problems'}>
-          This user has no problems solved
+                  This user has no problems solved
                 </li>
               )}
-            </List>
+            </MenuList>
           </div>
           <div className={classes.submissionsAndAdminPanel}>
             <div className={classes.buttonGroup}>
@@ -226,9 +229,9 @@ const AccountPage = () => {
             </div>
             <Seperator isHorizontal />
             <div className={classes.submissions}>
-              <List>
+              <MenuList>
                 {tmpSubmissions.map((submission, index) => (
-                  <ListItem key={index}>
+                  <MenuItem key={index}>
                     <ListItemText primary={submission.name} />
                     <span className={clsx('inside-shadow',
                       {
@@ -238,15 +241,15 @@ const AccountPage = () => {
                     )}>
                       {submission.status}
                     </span>
-                  </ListItem>
+                  </MenuItem>
                 ))}
-              </List>
+              </MenuList>
             </div>
           </div>
         </section>
       </div>
       <Suspense>
-        {openAdminPanel && <AdminPanel open={openAdminPanel} onClose={handleCloseAdminModal}/>}
+        {openAdminPanel && <AdminPanel open={openAdminPanel} onClose={handleCloseAdminModal} />}
       </Suspense>
     </main>
   )

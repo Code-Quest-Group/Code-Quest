@@ -17,7 +17,6 @@ export default [
       'react/react-in-jsx-scope': 'off',
       'no-multiple-empty-lines': ['error', { 'max': 1, 'maxEOF': 0 }],
       'space-in-parens': ['error', 'never'],
-      'space-before-function-paren': ['error', 'never'],
       'eol-last': ['error', 'always'],
       'no-trailing-spaces': 'error',
       'no-multi-spaces': 'error',

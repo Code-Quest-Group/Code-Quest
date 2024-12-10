@@ -13,11 +13,11 @@
     row-gap: 2rem;
 
     @include breakpoints.for-tablets {
-        min-height: 66.5rem;
+        min-height: 92rem;
     }
 
     @include breakpoints.for-phones {
-        min-height: 114rem;
+        min-height: 106rem;
     }
 
     .topSection {
@@ -95,7 +95,7 @@
         display: inline-flex;
         align-items: center;
 
-        @include breakpoints.for-phones {
+        @include breakpoints.for-tablets {
             flex-direction: column;
         }
 
@@ -107,7 +107,7 @@
             margin-right: 4rem;
             padding: 1rem;
 
-            @include breakpoints.for-phones {
+            @include breakpoints.for-tablets {
                 width: 100%;
                 margin-bottom: 2rem;
                 margin-right: 0;
@@ -123,11 +123,16 @@
             }
 
             >ul {
-                max-height: calc(100% - 8rem);
+                width: 100%;
+                margin-top: 1rem;
+                max-height: calc(100% - 4.5rem);
                 padding: 0;
                 overflow-y: auto;
 
-                >li {
+                >button {
+                    width: 100%;
+                    display: flex;
+                    align-items: flex-start;
                     transition: background-color 0.25s ease-out;
                     -webkit-transition: background-color 0.25s ease-out;
                     -moz-transition: background-color 0.25s ease-out;
@@ -147,27 +152,6 @@
                         outline: none;
                         cursor: pointer;
                     }
-
-                    >button {
-                        border: none;
-                        background-color: inherit;
-                        color: var(--font-primary-color);
-                        transition: background-color 0.25s ease-out;
-                        -webkit-transition: background-color 0.25s ease-out;
-                        -moz-transition: background-color 0.25s ease-out;
-                        -o-transition: background-color 0.25s ease-out;
-
-                        &:hover,
-                        &:focus-visible {
-                            cursor: pointer;
-                            background-color: #b4b4b6;
-                            outline: none;
-                        }
-
-                        span {
-                            font-family: 'Fredoka', sans-serif !important;
-                        }
-                    }
                 }
             }
         }
@@ -177,9 +161,9 @@
             background-color: var(--tertiary-white);
             border-radius: 5px;
             padding: 1rem;
-            width: calc(60% - 4rem);
+            width: calc(60% - 8rem);
 
-            @include breakpoints.for-phones {
+            @include breakpoints.for-tablets {
                 width: 100%;
                 margin-right: 0;
             }
@@ -203,6 +187,7 @@
                     overflow-y: scroll;
 
                     >li {
+                        display: flex;
                         color: var(--font-primary-color);
                         transition: background-color 0.25s ease-out;
                         -webkit-transition: background-color 0.25s ease-out;
@@ -227,6 +212,7 @@
                         >div {
                             >span {
                                 margin-right: 1rem;
+                                word-break: break-word;
                             }
                         }
 

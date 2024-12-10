@@ -71,7 +71,9 @@ export const TestsSummary = ({ className }: TestsSummaryProps) => {
         ))}
       </ul>
       <div className={clsx('inside-shadow')}>
-        <header tabIndex={0}>Test Case {currentTestIndex} Results:</header>
+        <header tabIndex={0} aria-label={`Test Case Information ${currentTestIndex}`}>
+          Test Case {currentTestIndex} Results:
+        </header>
         <p tabIndex={0}>Input: {String(formattedTests[currentTestIndex - 1]).replace(/,/g, ', ')}</p>
         <p tabIndex={0}>
           Expected:{' '}
