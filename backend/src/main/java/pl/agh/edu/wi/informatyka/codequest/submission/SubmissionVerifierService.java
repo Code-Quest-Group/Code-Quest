@@ -218,7 +218,7 @@ public class SubmissionVerifierService {
             while (!lines[i].equals(USER_STDOUT_SEPARATOR)) {
                 StringBuilder testcaseStdoutBuilder = new StringBuilder();
                 while (!lines[i].equals(TESTCASE_STDOUT_SEPARATOR)) {
-                    testcaseStdoutBuilder.append(lines[i]);
+                    testcaseStdoutBuilder.append(lines[i]).append('\n');
                     ++i;
                 }
                 output.getUserStdout().add(testcaseStdoutBuilder.toString());
