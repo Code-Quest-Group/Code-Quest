@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pl.agh.edu.wi.informatyka.codequest.problem.model.Problem;
 import pl.agh.edu.wi.informatyka.codequest.submission.dto.Judge0SubmissionResultDTO;
+import pl.agh.edu.wi.informatyka.codequest.submission.exception.SubmissionFormatException;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.*;
 
 @Service
@@ -54,7 +55,6 @@ public class SubmissionVerifierService {
             submission.setStderr(judge0SubmissionResult.getStderr());
             return;
         }
-
         SubmissionResult submissionResult;
         try {
             submissionResult = this.parseSubmissionOutput(judge0SubmissionResult.getStdout(), SubmissionType.REGULAR);
@@ -76,7 +76,8 @@ public class SubmissionVerifierService {
         int correctTestcasesCount = 0;
         if (expectedAnswers.size() != submissionResult.getTestAnswers().size()) {
             submission.setStatus(SubmissionStatus.INTERNAL_ERROR);
-            submission.setErrorMessage("INTERNAL ERROR: Invalid number of test cases answers");
+            submission.setErrorMessage(
+                    "INTERNAL ERROR: Invalid number of test cases answers:\n" + submissionResult.getUserStdout());
             return;
         }
 
@@ -201,11 +202,15 @@ public class SubmissionVerifierService {
 
         String[] lines = submissionStdout.split("\n");
         if (lines.length == 0) {
-            throw new RuntimeException("Submission output is empty");
+            throw new SubmissionFormatException("Submission output is empty");
         }
         int i = 0;
 
         if (type == SubmissionType.REGULAR) {
+            if (!lines[i].equals("===SUBMISSION===")) {
+                throw new SubmissionFormatException("Invalid submission type");
+            }
+            ++i;
             while (!lines[i].equals(USER_STDOUT_SEPARATOR)) {
                 ++i;
             }
@@ -214,7 +219,11 @@ public class SubmissionVerifierService {
                 output.getTestAnswers().add(lines[i]);
                 ++i;
             }
-        } else {
+        } else if (type == SubmissionType.CUSTOM) {
+            if (!lines[i].equals("===CUSTOM_SUBMISSION===")) {
+                throw new SubmissionFormatException("Invalid submission type");
+            }
+            ++i;
             while (!lines[i].equals(USER_STDOUT_SEPARATOR)) {
                 StringBuilder testcaseStdoutBuilder = new StringBuilder();
                 while (!lines[i].equals(TESTCASE_STDOUT_SEPARATOR)) {
@@ -238,6 +247,8 @@ public class SubmissionVerifierService {
                 output.getSystemAnswers().add(lines[i]);
                 ++i;
             }
+        } else {
+            throw new SubmissionFormatException("Invalid submission type");
         }
 
         return output;

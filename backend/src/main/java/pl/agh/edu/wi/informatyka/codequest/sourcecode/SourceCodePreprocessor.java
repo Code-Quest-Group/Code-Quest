@@ -27,8 +27,10 @@ import pl.agh.edu.wi.informatyka.codequest.codetemplate.model.CodeTemplate;
  */
 public interface SourceCodePreprocessor {
 
-    String assembleSourceCode(String code);
+    String assembleCustomSubmissionSourceCode(String code);
 
     /** Assemble source code together with internal solution for custom submissions */
-    String assembleSourceCode(String sourceCode, CodeTemplate codeTemplate);
+    String assembleCustomSubmissionSourceCode(String sourceCode, CodeTemplate codeTemplate);
+
+    String assembleProblemVerifierSourceCode(String sourceCode, CodeTemplate codeTemplate);
 }

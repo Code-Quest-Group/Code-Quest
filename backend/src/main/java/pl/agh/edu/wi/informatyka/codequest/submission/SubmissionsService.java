@@ -24,6 +24,8 @@ import pl.agh.edu.wi.informatyka.codequest.submission.dto.*;
 import pl.agh.edu.wi.informatyka.codequest.submission.event.SubmissionExecutionCompletedEvent;
 import pl.agh.edu.wi.informatyka.codequest.submission.event.SubmissionJudgedEvent;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.*;
+import pl.agh.edu.wi.informatyka.codequest.submissionlogs.SubmissionLogsRepository;
+import pl.agh.edu.wi.informatyka.codequest.submissionlogs.model.SubmissionLog;
 import pl.agh.edu.wi.informatyka.codequest.user.model.Role;
 
 @Service
@@ -37,6 +39,7 @@ public class SubmissionsService {
     private final ProblemsService problemsService;
     private final CodeTemplatesService codeTemplatesService;
     private final CodePreprocessorFactory codePreprocessorFactory;
+    private final SubmissionLogsRepository submissionLogsRepository;
 
     private final SubmissionMapper submissionMapper;
 
@@ -53,6 +56,7 @@ public class SubmissionsService {
             CodePreprocessorFactory codePreprocessorFactory,
             SubmissionsRepository submissionsRepository,
             SubmissionVerifierService submissionVerifierService,
+            SubmissionLogsRepository submissionLogsRepository,
             SubmissionMapper submissionMapper,
             Judge0Service judge0Service,
             ApplicationEventPublisher eventPublisher) {
@@ -61,6 +65,7 @@ public class SubmissionsService {
         this.codePreprocessorFactory = codePreprocessorFactory;
         this.submissionsRepository = submissionsRepository;
         this.submissionVerifierService = submissionVerifierService;
+        this.submissionLogsRepository = submissionLogsRepository;
         this.submissionMapper = submissionMapper;
         this.judge0Service = judge0Service;
         this.eventPublisher = eventPublisher;
@@ -71,20 +76,22 @@ public class SubmissionsService {
         try {
             SourceCodePreprocessor codePreprocessor =
                     this.codePreprocessorFactory.getCodePreprocessor(createSubmissionDTO.getLanguage());
-            code = codePreprocessor.assembleSourceCode(createSubmissionDTO.getSourceCode());
+            code = codePreprocessor.assembleCustomSubmissionSourceCode(createSubmissionDTO.getSourceCode());
         } catch (IOException e) {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR, "Failed to assemble submission request: " + e.getMessage());
         }
 
         Problem currentProblem = problemsService.getProblemOrThrow(createSubmissionDTO.getProblemId());
-        Map<String, String> judge0args =
-                judge0Service.assembleSubmissionArgs(createSubmissionDTO, currentProblem, code);
+        Map<String, String> judge0args = judge0Service.submitProblemProposal(createSubmissionDTO, currentProblem, code);
 
         String token = judge0Service.postSubmission(judge0args);
         Submission submission = this.submissionMapper.createEntityFromDto(createSubmissionDTO);
         submission.setToken(token);
         submission = submissionsRepository.save(submission);
+        SubmissionLog submissionLog = new SubmissionLog(
+                submission.getSubmissionId(), createSubmissionDTO.getUser().getUserId(), token, SubmissionType.REGULAR);
+        submissionLogsRepository.save(submissionLog);
         return submission.getSubmissionId();
     }
 
@@ -95,7 +102,8 @@ public class SubmissionsService {
                     this.codePreprocessorFactory.getCodePreprocessor(createCustomSubmissionDTO.getLanguage());
             CodeTemplate codeTemplate = this.codeTemplatesService.getSolutionCodeTemplate(createCustomSubmissionDTO);
 
-            code = codePreprocessor.assembleSourceCode(createCustomSubmissionDTO.getSourceCode(), codeTemplate);
+            code = codePreprocessor.assembleCustomSubmissionSourceCode(
+                    createCustomSubmissionDTO.getSourceCode(), codeTemplate);
         } catch (IOException e) {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR, "Failed to assemble submission request: " + e.getMessage());
@@ -110,6 +118,13 @@ public class SubmissionsService {
 
         CustomSubmission submission = this.submissionMapper.createCustomSubmissionFromDto(createCustomSubmissionDTO);
         submission.setToken(token);
+
+        SubmissionLog submissionLog = new SubmissionLog(
+                submission.getSubmissionId(),
+                createCustomSubmissionDTO.getUser().getUserId(),
+                token,
+                SubmissionType.CUSTOM);
+        submissionLogsRepository.save(submissionLog);
 
         this.customSubmissions.put(submission.getSubmissionId(), submission);
         this.customSubmissionTokenMapping.put(submission.getToken(), submission.getSubmissionId());
@@ -128,34 +143,48 @@ public class SubmissionsService {
     public void handleSubmissionExecutionCompletedEvent(SubmissionExecutionCompletedEvent event) {
         Judge0SubmissionResultDTO result = event.getSubmissionResult();
 
-        if (this.customSubmissionTokenMapping.containsKey(result.getToken())) {
-            String submissionId = this.customSubmissionTokenMapping.get(result.getToken());
-            CustomSubmission customSubmission = this.customSubmissions.get(submissionId);
-            submissionMapper.updateEntityFromDto(customSubmission, result);
-            this.submissionVerifierService.judgeCustomSubmissionResults(customSubmission, result);
-            logger.info(
-                    "Submission {} finished judging, result: {} / {}",
-                    result.getToken(),
-                    customSubmission.getCorrectTestcases(),
-                    customSubmission.getTotalTestcases());
+        SubmissionLog log = submissionLogsRepository.findByToken(result.getToken());
+        if (log == null) {
+            logger.warn("Submission {} not found in logsRepository!", result.getToken());
+            return;
+        }
 
-        } else {
-            Submission submission =
-                    this.submissionsRepository.findByToken(result.getToken()).orElse(null);
-            if (submission == null) {
-                logger.warn("Submission with token {} not found in the database", result.getToken());
-                return;
+        switch (log.getSubmissionType()) {
+            case REGULAR -> {
+                Submission submission = this.submissionsRepository
+                        .findByToken(result.getToken())
+                        .orElse(null);
+                if (submission == null) {
+                    logger.warn("Submission with token {} not found in the database", result.getToken());
+                    return;
+                }
+                submissionMapper.updateEntityFromDto(submission, result);
+                this.submissionVerifierService.judgeSubmissionResults(submission, result);
+                submission = submissionsRepository.save(submission);
+                logger.info(
+                        "Submission {} finished judging, result: {} / {}",
+                        result.getToken(),
+                        submission.getCorrectTestcases(),
+                        submission.getTotalTestcases());
+
+                this.eventPublisher.publishEvent(new SubmissionJudgedEvent(this, submission));
             }
-            submissionMapper.updateEntityFromDto(submission, result);
-            this.submissionVerifierService.judgeSubmissionResults(submission, result);
-            submission = submissionsRepository.save(submission);
-            logger.info(
-                    "Submission {} finished judging, result: {} / {}",
-                    result.getToken(),
-                    submission.getCorrectTestcases(),
-                    submission.getTotalTestcases());
 
-            this.eventPublisher.publishEvent(new SubmissionJudgedEvent(this, submission));
+            case CUSTOM -> {
+                String submissionId = this.customSubmissionTokenMapping.get(result.getToken());
+                CustomSubmission customSubmission = this.customSubmissions.get(submissionId);
+                submissionMapper.updateEntityFromDto(customSubmission, result);
+                this.submissionVerifierService.judgeCustomSubmissionResults(customSubmission, result);
+                logger.info(
+                        "Submission {} finished judging, result: {} / {}",
+                        result.getToken(),
+                        customSubmission.getCorrectTestcases(),
+                        customSubmission.getTotalTestcases());
+            }
+
+            case PROBLEM_PROPOSAL -> {}
+
+            case UNKNOWN -> {}
         }
     }
 

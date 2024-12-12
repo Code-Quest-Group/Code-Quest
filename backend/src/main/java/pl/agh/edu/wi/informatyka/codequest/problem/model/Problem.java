@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import pl.agh.edu.wi.informatyka.codequest.codetemplate.model.CodeTemplate;
 import pl.agh.edu.wi.informatyka.codequest.sourcecode.Language;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.Submission;
-import pl.agh.edu.wi.informatyka.codequest.user.model.User;
 import pl.agh.edu.wi.informatyka.codequest.user.model.UserProblemDetails;
 import pl.agh.edu.wi.informatyka.codequest.util.converter.LanguageListConverter;
 import pl.agh.edu.wi.informatyka.codequest.util.converter.ListToJsonConverter;

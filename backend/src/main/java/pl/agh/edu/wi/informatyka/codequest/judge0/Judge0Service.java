@@ -118,7 +118,7 @@ public class Judge0Service {
         return new RestTemplate().getForObject(uri, Judge0SubmissionResultDTO.class);
     }
 
-    public Map<String, String> assembleSubmissionArgs(
+    public Map<String, String> submitProblemProposal(
             CreateSubmissionDTO createSubmissionDTO, Problem currentProblem, String code) {
         String commandLineArgs = "\"" + currentProblem.getInputFormat() + "\"";
         Map<String, String> map = new HashMap<>();
@@ -132,8 +132,7 @@ public class Judge0Service {
 
     public Map<String, String> assembleCustomSubmissionArgs(
             CreateCustomSubmissionDTO createCustomSubmissionDTO, Problem currentProblem, String code) {
-        String commandLineArgs =
-                "\"" + currentProblem.getInputFormat() + "\" " + "--validate-input-types --run-system-solution";
+        String commandLineArgs = "\"" + currentProblem.getInputFormat() + "\"" + " --custom-submission";
         Map<String, String> map = new HashMap<>();
         map.put("source_code", code);
         map.put("language_id", createCustomSubmissionDTO.getLanguage().getLanguageId());

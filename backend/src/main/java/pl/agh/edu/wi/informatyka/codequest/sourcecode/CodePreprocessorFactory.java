@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CodePreprocessorFactory {
-    @Value("${language.parsers.resources.path}")
+    @Value("${language.parsers.resources.path:language_resources/}")
     private String resourcesPath;
 
     private static final Map<String, SourceCodePreprocessor> preprocessorMap = new HashMap<>();
