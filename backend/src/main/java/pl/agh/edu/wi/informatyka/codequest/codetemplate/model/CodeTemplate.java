@@ -2,6 +2,7 @@ package pl.agh.edu.wi.informatyka.codequest.codetemplate.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import pl.agh.edu.wi.informatyka.codequest.sourcecode.Language;
 
 @Entity
@@ -9,6 +10,7 @@ import pl.agh.edu.wi.informatyka.codequest.sourcecode.Language;
         name = "code_templates",
         uniqueConstraints = @UniqueConstraint(columnNames = {"problem_id", "language", "template_type"}))
 @Data
+@NoArgsConstructor
 public class CodeTemplate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,4 +29,11 @@ public class CodeTemplate {
 
     @Column(name = "code", nullable = false, columnDefinition = "text")
     String code;
+
+    public CodeTemplate(String problemId, Language language, TemplateType templateType, String code) {
+        this.problemId = problemId;
+        this.language = language;
+        this.templateType = templateType;
+        this.code = code;
+    }
 }

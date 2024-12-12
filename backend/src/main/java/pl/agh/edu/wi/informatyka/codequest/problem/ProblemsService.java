@@ -11,6 +11,7 @@ import pl.agh.edu.wi.informatyka.codequest.codetemplate.CodeTemplatesService;
 import pl.agh.edu.wi.informatyka.codequest.codetemplate.model.CodeTemplate;
 import pl.agh.edu.wi.informatyka.codequest.problem.dto.CreateProblemDTO;
 import pl.agh.edu.wi.informatyka.codequest.problem.model.Problem;
+import pl.agh.edu.wi.informatyka.codequest.problem.model.ProblemStatus;
 import pl.agh.edu.wi.informatyka.codequest.problemrating.ProblemRatingsService;
 import pl.agh.edu.wi.informatyka.codequest.problemrating.model.ProblemRating;
 import pl.agh.edu.wi.informatyka.codequest.user.model.User;
@@ -49,7 +50,7 @@ public class ProblemsService {
     }
 
     public List<Problem> getAllProblems() {
-        return this.problemsRepository.findAll();
+        return this.problemsRepository.findAllByProblemStatus(ProblemStatus.APPROVED);
     }
 
     public void deleteProblem(String problemId) {

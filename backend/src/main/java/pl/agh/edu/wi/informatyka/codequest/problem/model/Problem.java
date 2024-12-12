@@ -90,6 +90,21 @@ public class Problem {
     @JsonProperty("code_templates")
     List<CodeTemplate> codeTemplates;
 
+    @JsonProperty("author")
+    public String getProblemName() {
+        return author != null ? author.getUsername() : "system";
+    }
+
+    @JsonProperty("problem_status")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    ProblemStatus problemStatus;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "author_id", nullable = true)
+    User author;
+
     @Override
     public String toString() {
         return "Problem{" + "problemId='" + problemId + '\'' + ", name='" + name + '\'' + '}';

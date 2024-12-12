@@ -3,7 +3,7 @@ import sys
 import json
 from typing import List
 
-class ProblemDebug:
+class ProblemSkip:
     def solve(self, *args):
         print(*args, sep=' | ')
 
@@ -74,12 +74,7 @@ if __name__ == '__main__':
         description="Parse test cases arguments from stdin and execute the solve(*args) function")
     parser.add_argument('problem_input_types', type=str, help='types of the input arguments (e.g., "str str int")')
     parser.add_argument('--file', '-f', type=str, help='load the test cases from a file instead of stdin')
-    parser.add_argument('--run-system-solution', action='store_true', help='run system solution for custom testcases')
-    parser.add_argument('--test-args', '-t', action='store_true',
-                        help='print parsed arguments to stdout instead of test results')
-    parser.add_argument('--fail-at-end', '-fae', action='store_true', help='do not fail after a first failure')
     parser.add_argument('--validate-input-types', '-va', action='store_true', help='validate input types')
-
 
     args = parser.parse_args()
 
@@ -93,43 +88,15 @@ if __name__ == '__main__':
         lines = text_input.strip().split('\n')
         parsed_args_sets = parser.parse_testcases_args(lines)
 
-        Tested_class = ProblemDebug if args.test_args else Problem
     except Exception as e:
         print("===ERROR===")
         print(str(e))
     else:
-
-        results = []
-
+        system_results = []
         for parsed_args_set in parsed_args_sets:
-            problem = Tested_class()
-            try:
-                result = problem.solve(*parsed_args_set)
-                print("===TESTCASE_STDOUT_SEPARATOR===")
-                results.append(result)
-            except Exception as e:
-                if args.fail_at_end:
-                    results.append("ERROR: ", e)
-                else:
-                    print("===ERROR===")
-                    print(str(e))
-                    exit(0)
-
-        print("===USER_STDOUT_SEPARATOR===")
-        for result in results:
+            problem = InternalProblem()
+            result = problem.solve(*parsed_args_set)
+            system_results.append(result)
+        for result in system_results:
             print(json.dumps(result))
-
-        print("===USER_RESULTS_SEPARATOR===")
-
-        if args.run_system_solution:
-            system_results = []
-            for parsed_args_set in parsed_args_sets:
-                problem = InternalProblem()
-                result = problem.solve(*parsed_args_set)
-                system_results.append(result)
-
-            print("===SYSTEM_STDOUT_SEPARATOR===")
-            for result in system_results:
-                print(json.dumps(result))
-            print("===SYSTEM_RESULT_SEPARATOR===")
 
