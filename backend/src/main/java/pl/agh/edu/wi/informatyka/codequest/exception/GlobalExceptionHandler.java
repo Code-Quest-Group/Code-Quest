@@ -41,13 +41,13 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
-    @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<Object> handleAllExceptions(ResponseStatusException ex) {
-        return ResponseEntity.status(ex.getStatusCode())
-                .body(GenericResponse.builder()
-                        .status(ResponseStatus.ERROR)
-                        .message("Resource Not Found")
-                        .data(ex.getMessage())
-                        .build());
-    }
+//    @ExceptionHandler(ResponseStatusException.class)
+//    public ResponseEntity<Object> handleAllExceptions(ResponseStatusException ex) {
+//        return ResponseEntity.status(ex.getStatusCode())
+//                .body(GenericResponse.builder()
+//                        .status(ResponseStatus.ERROR)
+//                        .message("Resource Not Found")
+//                        .data(ex.getMessage())
+//                        .build());
+//    }
 }

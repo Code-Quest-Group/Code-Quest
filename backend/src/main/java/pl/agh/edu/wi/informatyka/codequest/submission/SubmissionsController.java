@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import pl.agh.edu.wi.informatyka.codequest.ratelimit.RateLimitService;
 import pl.agh.edu.wi.informatyka.codequest.submission.dto.*;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.CustomSubmission;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.Submission;
@@ -28,9 +29,11 @@ import pl.agh.edu.wi.informatyka.codequest.util.DataExamples;
 @Tag(name = "Submission")
 public class SubmissionsController {
     private final SubmissionsService submissionsService;
+    private final RateLimitService rateLimitService;
 
-    public SubmissionsController(SubmissionsService submissionsService) {
+    public SubmissionsController(SubmissionsService submissionsService, RateLimitService rateLimitService) {
         this.submissionsService = submissionsService;
+        this.rateLimitService = rateLimitService;
     }
 
     @Operation(summary = "Publish submission", security = @SecurityRequirement(name = "bearerAuth"))
@@ -115,6 +118,11 @@ public class SubmissionsController {
                     @RequestBody
                     CreateSubmissionDTO submissionDTO) {
         submissionDTO.setUser(user);
+        if (!this.rateLimitService.allowPostingSubmission(user.getUserId())) {
+            throw new ResponseStatusException(
+                    HttpStatus.TOO_MANY_REQUESTS,
+                    "You recently created a submission. Please wait before sending another one");
+        }
         String submissionId = submissionsService.submitSubmission(submissionDTO);
         return ResponseEntity.ok(Collections.singletonMap("submission_id", submissionId));
     }
@@ -123,6 +131,11 @@ public class SubmissionsController {
     @PostMapping("/custom")
     public ResponseEntity<?> submitCustomSubmission(
             @AuthenticationPrincipal User user, @RequestBody CreateCustomSubmissionDTO submissionDTO) {
+        if (!this.rateLimitService.allowPostingSubmission(user.getUserId())) {
+            throw new ResponseStatusException(
+                    HttpStatus.TOO_MANY_REQUESTS,
+                    "You recently created a submission. Please wait before sending another one");
+        }
         submissionDTO.setUser(user);
         String submissionId = submissionsService.submitCustomSubmission(submissionDTO);
         return ResponseEntity.ok(Collections.singletonMap("submission_id", submissionId));
