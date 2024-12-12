@@ -7,6 +7,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
+import pl.agh.edu.wi.informatyka.codequest.problem.dto.ProblemProposalDTO;
 import pl.agh.edu.wi.informatyka.codequest.problem.model.Problem;
 import pl.agh.edu.wi.informatyka.codequest.submission.dto.CreateCustomSubmissionDTO;
 import pl.agh.edu.wi.informatyka.codequest.submission.dto.CreateSubmissionDTO;
@@ -73,11 +75,12 @@ public class Judge0Service {
                 fullSubmissionResultDTO.getToken(),
                 String.format(
                         "%.2f",
-                        (double) Duration.between(
-                                                fullSubmissionResultDTO.getCreatedAt(),
-                                                fullSubmissionResultDTO.getFinishedAt())
-                                        .toMillis()
-                                / 1000));
+                        Optional.ofNullable(fullSubmissionResultDTO.getCreatedAt())
+                                .flatMap(createdAt -> Optional.ofNullable(fullSubmissionResultDTO.getFinishedAt())
+                                        .map(finishedAt -> (double) Duration.between(createdAt, finishedAt)
+                                                        .toMillis()
+                                                / 1000))
+                                .orElse(0.0)));
         this.eventPublisher.publishEvent(new SubmissionExecutionCompletedEvent(this, fullSubmissionResultDTO));
     }
 
@@ -118,7 +121,7 @@ public class Judge0Service {
         return new RestTemplate().getForObject(uri, Judge0SubmissionResultDTO.class);
     }
 
-    public Map<String, String> submitProblemProposal(
+    public Map<String, String> assembleProblemProposalArgs(
             CreateSubmissionDTO createSubmissionDTO, Problem currentProblem, String code) {
         String commandLineArgs = "\"" + currentProblem.getInputFormat() + "\"";
         Map<String, String> map = new HashMap<>();
@@ -138,6 +141,19 @@ public class Judge0Service {
         map.put("language_id", createCustomSubmissionDTO.getLanguage().getLanguageId());
         map.put("command_line_arguments", commandLineArgs);
         map.put("stdin", createCustomSubmissionDTO.getCustomTestcases());
+        map.put("callback_url", judgingCallbackUrl);
+        return map;
+    }
+
+    public Map<String, String> assembleProblemProposalArgs(ProblemProposalDTO problemProposalDTO, String code) {
+        String commandLineArgs = "\"" + problemProposalDTO.getInputFormat() + "\"";
+        // trim to avoid \n\n
+        String stdin = problemProposalDTO.getExampleTestcases().trim() + '\n' + problemProposalDTO.getTestCases();
+        Map<String, String> map = new HashMap<>();
+        map.put("source_code", code);
+        map.put("language_id", problemProposalDTO.getSupportedLanguage().getLanguageId());
+        map.put("command_line_arguments", commandLineArgs);
+        map.put("stdin", stdin);
         map.put("callback_url", judgingCallbackUrl);
         return map;
     }

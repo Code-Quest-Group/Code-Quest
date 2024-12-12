@@ -83,7 +83,8 @@ public class SubmissionsService {
         }
 
         Problem currentProblem = problemsService.getProblemOrThrow(createSubmissionDTO.getProblemId());
-        Map<String, String> judge0args = judge0Service.submitProblemProposal(createSubmissionDTO, currentProblem, code);
+        Map<String, String> judge0args =
+                judge0Service.assembleProblemProposalArgs(createSubmissionDTO, currentProblem, code);
 
         String token = judge0Service.postSubmission(judge0args);
         Submission submission = this.submissionMapper.createEntityFromDto(createSubmissionDTO);
@@ -182,7 +183,9 @@ public class SubmissionsService {
                         customSubmission.getTotalTestcases());
             }
 
-            case PROBLEM_PROPOSAL -> {}
+            case PROBLEM_PROPOSAL -> {
+                return; // igore problem proposal submission
+            }
 
             case UNKNOWN -> {}
         }

@@ -32,5 +32,5 @@ public interface SourceCodePreprocessor {
     /** Assemble source code together with internal solution for custom submissions */
     String assembleCustomSubmissionSourceCode(String sourceCode, CodeTemplate codeTemplate);
 
-    String assembleProblemVerifierSourceCode(String sourceCode, CodeTemplate codeTemplate);
+    String assembleProblemVerifierSourceCode(CodeTemplate codeTemplate);
 }

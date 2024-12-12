@@ -99,5 +99,4 @@ if __name__ == '__main__':
             system_results.append(result)
         for result in system_results:
             print(json.dumps(result))
-        print("===SYSTEM_RESULT_SEPARATOR===")
 

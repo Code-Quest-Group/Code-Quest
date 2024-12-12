@@ -37,5 +37,6 @@ public class SubmissionLog {
         this.userId = userId;
         this.token = token;
         this.submissionType = submissionType;
+        createdAt = Instant.now();
     }
 }

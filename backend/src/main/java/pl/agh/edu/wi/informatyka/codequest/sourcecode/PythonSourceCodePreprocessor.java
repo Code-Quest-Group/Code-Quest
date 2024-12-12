@@ -37,7 +37,7 @@ from typing import *
     }
 
     @Override
-    public String assembleProblemVerifierSourceCode(String sourceCode, CodeTemplate codeTemplate) {
-        return IMPORTS + codeTemplate.getCode() + "\n\n" + sourceCode + "\n\n" + problemVerifierCode;
+    public String assembleProblemVerifierSourceCode(CodeTemplate codeTemplate) {
+        return IMPORTS + codeTemplate.getCode() + "\n\n" + "\n\n" + problemVerifierCode;
     }
 }
