@@ -116,14 +116,14 @@ const AccountPage = () => {
   }, [userId])
 
   useEffect(() => {
-    if (!userStatistics || !preferences) return
+    if (!userStatistics) return
 
     const updatedProblems: CompletedProblem[] = userStatistics.user_problem_attempts
       .filter(attempt => attempt.user_problem_status === 'SUCCEEDED')
       .sort((a, b) => new Date(b.last_submission_time).getTime() - new Date(a.last_submission_time).getTime())
       .map(problem => ({
         ...problem,
-        adjustedDate: adjustToTimezone(problem.last_submission_time, preferences.timezone),
+        adjustedDate: adjustToTimezone(problem.last_submission_time, preferences?.timezone ?? 'UTC+00:00'),
       }))
 
     setCompletedProblems(updatedProblems)
