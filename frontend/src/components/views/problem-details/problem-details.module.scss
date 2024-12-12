@@ -86,9 +86,19 @@
             height: calc(100% - 4rem);
             min-height: 40rem;
 
-            >div {
+            .infoContainer {
+                overflow-y: auto;
+                margin-bottom: 2rem;
 
-                >header {
+                @include breakpoints.for-phones {
+                    scrollbar-width: none;
+
+                    &::-webkit-scrollbar {
+                        display: none;
+                    }
+                }
+
+                header {
                     font-size: 2rem;
                     margin-bottom: 2rem;
                 }
@@ -279,8 +289,6 @@
     padding: 1rem;
     min-width: 18rem;
     max-width: 90%;
-    min-height: 4rem;
-    overflow-y: auto;
     background-color: var(--primary-white);
     border-radius: 5px;
     margin-bottom: 1rem;

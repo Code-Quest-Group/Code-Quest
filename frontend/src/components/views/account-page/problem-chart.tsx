@@ -6,7 +6,7 @@ enum ProblemType {
     BinarySearch = 'Binary Search',
     LinkedLists = 'Linked Lists',
     Recursion = 'Recursion',
-    DynamicProgramming = 'Dynamic Programming',
+    Simple = 'Simple',
     Graphs = 'Graphs',
     Sorting = 'Sorting',
 }

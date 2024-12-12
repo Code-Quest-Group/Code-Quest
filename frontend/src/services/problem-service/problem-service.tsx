@@ -1,12 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios'
-import { Problem } from '../../types'
+import { Problem, Proposal } from '../../types'
 import { config } from '../../../config'
 
 const getProblems = async() => {
   try {
     const response = await axios.get(`${config.apiBaseUrl}/problems`)
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const problems: Problem[] = response.data.map((item: any) => ({
       problemId: item.problem_id,
       name: item.name,
@@ -56,7 +56,39 @@ const getProblem = async(problemId: string) => {
   }
 }
 
+const getProposals = async() => {
+  try {
+    const response = await axios.get(`${config.apiBaseUrl}/problems/proposals`)
+
+    const proposals: Proposal[] = response.data.map((item: any) => ({
+      name: item.name,
+      description: item.description,
+      tags: item.tags,
+      constraints: item.constraints,
+      hints: item.hints,
+      rating: item.rating,
+      problem_id: item.problem_id,
+      supported_languages: item.supported_languages,
+      input_format: item.input_format,
+      code_template: item.code_template,
+      example_testcases: item.example_testcases,
+      example_expected_result: item.example_expected_result,
+      user_problem_details: item.user_problem_details,
+      code_templates: item.code_templates,
+      problem_status: item.problem_status,
+      author: item.author,
+    }))
+
+    return proposals
+
+  } catch (error) {
+    console.error('Error fetching Proposals:', error)
+    throw error
+  }
+}
+
 export const ProblemService = {
   getProblems,
-  getProblem
+  getProblem,
+  getProposals
 }

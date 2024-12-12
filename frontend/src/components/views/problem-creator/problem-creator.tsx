@@ -11,7 +11,8 @@ import { EditNote, LocalOffer, Publish, SaveAs, Visibility } from '@mui/icons-ma
 import { CreatorEditorButton } from './creator-editor'
 import { Problem } from '../../../types'
 import { toast } from 'react-toastify'
-import { v4 as uuidv4 } from 'uuid'
+import { config } from '../../../../config'
+import axios, { isAxiosError } from 'axios'
 
 const ProblemCreator = () => {
   const { setUserProblem, isAdmin } = useUser()
@@ -40,6 +41,7 @@ const ProblemCreator = () => {
     template: false,
     solution: false,
     inputFormat: false,
+    hints: false,
   })
 
   const checkErrors = (): boolean => {
@@ -54,6 +56,7 @@ const ProblemCreator = () => {
       solution: solution.length === 0,
       inputFormat: inputFormat.trim() === '',
       testCases: testCases.trim() === '',
+      hints: hints.trim() === '',
     }
 
     setErrors(newErrors)
@@ -96,31 +99,42 @@ const ProblemCreator = () => {
     if (checkErrors()) return
 
     const payload = {
-      problemId: `custom-problem-${uuidv4()}`,
+      problemId: title.toLowerCase().replace(/\d+/g, '').replace(/\s+/g, '-'),
       name: title,
       description: description,
-      supported_languages: [language],
+      supported_language: language,
       input_format: inputFormat,
       code_template: template,
+      reference_solution: solution,
       test_cases: testCases,
-      hints: hints,
+      hints: hints.split('\n'),
       tags: selectedTags,
       example_testcases: exampleTestCases,
-      example_expected_result: exampleExpectedResults,
+      example_expected_result: exampleExpectedResults.split('\n').filter(item => item.trim() !== ''),
       constraints: constraints,
     }
 
     console.log(payload)
 
     try {
-      //await axios.post('http://localhost:8080/problems', payload)
+      const response = await axios.post(`${config.apiBaseUrl}/problems/proposals`, payload)
+      console.log(response)
 
       toast.success('Problem created successfully! (It is a lie endpoint doesnt work)')
 
       setUserProblem(undefined)
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error creating problem:', error)
-      toast.error('Failed to create problem!')
+
+      let errorMessage = 'An unknown error occurred'
+
+      if (isAxiosError(error)) {
+        errorMessage = error.response?.data?.message || error.message || errorMessage
+      } else if (error instanceof Error) {
+        errorMessage = error.message
+      }
+
+      toast.error('Failed to create problem: ' + errorMessage, { autoClose: 30000 })
     }
   }
 
@@ -163,6 +177,8 @@ const ProblemCreator = () => {
                 value={hints}
                 onChange={(e) => setHints(e.target.value)}
                 margin="normal"
+                error={errors.hints}
+                helperText={errors.hints ? 'Hints are required' : ''}
               />
             </section>
             <section>
@@ -193,7 +209,9 @@ const ProblemCreator = () => {
               <TextField
                 label="Test Cases"
                 variant="outlined"
-                value={constraints}
+                multiline
+                maxRows={1}
+                value={testCases}
                 onChange={(e) => setTestCases(e.target.value)}
                 margin="normal"
                 error={errors.testCases}

@@ -4,7 +4,7 @@ import { Seperator } from '../../../utils'
 import { Fragment, useEffect, useState } from 'react'
 import { ProblemService, UserService } from '../../../../services/problem-service'
 import { Problem } from '../../../../types'
-import { Proposal } from '../../../../types/problem/proposal.type'
+import { Proposal } from '../../../../types'
 import { ProposalListItem } from './proposal-list-item'
 import { ProblemListItem } from './problem-list-item'
 import { BasicUserData, UserListItem } from './user-list-item'
@@ -14,41 +14,21 @@ type FeedbackModalProps = {
   onClose: () => void
 }
 
-const tmpProblemProposals: Proposal[] = [
-  {
-    name: 'Sort List Problem 1',
-    author: 'Joohn Boon',
-    description: 'Some description...',
-    codeTemplate: 'Some template...',
-    correctSolution: 'Some solution...',
-    constraints: '0 < num < 10',
-    example: '[3, 2, 3, 1] => [1, 2, 3, 3]',
-    tags: ['huh'],
-  },
-  {
-    name: 'Find Maximum Subarray',
-    author: 'Alice Green',
-    description: 'Given an array of integers, find the contiguous subarray which has largest sum and return its sum.',
-    codeTemplate: 'function maxSubArray(nums) { // Your code here }',
-    correctSolution: 'Use Kadane’s Algorithm to find the maximum subarray sum.',
-    constraints: '-10^4 <= nums[i] <= 10^4, 1 <= nums.length <= 10^5',
-    example: '[1, -2, 3, 4, -1, 2, 1, -5, 4] => 8',
-    tags: ['huh'],
-  },
-]
-
 const AdminPanel = ({ open, onClose }: FeedbackModalProps) => {
   const [problems, setProblems] = useState<Problem[]>([ ])
   const [allUsers, setAllUsers] = useState<BasicUserData[]>([ ])
+  const [proposals, setProposals] = useState<Proposal[]>([ ])
 
   useEffect(() => {
     const fetchProblems = async() => {
       try {
         const problemData = await ProblemService.getProblems()
         const usersData = await UserService.getAllUsers()
+        const proposalsData = await ProblemService.getProposals()
 
         setAllUsers(usersData)
         setProblems(problemData)
+        setProposals(proposalsData)
       } catch (error) {
         console.log(error)
       }
@@ -70,11 +50,19 @@ const AdminPanel = ({ open, onClose }: FeedbackModalProps) => {
             <header>Problem proposals</header>
             <Seperator isHorizontal />
             <List>
-              {tmpProblemProposals.map((problem, index) => (
-                <Fragment key={index}>
-                  <ProposalListItem problemProposal={problem} />
-                </Fragment>
-              ))}
+              <>
+                {proposals.length ? (
+                  <>
+                    {proposals.map((proposal, index) => (
+                      <Fragment key={index}>
+                        <ProposalListItem problemProposal={proposal} />
+                      </Fragment>
+                    ))}
+                  </>
+                ) : (
+                  <div className='container scrollable'>No active proposals found</div>
+                )}
+              </>
             </List>
           </section>
           <section>

@@ -3,7 +3,7 @@ export enum Tags {
     BINARY_SEARCH = 'Binary Search',
     LINKED_LISTS = 'Linked Lists',
     RECURSION = 'Recursion',
-    DYNAMIC_PROGRAMMING = 'Dynamic Programming',
+    SIMPLE = 'Simple',
     GRAPHS = 'Graphs',
     SORTING = 'Sorting',
 }

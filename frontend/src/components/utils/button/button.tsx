@@ -1,4 +1,9 @@
-import { ButtonProps, Button as MuiButton, Tooltip, Typography } from '@mui/material'
+
+import MuiButton from '@mui/material/Button'
+import { ButtonProps } from '@mui/material/Button'
+import Tooltip from '@mui/material/Tooltip'
+import Typography from '@mui/material/Typography'
+
 import clsx from 'clsx'
 import classes from './button.module.scss'
 import { ReactNode } from 'react'
@@ -13,9 +18,9 @@ type CodeQuestButtonProps = ButtonProps & {
   disabled?: boolean
   hidden?: boolean
 } & (
-  | { leftIcon: true; icon: ReactNode }
-  | { leftIcon?: never; icon?: ReactNode }
-)
+    | { leftIcon: true; icon: ReactNode }
+    | { leftIcon?: never; icon?: ReactNode }
+  )
 
 export const Button = ({
   seriousButton,

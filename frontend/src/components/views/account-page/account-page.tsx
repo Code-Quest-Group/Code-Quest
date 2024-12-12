@@ -14,22 +14,10 @@ import { ProblemChart } from './problem-chart'
 import { ActivityChart } from './activity-chart'
 import { LoadingPage } from '../loading-page/loading-page'
 import { format } from 'date-fns-tz'
+import { ProblemProposals } from './problem-proposals'
 
 const AdminPanel = lazy(() => import('./admin-panel/admin-panel-modal'))
 const SettingsButton = lazy(() => import('./settings-button'))
-
-const tmpSubmissions = [
-  { name: 'Problem proposal 1', status: 'Declined' },
-  { name: 'Someones proposal 2', status: 'Approved' },
-  { name: 'Someones proposal 3', status: 'Pending' },
-  { name: 'Someones proposal 4', status: 'Approved' },
-  { name: 'Someones proposal 5', status: 'Declined' },
-  { name: 'Someones proposal 6', status: 'Pending' },
-  { name: 'Someones proposal 7', status: 'Approved' },
-  { name: 'Someones proposal 8', status: 'Declined' },
-  { name: 'Someones proposal 9', status: 'Pending' },
-  { name: 'Someones proposal 10', status: 'Approved' },
-]
 
 const adjustToTimezone = (dateString: string, timezone: string) => {
   const offsetMatch = timezone.match(/UTC([+-]\d{2}):(\d{2})/)
@@ -74,6 +62,7 @@ const AccountPage = () => {
   const [completedProblems, setCompletedProblems] = useState<CompletedProblem[]>()
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [isSafari, setIsSafari] = useState<boolean>(false)
+  const [refreshProposals, setRefreshProposals] = useState<boolean>(false)
 
   useEffect(() => {
     const isUsingSafari =
@@ -206,6 +195,8 @@ const AccountPage = () => {
           <div className={classes.submissionsAndAdminPanel}>
             <div className={classes.buttonGroup}>
               <Button
+                className={clsx({ ['hidden']: !isOwnAccountPage })}
+                hidden={!isOwnAccountPage}
                 icon={<Create />}
                 popup={'Click to create new problem'}
                 onClick={() => navigate('/problem-creator')}
@@ -213,7 +204,12 @@ const AccountPage = () => {
               >
                 Add Problem
               </Button>
-              <Button icon={<Refresh />} popup={'Click to refresh submissions'} aria-label='refresh-submissions'>
+              <Button
+                icon={<Refresh />}
+                popup={'Click to refresh submissions'}
+                aria-label='refresh-submissions'
+                onClick={() => setRefreshProposals((prev) => !prev)}
+              >
                 Refresh
               </Button>
               <Button
@@ -229,21 +225,12 @@ const AccountPage = () => {
             </div>
             <Seperator isHorizontal />
             <div className={classes.submissions}>
-              <MenuList>
-                {tmpSubmissions.map((submission, index) => (
-                  <MenuItem key={index}>
-                    <ListItemText primary={submission.name} />
-                    <span className={clsx('inside-shadow',
-                      {
-                        [classes.approved]: submission.status === 'Approved',
-                        [classes.rejected]: submission.status === 'Declined'
-                      }
-                    )}>
-                      {submission.status}
-                    </span>
-                  </MenuItem>
-                ))}
-              </MenuList>
+              <ProblemProposals
+                rejected={classes.rejected}
+                approved={classes.approved}
+                userId={user.userId}
+                refresh={refreshProposals}
+              />
             </div>
           </div>
         </section>

@@ -132,7 +132,7 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
       } catch (error) {
         console.error('Error polling submission status:', error)
       }
-    }, 250)
+    }, 500)
 
     return () => clearInterval(pollInterval)
   }, [submissionId])

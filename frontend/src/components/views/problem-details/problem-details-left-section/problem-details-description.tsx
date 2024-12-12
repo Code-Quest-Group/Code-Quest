@@ -21,19 +21,21 @@ export const ProblemDetailsDescription = ({ classes }: ProblemDetailsDescription
       </section>
 
       <TagsList tags={problem.tags ?? ['Linked Lists', 'Binary Search', 'Recursion']} />
-      <div className={classes.whiteBackgroundDescription}>
-        <p>{problem.description}</p>
-      </div>
-      <div>
-        <header>Example</header>
+      <div className={classes.infoContainer}>
         <div className={classes.whiteBackgroundDescription}>
-          <p>{example}</p>
+          <p>{problem.description}</p>
         </div>
-      </div>
-      <div>
-        <header>Constraints</header>
-        <div className={classes.whiteBackgroundDescription}>
-          <p>{problem.constraints || 'Please add constraints'}</p>
+        <div>
+          <header>Example</header>
+          <div className={classes.whiteBackgroundDescription}>
+            <p>{example}</p>
+          </div>
+        </div>
+        <div>
+          <header>Constraints</header>
+          <div className={classes.whiteBackgroundDescription}>
+            <p>{problem.constraints || 'Please add constraints'}</p>
+          </div>
         </div>
       </div>
 

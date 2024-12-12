@@ -95,21 +95,21 @@ export const RunTestCasesButton = () => {
       } catch (error) {
         console.error('Error polling submission status:', error)
       }
-    }, 250)
+    }, 500)
 
     return () => clearInterval(pollInterval)
   }, [submissionId])
 
   return (
     <Button
-      disabled={Boolean(submissionId)}
+      disabled={Boolean(submissionId) || isPreview}
       aria-label='run-test-cases-button'
       onClick={handleRunTestCases}
       icon={submissionId !== '' ?
         <CircularProgress size={20} style={{color: 'white'}}/>
         : <PlayArrow />
       }
-      popup={isPreview ? 'Click to confirm correctness of provided test cases' : 'Click to run test case'}
+      popup={isPreview ? `Can't run test cases in preview` : 'Click to run test case'}
     >
       Run Test Cases
     </Button>
