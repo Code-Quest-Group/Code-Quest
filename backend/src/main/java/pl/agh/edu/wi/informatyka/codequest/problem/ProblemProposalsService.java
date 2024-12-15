@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import pl.agh.edu.wi.informatyka.codequest.codetemplate.CodeTemplatesRepository;
 import pl.agh.edu.wi.informatyka.codequest.codetemplate.model.CodeTemplate;
 import pl.agh.edu.wi.informatyka.codequest.codetemplate.model.TemplateType;
 import pl.agh.edu.wi.informatyka.codequest.judge0.Judge0Service;
@@ -25,6 +26,7 @@ import pl.agh.edu.wi.informatyka.codequest.submissionlogs.model.SubmissionLog;
 
 @Service
 public class ProblemProposalsService {
+    private final CodeTemplatesRepository codeTemplatesRepository;
     Logger logger = LoggerFactory.getLogger(ProblemProposalsService.class);
 
     private final ProblemsRepository problemsRepository;
@@ -36,11 +38,13 @@ public class ProblemProposalsService {
             ProblemsRepository problemsRepository,
             Judge0Service judge0Service,
             CodePreprocessorFactory codePreprocessorFactory,
-            SubmissionLogsRepository submissionLogsRepository) {
+            SubmissionLogsRepository submissionLogsRepository,
+            CodeTemplatesRepository codeTemplatesRepository) {
         this.problemsRepository = problemsRepository;
         this.judge0Service = judge0Service;
         this.codePreprocessorFactory = codePreprocessorFactory;
         this.submissionLogsRepository = submissionLogsRepository;
+        this.codeTemplatesRepository = codeTemplatesRepository;
     }
 
     public List<Problem> getAllPending() {
@@ -51,7 +55,7 @@ public class ProblemProposalsService {
         return this.problemsRepository.findAllByAuthorUserId(userId);
     }
 
-    public void createProblemProposal(ProblemProposalDTO problemProposalDTO) {
+    public Problem createProblemProposal(ProblemProposalDTO problemProposalDTO) {
         if (problemsRepository.existsById(problemProposalDTO.getProblemId())) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, problemProposalDTO.getProblemId() + " already exists");
@@ -93,7 +97,7 @@ public class ProblemProposalsService {
                 problemProposalDTO.getReferenceSolution());
 
         CodeTemplate codeTemplate = new CodeTemplate(
-                problemProposalDTO.getCodeTemplate(),
+                problemProposalDTO.getProblemId(),
                 problemProposalDTO.getSupportedLanguage(),
                 TemplateType.DEFAULT_DEFINITION,
                 problemProposalDTO.getCodeTemplate());
@@ -208,11 +212,16 @@ public class ProblemProposalsService {
         problem.setConstraints(problemProposalDTO.getConstraints());
         problem.setHints(problemProposalDTO.getHints());
         problem.setSubmissions(List.of());
+        problem.setAuthor(problemProposalDTO.getAuthor());
         problem.setExampleTestcases(problemProposalDTO.getExampleTestcases());
         problem.setExampleExpectedResult(problemProposalDTO.getExampleExpectedResult());
-        problem.setCodeTemplates(List.of(referenceTemplate, codeTemplate));
+        List<CodeTemplate> templates = List.of(referenceTemplate, codeTemplate);
+        problem.setCodeTemplates(templates);
 
+        codeTemplatesRepository.saveAll(templates);
         problemsRepository.save(problem);
+
+        return problem;
     }
 
     public void approveProblem(String problemId) {

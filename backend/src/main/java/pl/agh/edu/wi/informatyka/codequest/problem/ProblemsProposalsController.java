@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import pl.agh.edu.wi.informatyka.codequest.problem.dto.ProblemProposalDTO;
 import pl.agh.edu.wi.informatyka.codequest.problem.model.Problem;
 import pl.agh.edu.wi.informatyka.codequest.user.model.User;
+import pl.agh.edu.wi.informatyka.codequest.util.GenericResponse;
+import pl.agh.edu.wi.informatyka.codequest.util.ResponseStatus;
 
 @RestController()
 @RequestMapping("/problems")
@@ -43,11 +45,15 @@ public class ProblemsProposalsController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("proposals")
     @Operation(summary = "Create new Problem Proposal", security = @SecurityRequirement(name = "bearerAuth"))
-    public String createCodeTemplate(
+    public GenericResponse<Problem> createCodeTemplate(
             @Valid @RequestBody ProblemProposalDTO problemProposalDTO, @AuthenticationPrincipal User user) {
         problemProposalDTO.setAuthor(user);
-        this.problemProposalsService.createProblemProposal(problemProposalDTO);
-        return "ok";
+        Problem problem = problemProposalsService.createProblemProposal(problemProposalDTO);
+        return GenericResponse.<Problem>builder()
+                .status(ResponseStatus.OK)
+                .message("Successfully created problem proposal")
+                .data(problem)
+                .build();
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
