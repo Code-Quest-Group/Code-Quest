@@ -14,7 +14,7 @@ import pl.agh.edu.wi.informatyka.codequest.user.model.User;
 @Data
 public class ProblemProposalDTO {
     @Length(min = 5, max = 100, message = "ProblemId must be must have between 5 and 100 characters")
-    @Pattern(regexp = "^[a-z](-?[a-z])*[a-z]$", message = "Problem ID must contain only lowercase letters and hyphens.")
+    @Pattern(regexp = "^[a-z]([a-z-])*[a-z]$", message = "Problem ID must contain only lowercase letters and hyphens.")
     String problemId;
 
     @NotBlank
