@@ -6,6 +6,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.springframework.boot.actuate.metrics.web.client.ObservationRestTemplateCustomizer;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -31,18 +32,21 @@ public class UserService {
     private final SubmissionsRepository submissionsRepository;
     private final ProblemsRepository problemsRepository;
     private final ProblemRatingsRepository problemRatingsRepository;
+    private final ObservationRestTemplateCustomizer observationRestTemplateCustomizer;
 
     public UserService(
             UserRepository userRepository,
             UserProblemAttemptsRepository userProblemAttemptsRepository,
             SubmissionsRepository submissionsRepository,
             ProblemsRepository problemsRepository,
-            ProblemRatingsRepository problemRatingsRepository) {
+            ProblemRatingsRepository problemRatingsRepository,
+            ObservationRestTemplateCustomizer observationRestTemplateCustomizer) {
         this.userRepository = userRepository;
         this.userProblemAttemptsRepository = userProblemAttemptsRepository;
         this.submissionsRepository = submissionsRepository;
         this.problemsRepository = problemsRepository;
         this.problemRatingsRepository = problemRatingsRepository;
+        this.observationRestTemplateCustomizer = observationRestTemplateCustomizer;
     }
 
     public Optional<User> loadUserById(String userId) {
@@ -134,5 +138,19 @@ public class UserService {
         return userRepository.findAll().stream()
                 .map(user -> new UserView(user.getUserId(), user.getUsername(), user.getLastLogin()))
                 .collect(Collectors.toList());
+    }
+
+    public void banUser(User authenticatedUser, String userId) {
+        User user = getUserOrThrow(authenticatedUser, userId);
+
+        user.setBanned(true);
+        userRepository.save(user);
+    }
+
+    public void unbanUser(User authenticatedUser, String userId) {
+        User user = getUserOrThrow(authenticatedUser, userId);
+
+        user.setBanned(true);
+        userRepository.save(user);
     }
 }

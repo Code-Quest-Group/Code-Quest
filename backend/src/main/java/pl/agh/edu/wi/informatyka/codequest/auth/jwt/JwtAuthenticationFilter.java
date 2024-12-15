@@ -51,6 +51,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 User user =
                         userService.loadUserById(username).orElseThrow(() -> new UsernameNotFoundException(username));
 
+                if (user.isBanned() && !"GET".equalsIgnoreCase(request.getMethod())) {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    response.getWriter().write("Access denied for banned user.");
+                    return;
+                }
+
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         user, null, List.of(new SimpleGrantedAuthority("ROLE_" + user.getUserRole())));
 

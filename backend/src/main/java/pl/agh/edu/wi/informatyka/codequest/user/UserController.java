@@ -69,4 +69,26 @@ public class UserController {
         this.userService.updateUserPreferences(updateUserPreferencesDTO);
         return ResponseEntity.ok("ok");
     }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PatchMapping("/user/{userId}/ban")
+    @Operation(
+            security = @SecurityRequirement(name = "adminBearerAuth"),
+            description = "Bans the user - prevents him for all interaction with the app")
+    public ResponseEntity<?> banUser(
+            @AuthenticationPrincipal User user,
+            @PathVariable @Parameter(example = "7aba9807-b018-4923-a6db-421c7e232237") String userId) {
+        this.userService.banUser(user, userId);
+        return ResponseEntity.ok("ok");
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PatchMapping("/user/{userId}/unban")
+    @Operation(security = @SecurityRequirement(name = "adminBearerAuth"), description = "Unbans the user.")
+    public ResponseEntity<?> unbanUser(
+            @AuthenticationPrincipal User user,
+            @PathVariable @Parameter(example = "7aba9807-b018-4923-a6db-421c7e232237") String userId) {
+        this.userService.unbanUser(user, userId);
+        return ResponseEntity.ok("ok");
+    }
 }

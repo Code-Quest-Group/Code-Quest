@@ -45,8 +45,10 @@ public class User {
     private LocalDateTime lastLogin;
 
     @Column(nullable = false)
-    @JsonIgnore()
     private boolean enabled;
+
+    @Column(nullable = false)
+    private boolean banned;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore()

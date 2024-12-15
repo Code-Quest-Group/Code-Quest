@@ -109,6 +109,8 @@ public class AuthService {
         authResponseDTO.setUsername(user.getUsername());
         authResponseDTO.setUserId(user.getUserId());
         authResponseDTO.setRole(user.getUserRole().name());
+        authResponseDTO.setActive(true); // TODO implement account activation by email
+        authResponseDTO.setBanned(user.isBanned());
 
         String token = jwtUtil.generateToken(user);
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);

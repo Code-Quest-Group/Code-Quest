@@ -15,4 +15,8 @@ public class AuthResponseDTO {
     private String username;
 
     private String role;
+
+    private boolean active;
+
+    private boolean banned;
 }

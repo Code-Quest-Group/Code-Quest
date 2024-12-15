@@ -1,0 +1,2 @@
+ALTER TABLE users
+    ADD banned TINYINT(1) DEFAULT 0 NOT NULL ;
