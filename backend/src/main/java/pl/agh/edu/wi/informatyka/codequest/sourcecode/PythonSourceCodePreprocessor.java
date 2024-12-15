@@ -15,13 +15,17 @@ from typing import *
 
 """;
 
-    public PythonSourceCodePreprocessor(String resourcesPath) throws IOException {
+    public PythonSourceCodePreprocessor() throws IOException {
         executorCode = new String(
-                ClassLoader.getSystemResourceAsStream(resourcesPath + "python/executor.py")
+                getClass()
+                        .getClassLoader()
+                        .getResourceAsStream("language_resources/python/executor.py")
                         .readAllBytes(),
                 StandardCharsets.UTF_8);
         problemVerifierCode = new String(
-                ClassLoader.getSystemResourceAsStream(resourcesPath + "python/problem_verifier.py")
+                getClass()
+                        .getClassLoader()
+                        .getResourceAsStream("language_resources/python/problem_verifier.py")
                         .readAllBytes(),
                 StandardCharsets.UTF_8);
     }
