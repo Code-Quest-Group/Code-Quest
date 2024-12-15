@@ -97,6 +97,8 @@ public class SubmissionsService {
     }
 
     public String submitCustomSubmission(CreateCustomSubmissionDTO createCustomSubmissionDTO) {
+        Problem currentProblem = problemsService.getProblemOrThrow(createCustomSubmissionDTO.getProblemId());
+
         String code;
         try {
             SourceCodePreprocessor codePreprocessor =
@@ -109,8 +111,6 @@ public class SubmissionsService {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR, "Failed to assemble submission request: " + e.getMessage());
         }
-
-        Problem currentProblem = problemsService.getProblemOrThrow(createCustomSubmissionDTO.getProblemId());
 
         Map<String, String> argsMap =
                 judge0Service.assembleCustomSubmissionArgs(createCustomSubmissionDTO, currentProblem, code);
