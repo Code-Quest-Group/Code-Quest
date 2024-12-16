@@ -23,6 +23,7 @@ import pl.agh.edu.wi.informatyka.codequest.submission.model.SubmissionStatus;
 import pl.agh.edu.wi.informatyka.codequest.submission.model.SubmissionType;
 import pl.agh.edu.wi.informatyka.codequest.submissionlogs.SubmissionLogsRepository;
 import pl.agh.edu.wi.informatyka.codequest.submissionlogs.model.SubmissionLog;
+import pl.agh.edu.wi.informatyka.codequest.user.model.Role;
 
 @Service
 public class ProblemProposalsService {
@@ -206,7 +207,10 @@ public class ProblemProposalsService {
         problem.setInputFormat(problemProposalDTO.getInputFormat());
         problem.setCodeTemplate(problemProposalDTO.getCodeTemplate());
         problem.setTestCases(problemProposalDTO.getTestCases());
-        problem.setProblemStatus(ProblemStatus.PENDING);
+        problem.setProblemStatus(
+                problemProposalDTO.getAuthor().getUserRole() == Role.ADMIN
+                        ? ProblemStatus.APPROVED
+                        : ProblemStatus.PENDING);
         problem.setExpectedResult(expectedResult);
         problem.setTags(problemProposalDTO.getTags());
         problem.setConstraints(problemProposalDTO.getConstraints());
