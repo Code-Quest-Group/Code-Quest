@@ -1,4 +1,4 @@
-import { Visibility, VisibilityOff } from '@mui/icons-material'
+import { LockOpen, Visibility, VisibilityOff } from '@mui/icons-material'
 import {
   FilledInput,
   FormControl,
@@ -6,7 +6,8 @@ import {
   InputAdornment,
   InputLabel,
   Dialog,
-  DialogContent
+  DialogContent,
+  CircularProgress
 } from '@mui/material'
 import axios from 'axios'
 import clsx from 'clsx'
@@ -24,9 +25,9 @@ type SignInModalProps = {
 
 const SignInModal = ({ open, onClose }: SignInModalProps) => {
   const { setToken, setUsername, setIsAdmin, setRefreshToken, setUserId } = useUser()
-
   const [activeTab, setActiveTab] = useState<'signIn' | 'register'>('signIn')
   const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const handleClickShowPassword = () => setShowPassword((show) => !show)
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => event.preventDefault()
@@ -34,6 +35,8 @@ const SignInModal = ({ open, onClose }: SignInModalProps) => {
   const handleSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
+
+    if (loading) return
 
     if (activeTab === 'signIn') {
       const emailOrUsername = formData.get('emailOrUsername')
@@ -49,6 +52,7 @@ const SignInModal = ({ open, onClose }: SignInModalProps) => {
       }
 
       try {
+        setLoading(true)
         const response = await axios.post(`${config.apiBaseUrl}/auth/register`, payload)
 
         if (response.status === 201) {
@@ -57,6 +61,8 @@ const SignInModal = ({ open, onClose }: SignInModalProps) => {
       } catch (error) {
         toast.error('There was an error while registering, please try again!')
         console.log(error)
+      } finally {
+        setLoading(false)
       }
     }
   }
@@ -65,6 +71,7 @@ const SignInModal = ({ open, onClose }: SignInModalProps) => {
     const payload = { password, username_or_email: username }
 
     try {
+      setLoading(true)
       const response = await axios.post(`${config.apiBaseUrl}/auth/login`, payload)
       const userData = response.data.data
 
@@ -78,6 +85,8 @@ const SignInModal = ({ open, onClose }: SignInModalProps) => {
     } catch (error) {
       toast.error('There was an error while logging in, please try again!')
       console.log(error)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -158,7 +167,13 @@ const SignInModal = ({ open, onClose }: SignInModalProps) => {
                 </FormControl>
               </>
             )}
-            <Button type="submit">
+            <Button
+              type="submit"
+              disabled={loading}
+              icon={loading ?
+                <CircularProgress size={20} style={{ color: 'white' }} />
+                : <LockOpen />
+              }>
               {activeTab === 'signIn' ? 'Sign In' : 'Register'}
             </Button>
           </form>

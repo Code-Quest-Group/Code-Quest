@@ -8,10 +8,11 @@ import { toast } from 'react-toastify'
 import { config } from '../../../../../config'
 
 type ProposalListItemProps = {
-    problemProposal: Proposal
+  problemProposal: Proposal
+  onClose: () => void
 }
 
-export const ProposalListItem = ({ problemProposal }: ProposalListItemProps) => {
+export const ProposalListItem = ({ problemProposal, onClose }: ProposalListItemProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -34,6 +35,7 @@ export const ProposalListItem = ({ problemProposal }: ProposalListItemProps) => 
       toast.error('Failed to approve the problem proposal.')
     } finally {
       setLoading(false)
+      onClose()
     }
   }
 
@@ -48,6 +50,7 @@ export const ProposalListItem = ({ problemProposal }: ProposalListItemProps) => 
       toast.error('Failed to reject the problem proposal.')
     } finally {
       setLoading(false)
+      onClose()
     }
   }
 

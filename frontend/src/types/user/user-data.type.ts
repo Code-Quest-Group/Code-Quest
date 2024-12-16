@@ -7,6 +7,7 @@ export type ProfileUserData = {
     country: string
     createdAt: string
     lastLogin: string
+    banned?: boolean
     preferences: {
       darkMode: boolean
       isProfilePublic: boolean

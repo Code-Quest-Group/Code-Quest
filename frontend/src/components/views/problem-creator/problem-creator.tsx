@@ -15,7 +15,7 @@ import { config } from '../../../../config'
 import axios, { isAxiosError } from 'axios'
 
 const ProblemCreator = () => {
-  const { setUserProblem, isAdmin } = useUser()
+  const { setUserProblem } = useUser()
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
@@ -95,7 +95,6 @@ const ProblemCreator = () => {
   const handleSubmit = async(event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    if (!isAdmin) toast.error('you need to be an admin for now duh')
     if (checkErrors()) return
 
     const payload = {
@@ -114,15 +113,38 @@ const ProblemCreator = () => {
       constraints: constraints,
     }
 
-    console.log(payload)
-
     try {
-      const response = await axios.post(`${config.apiBaseUrl}/problems/proposals`, payload)
-      console.log(response)
+      await axios.post(`${config.apiBaseUrl}/problems/proposals`, payload)
 
-      toast.success('Problem created successfully! (It is a lie endpoint doesnt work)')
+      toast.success('Problem created successfully.')
+
+      setTitle('')
+      setDescription('')
+      setConstraints('')
+      setTestCases('')
+      setExampleTestCases('')
+      setExampleExpectedResults('')
+      setSelectedTags([])
+      setLanguage('PYTHON')
+      setHints('')
+      setTemplate('class Problem: \n')
+      setSolution('class InternalProblem: \n')
+      setInputFormat('')
 
       setUserProblem(undefined)
+      setErrors({
+        title: false,
+        description: false,
+        constraints: false,
+        testCases: false,
+        exampleTestCases: false,
+        exampleExpectedResults: false,
+        selectedTags: false,
+        template: false,
+        solution: false,
+        inputFormat: false,
+        hints: false,
+      })
     } catch (error: unknown) {
       console.error('Error creating problem:', error)
 

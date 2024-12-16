@@ -55,7 +55,7 @@ const AdminPanel = ({ open, onClose }: FeedbackModalProps) => {
                   <>
                     {proposals.map((proposal, index) => (
                       <Fragment key={index}>
-                        <ProposalListItem problemProposal={proposal} />
+                        <ProposalListItem problemProposal={proposal} onClose={onClose} />
                       </Fragment>
                     ))}
                   </>
@@ -82,7 +82,7 @@ const AdminPanel = ({ open, onClose }: FeedbackModalProps) => {
             <List>
               {allUsers.map((user, index) => (
                 <Fragment key={index}>
-                  <UserListItem user={user} />
+                  <UserListItem user={user} onClose={onClose} />
                 </Fragment>
               ))}
             </List>

@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { Box, Popover, ListItem, ListItemText, Typography} from '@mui/material'
 import { Button, Seperator } from '../../../utils'
-import { Block, EditNote } from '@mui/icons-material'
+import { EditNote, OpenInBrowser } from '@mui/icons-material'
 import { Problem } from '../../../../types'
+import { useNavigate } from 'react-router-dom'
 
 type ProblemListItemProps = {
     problem: Problem
@@ -10,6 +11,7 @@ type ProblemListItemProps = {
 
 export const ProblemListItem = ({ problem }: ProblemListItemProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
+  const navigate = useNavigate()
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
@@ -58,17 +60,17 @@ export const ProblemListItem = ({ problem }: ProblemListItemProps) => {
             <Button
               icon={<EditNote />}
               sx={{ width: '10rem', marginTop: '1rem'}}
-              popup='Click to edit problem'
+              popup='Click to edit problem templates'
             >
               Update
             </Button>
             <Button
-              icon={<Block />}
-              seriousButton
+              icon={<OpenInBrowser />}
               sx={{ width: '10rem'}}
-              popup='Click to permamently remove this problem'
+              popup='Click to open problem page'
+              onClick={() => navigate(`/problems/${problem.problemId}`)}
             >
-              Remove
+              Open
             </Button>
           </div>
         </Box>

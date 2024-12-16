@@ -15,6 +15,7 @@ import { ActivityChart } from './activity-chart'
 import { LoadingPage } from '../loading-page/loading-page'
 import { format } from 'date-fns-tz'
 import { ProblemProposals } from './problem-proposals'
+import { toast } from 'react-toastify'
 
 const AdminPanel = lazy(() => import('./admin-panel/admin-panel-modal'))
 const SettingsButton = lazy(() => import('./settings-button'))
@@ -208,7 +209,10 @@ const AccountPage = () => {
                 icon={<Refresh />}
                 popup={'Click to refresh submissions'}
                 aria-label='refresh-submissions'
-                onClick={() => setRefreshProposals((prev) => !prev)}
+                onClick={() => {
+                  setRefreshProposals((prev) => !prev)
+                  toast.info('Refreshed submissions')
+                }}
               >
                 Refresh
               </Button>

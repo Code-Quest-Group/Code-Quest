@@ -5,6 +5,7 @@ import { createContext, ReactNode, useContext, useEffect, useState } from 'react
 import { Problem } from '../../types'
 import SessionTimeoutModal from './time-out-modal'
 import { config as appConfig } from '../../../config'
+import { toast } from 'react-toastify'
 
 const UserContext = createContext({
   username: '',
@@ -85,6 +86,11 @@ export const UserProvider = ({ children }: UserProviderProps) => {
             setUsername('')
           }
         }
+
+        if (error.response?.status === 403 && error.response?.data?.includes('Access denied for banned user')) {
+          toast.warning('You got banned - RIP BOZO')
+        }
+
         return Promise.reject(error)
       }
     )

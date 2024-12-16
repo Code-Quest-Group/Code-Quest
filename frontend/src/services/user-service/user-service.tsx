@@ -80,10 +80,32 @@ const getAllUsers = async() => {
   }
 }
 
+const banUser = async (userId: string) => {
+  try {
+    const response = await axios.patch(`${config.apiBaseUrl}/user/${userId}/ban`)
+    return response.data
+  } catch (error) {
+    console.error(`Failed to ban user with ID: ${userId}`, error)
+    throw error
+  }
+}
+
+const unbanUser = async (userId: string) => {
+  try {
+    const response = await axios.patch(`${config.apiBaseUrl}/user/${userId}/unban`)
+    return response.data
+  } catch (error) {
+    console.error(`Failed to unban user with ID: ${userId}`, error)
+    throw error
+  }
+}
+
 export const UserService = {
   getUserData,
   getUserStatistics,
   setUserPreferences,
   getUserProblems,
   getAllUsers,
+  banUser,
+  unbanUser
 }

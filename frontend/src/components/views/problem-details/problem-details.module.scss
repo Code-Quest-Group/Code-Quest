@@ -89,6 +89,7 @@
             .infoContainer {
                 overflow-y: auto;
                 margin-bottom: 2rem;
+                width: 100%;
 
                 @include breakpoints.for-phones {
                     scrollbar-width: none;
@@ -188,7 +189,7 @@
                     margin: 0.5rem 0 0.5rem 1rem;
                     list-style: none;
                     border-radius: 5px;
-                    max-height: 12rem;
+                    max-height: 8.75rem;
                     overflow-y: auto;
                     overflow-x: hidden;
 
@@ -287,8 +288,7 @@
 
 .whiteBackgroundDescription {
     padding: 1rem;
-    min-width: 18rem;
-    max-width: 90%;
+    width: calc(100% - 2rem);
     background-color: var(--primary-white);
     border-radius: 5px;
     margin-bottom: 1rem;

@@ -18,7 +18,7 @@ export const RateButtonGroup = ({ className }: RateButtonGroupProps) => {
       <CommentButton />
       <Button
         disabled={isPreview}
-        onClick={() => toast.info('Reported the problem to administration!')}
+        onClick={() => toast.info('Sorry, we currently do not support reporting problems.')}
         seriousButton
         icon={<ReportProblemIcon />}
         popup={isPreview ? 'Cannot report preview' : 'Click to report this problem'}

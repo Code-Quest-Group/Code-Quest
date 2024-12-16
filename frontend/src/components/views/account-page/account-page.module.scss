@@ -183,11 +183,13 @@
 
                 >ul {
                     max-height: calc(100%);
+                    width: 100%;
                     padding: 0;
-                    overflow-y: scroll;
+                    overflow-y: auto;
 
                     >li {
                         display: flex;
+                        width: 100%;
                         color: var(--font-primary-color);
                         transition: background-color 0.25s ease-out;
                         -webkit-transition: background-color 0.25s ease-out;
@@ -200,7 +202,7 @@
 
                         >span {
                             padding: 0.5rem 1rem;
-                            width: 4.25rem;
+                            width: 4.625rem;
                             font-size: 1.25rem;
                             display: flex;
                             align-items: center;
