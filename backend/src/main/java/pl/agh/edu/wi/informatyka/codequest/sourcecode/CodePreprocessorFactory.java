@@ -12,7 +12,7 @@ public class CodePreprocessorFactory {
     public SourceCodePreprocessor getCodePreprocessor(Language language) throws IOException {
         return switch (language) {
             case PYTHON -> new PythonSourceCodePreprocessor();
-                //            case JAVASCRIPT -> null;
+            case JAVASCRIPT -> new JavascriptSourceCodePreprocessor();
                 //            case JAVA -> null;
                 //            case CPP -> null;
             default -> throw new IllegalArgumentException("Language not supported");
