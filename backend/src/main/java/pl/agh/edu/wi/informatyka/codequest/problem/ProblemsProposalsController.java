@@ -39,7 +39,7 @@ public class ProblemsProposalsController {
     public List<Problem> getUserProblemsProposals(
             @AuthenticationPrincipal User user,
             @PathVariable @Parameter(example = "7aba9807-b018-4923-a6db-421c7e232237") String userId) {
-        return problemProposalsService.getAllByUser(user.getUserId());
+        return problemProposalsService.getAllByUser(userId);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
