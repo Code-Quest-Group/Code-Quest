@@ -76,6 +76,7 @@ export const UserListItem = ({ user, onClose }: UserListItemProps) => {
       toast.error('Couldn\'t update this user status!')
     } finally {
       setLoadingAction(false)
+      onClose()
     }
   }
 

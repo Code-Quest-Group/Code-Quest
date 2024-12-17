@@ -97,8 +97,13 @@ const ProblemCreator = () => {
 
     if (checkErrors()) return
 
+    const res = exampleExpectedResults.split('\n').filter(item => item.trim() !== '')
+
     const payload = {
-      problemId: title.toLowerCase().replace(/\d+/g, '').replace(/\s+/g, '-'),
+      problemId: title.toLowerCase()
+        .replace(/\d+/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/^-+|-+$/g, ''),
       name: title,
       description: description,
       supported_language: language,
@@ -109,11 +114,12 @@ const ProblemCreator = () => {
       hints: hints.split('\n'),
       tags: selectedTags,
       example_testcases: exampleTestCases,
-      example_expected_result: exampleExpectedResults.split('\n').filter(item => item.trim() !== ''),
+      example_expected_result: res,
       constraints: constraints,
     }
 
     try {
+      console.log(payload)
       await axios.post(`${config.apiBaseUrl}/problems/proposals`, payload)
 
       toast.success('Problem created successfully.')

@@ -1,15 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, Radar, Tooltip } from 'recharts'
 import { UserStatistics } from '../../../types'
-
-enum ProblemType {
-    BinarySearch = 'Binary Search',
-    LinkedLists = 'Linked Lists',
-    Recursion = 'Recursion',
-    Simple = 'Simple',
-    Graphs = 'Graphs',
-    Sorting = 'Sorting',
-}
+import { Tags } from '../../../types/problem/tags.type'
 
 type ProblemChartProps = {
     userStatistics?: UserStatistics
@@ -35,7 +27,7 @@ export const ProblemChart = ({ userStatistics }: ProblemChartProps) => {
     .reduce((acc, curr) => acc + curr, 0)
 
   const chartData = Object
-    .values(ProblemType)
+    .values(Tags)
     .map(problemType => ({
       problemType,
       amount: userStatistics.user_problem_tags_count[problemType] || 0,

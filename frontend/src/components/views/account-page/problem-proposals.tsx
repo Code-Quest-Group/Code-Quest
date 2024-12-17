@@ -5,6 +5,7 @@ import axios from 'axios'
 import { config } from '../../../../config'
 import { Proposal } from '../../../types'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 type ProblemProposalsProps = {
     userId: string
@@ -21,7 +22,6 @@ export const ProblemProposals = ({ rejected, approved, userId, refresh }: Proble
     const fetchProposals = async () => {
       try {
         const response = await axios.get(`${config.apiBaseUrl}/problems/proposals/${userId}`)
-        console.log(response)
         setSubmissions(response.data)
       } catch (error) {
         console.error('Error fetching problem proposals:', error)
@@ -40,7 +40,13 @@ export const ProblemProposals = ({ rejected, approved, userId, refresh }: Proble
           <MenuItem
             key={index}
             disableRipple
-            onClick={() => navigate(`/problems/${submission.problem_id}`)}
+            onClick={() => {
+              if (submission.problem_status !== 'APPROVED') {
+                toast.info('Can\'t visit this page, as it wasn\'t approved by administration.')
+                return
+              }
+              navigate(`/problems/${submission.problem_id}`)
+            }}
           >
             <ListItemText primary={submission.name} />
             <span className={clsx('inside-shadow',

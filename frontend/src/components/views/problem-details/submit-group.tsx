@@ -16,7 +16,7 @@ type SubmitButtonGroupProps = {
 }
 
 export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
-  const { code, problem, submissionId, setSubmissionId, isPreview } = useCodeEnvironment()
+  const { code, problem, submissionId, setSubmissionId, isPreview, currentLanguage } = useCodeEnvironment()
   const { username } = useUser()
   const [openModal, setOpenModal] = useState(false)
   const [time, setTime] = useState(0)
@@ -95,7 +95,7 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
           params: {
             submissionId,
             problemId: problem?.problemId,
-            language: 'PYTHON'
+            language: currentLanguage || 'PYTHON'
           }
         }
 

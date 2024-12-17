@@ -41,7 +41,7 @@ export const TestsSummary = ({ className }: TestsSummaryProps) => {
     if (!expectedResults || !receivedOutput) return
 
     const updatedFailingTests = expectedResults.map((expected, index) => {
-      return receivedOutput[index] === expected
+      return String(receivedOutput[index]) === String(expected)
     })
 
     setPassingTests(updatedFailingTests)

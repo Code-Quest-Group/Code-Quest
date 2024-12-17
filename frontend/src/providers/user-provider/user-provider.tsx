@@ -91,6 +91,10 @@ export const UserProvider = ({ children }: UserProviderProps) => {
           toast.warning('You got banned - RIP BOZO')
         }
 
+        if (error.response.status === 429 && error.response?.data?.message.includes('You recently created')) {
+          toast.warning('You recently created a submission. Please wait before sending another one')
+        }
+
         return Promise.reject(error)
       }
     )
