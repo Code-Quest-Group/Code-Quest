@@ -1,8 +1,8 @@
 package pl.agh.edu.wi.informatyka.codequest.codetemplate.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
-import pl.agh.edu.wi.informatyka.codequest.codetemplate.model.TemplateType;
 import pl.agh.edu.wi.informatyka.codequest.sourcecode.Language;
 
 @Data
@@ -13,8 +13,11 @@ public class CreateCodeTemplateDTO {
 
     private Language language;
 
-    @JsonProperty("template_type")
-    private TemplateType templateType;
+    @JsonProperty("reference_solution")
+    @NotEmpty
+    private String referenceSolution;
 
-    private String code;
+    @NotEmpty
+    @JsonProperty("default_definition")
+    private String defaultDefinition;
 }
