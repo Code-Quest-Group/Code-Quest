@@ -150,7 +150,7 @@ public class UserService {
     public void unbanUser(User authenticatedUser, String userId) {
         User user = getUserOrThrow(authenticatedUser, userId);
 
-        user.setBanned(true);
+        user.setBanned(false);
         userRepository.save(user);
     }
 }
