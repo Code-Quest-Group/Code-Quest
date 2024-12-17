@@ -46,7 +46,7 @@ class Parser:
 
     def validate_arg_type(self, arg: any, arg_type: str):
         if isinstance(arg, str):
-            if arg_type == 'string':
+            if arg_type == 'str':
                 return
         elif isinstance(arg, list):
             if arg_type.startswith('list[') and arg_type.endswith(']'):
