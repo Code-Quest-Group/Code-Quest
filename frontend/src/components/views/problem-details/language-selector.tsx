@@ -2,8 +2,6 @@ import React, { useState } from 'react'
 import { Menu, MenuItem, IconButton, Typography, Button } from '@mui/material'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import { useCodeEnvironment } from '../../../providers'
-import axios from 'axios'
-import { config } from '../../../../config'
 
 export const LanguageDropdown = () => {
   const {
@@ -24,18 +22,9 @@ export const LanguageDropdown = () => {
   }
 
   const handleLanguageSelect = async (language: string) => {
-    try {
-      const newTemplateData = await axios.get(`${config.apiBaseUrl}/problems/templates`, {
-        params: {
-          problemId: problem.problemId,
-          language,
-          templateType: 'DEFAULT_DEFINITION',
-        },
-      })
-
-      setCurrentTemplate(newTemplateData.data.data[0].code)
-    } catch (error) {
-      console.error('Couldn\'t fetch error: ', error)
+    if (problem.codeTemplates) {
+      const newTemplate = problem.codeTemplates.find(template => template.language === language.toUpperCase())?.code
+      setCurrentTemplate(newTemplate!)
     }
 
     setCurrentLanguage(language.toLowerCase())

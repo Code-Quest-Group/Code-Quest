@@ -46,6 +46,7 @@ const getProblem = async(problemId: string) => {
       tags: raw.tags,
       constraints: raw.constraints,
       rating: raw.rating,
+      codeTemplates: raw.code_templates,
     }
 
     return problem
