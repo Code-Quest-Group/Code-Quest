@@ -119,7 +119,6 @@ const ProblemCreator = () => {
     }
 
     try {
-      console.log(payload)
       await axios.post(`${config.apiBaseUrl}/problems/proposals`, payload)
 
       toast.success('Problem created successfully.')

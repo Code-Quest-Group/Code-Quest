@@ -45,6 +45,11 @@ export const CustomTestButton = () => {
           return /^\[".*?"(,\s*".*?")*\]$/.test(part)
         }
 
+        if (format === 'list[list[int]]') {
+          // Match a list of lists of integers like [[1,2,3], [4,5,6]]
+          return /^\[\s*(\[\s*-?\d+(,\s*-?\d+)*\]\s*,\s*)*(\[\s*-?\d+(,\s*-?\d+)*\]\s*)\]$/.test(part)
+        }
+
         return false
       })
     }
