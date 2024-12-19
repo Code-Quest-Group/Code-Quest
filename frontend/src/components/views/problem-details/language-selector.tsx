@@ -2,9 +2,17 @@ import React, { useState } from 'react'
 import { Menu, MenuItem, IconButton, Typography, Button } from '@mui/material'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import { useCodeEnvironment } from '../../../providers'
+import axios from 'axios'
+import { config } from '../../../../config'
 
 export const LanguageDropdown = () => {
-  const { currentLanguage, setCurrentLanguage, problem, resetCodeToTemplate } = useCodeEnvironment()
+  const {
+    currentLanguage,
+    setCurrentLanguage,
+    problem,
+    resetCodeToTemplate,
+    setCurrentTemplate,
+  } = useCodeEnvironment()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -15,7 +23,21 @@ export const LanguageDropdown = () => {
     setAnchorEl(null)
   }
 
-  const handleLanguageSelect = (language: string) => {
+  const handleLanguageSelect = async (language: string) => {
+    try {
+      const newTemplateData = await axios.get(`${config.apiBaseUrl}/problems/templates`, {
+        params: {
+          problemId: problem.problemId,
+          language,
+          templateType: 'DEFAULT_DEFINITION',
+        },
+      })
+
+      setCurrentTemplate(newTemplateData.data.data[0].code)
+    } catch (error) {
+      console.error('Couldn\'t fetch error: ', error)
+    }
+
     setCurrentLanguage(language.toLowerCase())
     handleClose()
   }
@@ -44,7 +66,7 @@ export const LanguageDropdown = () => {
       >
         {problem.supportedLanguages.map((language) => (
           <MenuItem key={language} onClick={() => handleLanguageSelect(language)}>
-            {language}
+            {language.charAt(0) + language.substring(1).toLowerCase()}
           </MenuItem>
         ))}
       </Menu>

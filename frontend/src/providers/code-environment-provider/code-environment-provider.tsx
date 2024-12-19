@@ -21,6 +21,8 @@ type CodeEnvironmentContextType = {
   isPreview: boolean;
   expectedResults: (string | number)[]
   userStdout: (string)[]
+  currentTemplate: string
+  setCurrentTemplate: (template: string) => void
   setCurrentProblem: (problem: Problem) => void
   setCurrentLanguage: (language: string) => void
   setCode: (code: string) => void
@@ -45,7 +47,9 @@ const CodeEnvironmentContext = createContext<CodeEnvironmentContextType>({
   inputFormat: '',
   expectedResults: [],
   userStdout: [],
+  currentTemplate: '',
   isPreview: false,
+  setCurrentTemplate: () => {},
   setCurrentProblem: () => {},
   setCurrentLanguage: () => {},
   setCode: () => {},
@@ -67,7 +71,7 @@ export const CodeEnvironmentProvider = ({ children, problem, isPreview = false }
   const [currentProblem, setCurrentProblem] = useState<Problem>(problem)
   const [currentLanguage, setCurrentLanguage] = useState('PYTHON')
   const [code, setCode] = useState(() => {
-    const savedCode = localStorage.getItem(`savedCode${problem.problemId}`)
+    const savedCode = localStorage.getItem(`saved_code_${problem.problemId}_${currentLanguage.toLowerCase()}`)
     return savedCode || (problem.codeTemplate ? `\n${problem.codeTemplate}` : '')
   })
   const [testCases, setTestCases] = useState(problem.exampleTestCases)
@@ -75,25 +79,40 @@ export const CodeEnvironmentProvider = ({ children, problem, isPreview = false }
   const [submissionId, setSubmissionId] = useState('')
   const [receivedOutput, setReceivedOutput] = useState<(string | number)[]>([])
   const [expectedResults, setExpectedResults] = useState<(string | number)[]>([])
-  const [userStdout, setUserStdout] = useState<(string)[]>([])
-  const [inputFormat, _] = useState(problem.inputFormat)
+  const [userStdout, setUserStdout] = useState<string[]>([])
+  const [inputFormat] = useState(problem.inputFormat)
+  const [currentTemplate, setCurrentTemplate] = useState<string>(problem.codeTemplate)
 
   useEffect(() => {
     if (problem?.problemId && problem.problemId !== 'preview-problem') {
-      localStorage.setItem(`savedCode${problem.problemId}`, code)
+      localStorage.setItem(`saved_code_${problem.problemId}_${currentLanguage.toLowerCase()}`, code)
     }
-  }, [code, problem?.problemId])
+  }, [code, problem?.problemId, currentLanguage])
 
   const fetchSavedCode = () => {
     if (problem?.problemId && problem.problemId !== 'preview-problem') {
-      return localStorage.getItem(`savedCode${problem.problemId}`)
+      return localStorage.getItem(`saved_code_${problem.problemId}_${currentLanguage.toLowerCase()}`)
     }
     return null
   }
 
   const resetCodeToTemplate = () => {
-    if (problem?.codeTemplate) {
-      setCode(`\n${problem.codeTemplate}`)
+    if (currentTemplate) {
+      setCode(`\n${currentTemplate}`)
+    } else {
+      setCode('')
+    }
+  }
+
+  const handleLanguageChange = (language: string) => {
+    setCurrentLanguage(language)
+    const savedCode = localStorage.getItem(`saved_code_${problem.problemId}_${language.toLowerCase()}`)
+    if (savedCode) {
+      setCode(savedCode)
+    } else if (language.toUpperCase() === 'PYTHON') {
+      setCode('class Problem:\n')
+    } else if (language.toUpperCase() === 'JAVASCRIPT') {
+      setCode('class Problem {\n}')
     } else {
       setCode('')
     }
@@ -113,8 +132,10 @@ export const CodeEnvironmentProvider = ({ children, problem, isPreview = false }
         isPreview,
         expectedResults,
         userStdout,
+        currentTemplate,
+        setCurrentTemplate,
         setCurrentProblem,
-        setCurrentLanguage,
+        setCurrentLanguage: handleLanguageChange,
         setCode,
         setTestCases,
         setCurrentTestIndex,

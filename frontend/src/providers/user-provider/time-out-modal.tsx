@@ -1,5 +1,6 @@
 import { FC } from 'react'
-import { Modal, Box, Typography, Button } from '@mui/material'
+import { Modal, Box, Typography } from '@mui/material'
+import { Button } from '../../components/utils'
 
 type SessionTimeoutModalProps = {
   open: boolean

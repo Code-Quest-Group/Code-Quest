@@ -30,7 +30,7 @@ export const RunTestCasesButton = () => {
 
     try {
       const response = await axios.post(`${config.apiBaseUrl}/submissions/custom`, {
-        language: currentLanguage,
+        language: currentLanguage.toUpperCase(),
         source_code: code,
         problem_id: problem.problemId,
         custom_testcases: testCases,

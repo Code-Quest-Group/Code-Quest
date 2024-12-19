@@ -32,7 +32,7 @@ export const SubmitButtonGroup = ({ className }: SubmitButtonGroupProps) => {
       const response = await axios.post(`${config.apiBaseUrl}/submissions/`, {
         source_code: code,
         problem_id: problem?.problemId,
-        language: 'PYTHON',
+        language: currentLanguage.toUpperCase() || 'PYTHON',
       })
 
       if (response.status === 200) {
