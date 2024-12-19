@@ -13,7 +13,6 @@ import pl.agh.edu.wi.informatyka.codequest.codetemplate.dto.CreateCodeTemplateRe
 import pl.agh.edu.wi.informatyka.codequest.codetemplate.model.CodeTemplate;
 import pl.agh.edu.wi.informatyka.codequest.codetemplate.model.TemplateType;
 import pl.agh.edu.wi.informatyka.codequest.problem.ProblemsRepository;
-import pl.agh.edu.wi.informatyka.codequest.problem.ProblemsService;
 import pl.agh.edu.wi.informatyka.codequest.problem.model.Problem;
 import pl.agh.edu.wi.informatyka.codequest.submission.dto.CreateSubmissionDTO;
 import pl.agh.edu.wi.informatyka.codequest.util.GenericResponse;
@@ -23,21 +22,21 @@ import pl.agh.edu.wi.informatyka.codequest.util.ResponseStatus;
 public class CodeTemplatesService {
     private final CodeTemplatesRepository codeTemplatesRepository;
     private final ProblemsRepository problemsRepository;
-    private final ProblemsService problemsService;
 
     public CodeTemplatesService(
-            CodeTemplatesRepository codeTemplatesRepository,
-            ProblemsRepository problemsRepository,
-            ProblemsService problemsService) {
+            CodeTemplatesRepository codeTemplatesRepository, ProblemsRepository problemsRepository) {
         this.codeTemplatesRepository = codeTemplatesRepository;
         this.problemsRepository = problemsRepository;
-        this.problemsService = problemsService;
     }
 
     @Transactional
     public ResponseEntity<GenericResponse<CreateCodeTemplateResponse>> createCodeTemplate(
             CreateCodeTemplateDTO createCodeTemplateDTO) {
-        Problem problem = this.problemsService.getProblemOrThrow(createCodeTemplateDTO.getProblemId());
+        Problem problem = this.problemsRepository
+                .findById(createCodeTemplateDTO.getProblemId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Problem with id '" + createCodeTemplateDTO.getProblemId() + "' not found"));
         if (problem.getSupportedLanguages().contains(createCodeTemplateDTO.getLanguage())) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
