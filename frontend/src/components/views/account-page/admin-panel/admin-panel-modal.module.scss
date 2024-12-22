@@ -1,3 +1,5 @@
+@use '@mixins' as breakpoints;
+
 .contentCard {
     width: 70rem;
     background-color: var(--primary-white);
@@ -7,6 +9,17 @@
     transform: translate(-50%, -50%);
     padding: 2rem;
     border-radius: 5px;
+    max-height: 35rem;
+    overflow-y: auto;
+
+    @include breakpoints.for-tablets {
+        width: 32rem;
+    }
+
+    @include breakpoints.for-phones {
+        width: 18rem;
+
+    }
 
     .content {
         width: 100%;
@@ -15,9 +28,18 @@
         column-gap: 2rem;
         height: 100%;
 
+        @include breakpoints.for-tablets {
+            flex-direction: column;
+        }
+
         >section {
             width: 40rem;
             height: 100%;
+
+            @include breakpoints.for-tablets {
+                width: 100%;
+                margin-top: 2rem;
+            }
 
             >header {
                 font-size: 2rem;
@@ -30,7 +52,11 @@
             >ul {
                 background-color: var(--secondary-white);
                 overflow-y: auto;
-                max-height: 40rem;
+                max-height: 30rem;
+
+                @include breakpoints.for-tablets {
+                    max-height: 20rem;
+                }
 
                 >li,
                 >button {

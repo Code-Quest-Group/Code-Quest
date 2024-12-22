@@ -138,6 +138,8 @@
                     -moz-transition: background-color 0.25s ease-out;
                     -o-transition: background-color 0.25s ease-out;
 
+                    text-wrap: wrap;
+
                     &:nth-child(odd) {
                         background-color: var(--secondary-white);
                     }
@@ -195,6 +197,7 @@
                         -webkit-transition: background-color 0.25s ease-out;
                         -moz-transition: background-color 0.25s ease-out;
                         -o-transition: background-color 0.25s ease-out;
+                        text-wrap: wrap;
 
                         span {
                             font-family: 'Fredoka', sans-serif !important;

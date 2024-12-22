@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import { lazy, Suspense } from 'react'
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -9,10 +9,10 @@ import NotFoundPage from './components/views/not-found-page/not-found-page'
 import { LoadingPage } from './components/views/loading-page/loading-page'
 import { WebApplication } from 'schema-dts'
 
-const ProblemList = React.lazy(() => import('./components/views/problem-list/problem-list'))
-const ProblemDetails = React.lazy(() => import('./components/views/problem-details/problem-details'))
-const AccountPage = React.lazy(() => import('./components/views/account-page/account-page'))
-const ProblemCreator = React.lazy(() => import('./components/views/problem-creator/problem-creator'))
+const ProblemList = lazy(() => import('./components/views/problem-list/problem-list'))
+const ProblemDetails = lazy(() => import('./components/views/problem-details/problem-details'))
+const AccountPage = lazy(() => import('./components/views/account-page/account-page'))
+const ProblemCreator = lazy(() => import('./components/views/problem-creator/problem-creator'))
 
 const WebApplicationSchema = () => {
   const schema: WebApplication = {
